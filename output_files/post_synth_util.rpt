@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.1 (lin64) Build 3526262 Mon Apr 18 15:47:01 MDT 2022
-| Date         : Sat Nov 12 23:00:41 2022
-| Host         : koops running 64-bit Linux Mint 20.3
+| Date         : Sun Nov 13 12:47:24 2022
+| Host         : EECS-DIGITAL-14 running 64-bit Ubuntu 20.04.5 LTS
 | Command      : report_utilization -file output_files/post_synth_util.rpt
 | Design       : top_level
 | Device       : xc7a100tcsg324-1
@@ -31,11 +31,11 @@ Table of Contents
 +-------------------------+------+-------+------------+-----------+-------+
 |        Site Type        | Used | Fixed | Prohibited | Available | Util% |
 +-------------------------+------+-------+------------+-----------+-------+
-| Slice LUTs*             |   94 |     0 |          0 |     63400 |  0.15 |
-|   LUT as Logic          |   94 |     0 |          0 |     63400 |  0.15 |
+| Slice LUTs*             |  173 |     0 |          0 |     63400 |  0.27 |
+|   LUT as Logic          |  173 |     0 |          0 |     63400 |  0.27 |
 |   LUT as Memory         |    0 |     0 |          0 |     19000 |  0.00 |
-| Slice Registers         |   71 |     0 |          0 |    126800 |  0.06 |
-|   Register as Flip Flop |   71 |     0 |          0 |    126800 |  0.06 |
+| Slice Registers         |  127 |     0 |          0 |    126800 |  0.10 |
+|   Register as Flip Flop |  127 |     0 |          0 |    126800 |  0.10 |
 |   Register as Latch     |    0 |     0 |          0 |    126800 |  0.00 |
 | F7 Muxes                |    0 |     0 |          0 |     31700 |  0.00 |
 | F8 Muxes                |    0 |     0 |          0 |     15850 |  0.00 |
@@ -57,8 +57,8 @@ Table of Contents
 | 0     |          Yes |           - |            - |
 | 0     |          Yes |           - |          Set |
 | 0     |          Yes |           - |        Reset |
-| 0     |          Yes |         Set |            - |
-| 71    |          Yes |       Reset |            - |
+| 5     |          Yes |         Set |            - |
+| 122   |          Yes |       Reset |            - |
 +-------+--------------+-------------+--------------+
 
 
@@ -78,11 +78,12 @@ Table of Contents
 3. DSP
 ------
 
-+-----------+------+-------+------------+-----------+-------+
-| Site Type | Used | Fixed | Prohibited | Available | Util% |
-+-----------+------+-------+------------+-----------+-------+
-| DSPs      |    0 |     0 |          0 |       240 |  0.00 |
-+-----------+------+-------+------------+-----------+-------+
++----------------+------+-------+------------+-----------+-------+
+|    Site Type   | Used | Fixed | Prohibited | Available | Util% |
++----------------+------+-------+------------+-----------+-------+
+| DSPs           |    7 |     0 |          0 |       240 |  2.92 |
+|   DSP48E1 only |    7 |       |            |           |       |
++----------------+------+-------+------------+-----------+-------+
 
 
 4. IO and GT Specific
@@ -91,9 +92,9 @@ Table of Contents
 +-----------------------------+------+-------+------------+-----------+-------+
 |          Site Type          | Used | Fixed | Prohibited | Available | Util% |
 +-----------------------------+------+-------+------------+-----------+-------+
-| Bonded IOB                  |   16 |    16 |          0 |       210 |  7.62 |
-|   IOB Master Pads           |    8 |       |            |           |       |
-|   IOB Slave Pads            |    8 |       |            |           |       |
+| Bonded IOB                  |   65 |    65 |          0 |       210 | 30.95 |
+|   IOB Master Pads           |   31 |       |            |           |       |
+|   IOB Slave Pads            |   31 |       |            |           |       |
 | Bonded IPADs                |    0 |     0 |          0 |         2 |  0.00 |
 | PHY_CONTROL                 |    0 |     0 |          0 |         6 |  0.00 |
 | PHASER_REF                  |    0 |     0 |          0 |         6 |  0.00 |
@@ -149,16 +150,18 @@ Table of Contents
 +------------+------+---------------------+
 |  Ref Name  | Used | Functional Category |
 +------------+------+---------------------+
-| FDRE       |   71 |        Flop & Latch |
-| LUT2       |   54 |                 LUT |
-| LUT6       |   28 |                 LUT |
-| LUT4       |   22 |                 LUT |
-| CARRY4     |   19 |          CarryLogic |
-| OBUF       |   14 |                  IO |
-| LUT5       |   13 |                 LUT |
-| LUT1       |   10 |                 LUT |
-| LUT3       |    9 |                 LUT |
-| IBUF       |    2 |                  IO |
+| FDRE       |  122 |        Flop & Latch |
+| LUT4       |   62 |                 LUT |
+| LUT5       |   50 |                 LUT |
+| OBUF       |   47 |                  IO |
+| LUT6       |   43 |                 LUT |
+| LUT2       |   43 |                 LUT |
+| CARRY4     |   29 |          CarryLogic |
+| IBUF       |   18 |                  IO |
+| LUT1       |   17 |                 LUT |
+| LUT3       |   14 |                 LUT |
+| DSP48E1    |    7 |    Block Arithmetic |
+| FDSE       |    5 |        Flop & Latch |
 | BUFG       |    2 |               Clock |
 | MMCME2_ADV |    1 |               Clock |
 +------------+------+---------------------+
