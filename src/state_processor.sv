@@ -1,7 +1,15 @@
 `timescale 1ns / 1ps
 `default_nettype none
 
+/*
+
+Given a block state and the hand/head states, output whether the block has been sliced, whether the player has been hit by an obstacle, and whether the block has been missed
+
+*/
 module state_processor(
+    input wire clk_in,
+    input wire rst_in,
+
     input wire block_visible,
     input wire [7:0] curr_block_index_in,
     input wire [11:0] block_x,
@@ -33,6 +41,19 @@ module state_processor(
     output logic block_missed
     );
 
+    //TODO: temporarily, this will always just say that the player didn't do anything
+
+    always_ff @(posedge clk_in) begin
+        if (rst_in) begin
+            block_sliced <= 0;
+            player_hit_by_obstacle <= 0;
+            block_missed <= 0;
+        end else begin
+            block_sliced <= 0;
+            player_hit_by_obstacle <= 0;
+            block_missed <= block_z == 0;
+        end
+    end
 endmodule
 
 `default_nettype wire
