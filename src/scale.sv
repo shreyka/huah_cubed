@@ -8,9 +8,22 @@ module scale(
   input wire [15:0] frame_buff_in,
   output logic [15:0] cam_out
 );
-  //YOUR DESIGN HERE!
-  assign cam_out = 16'b0; //REMOVE ME!
+  always_comb begin
+    cam_out = 16'b0;
+    if(scale_in==2'b0)begin
+      if (hcount_in <240 && vcount_in <320)begin
+        cam_out = frame_buff_in;
+      end
+    end else if (scale_in==2'b01)begin
+      if (hcount_in <480 && vcount_in <640)begin
+        cam_out = frame_buff_in;
+      end
+    end else begin
+      if (hcount_in <640 && vcount_in <853)begin
+        cam_out = frame_buff_in;
+      end
+    end
+  end
 endmodule
-
 
 `default_nettype wire
