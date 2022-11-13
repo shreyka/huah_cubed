@@ -3,8 +3,8 @@
 
 module top_level(
   input wire clk_100mhz, //clock @ 100 mhz
-  input wire btnc,
-  input wire [15:0] sw, //switches, using for testing color identification
+  input wire [15:0] sw, //switches
+  input wire btnc, //btnc (used for reset)
 
   input wire [7:0] ja, //lower 8 bits of data from camera
   input wire [2:0] jb, //upper three bits from camera (return clock, vsync, hsync)
@@ -15,18 +15,10 @@ module top_level(
 
   output logic [3:0] vga_r, vga_g, vga_b,
   output logic vga_hs, vga_vs,
-
-  output logic [7:0] an, // for displaying threshold states
+  output logic [7:0] an,
   output logic caa,cab,cac,cad,cae,caf,cag
 
   );
-
-  ////////////////////////////////////////////////////
-  // Lab 4 camera stuff 
-  //
-  // 
-  // 
-  //
 
   //system reset switch linking
   logic sys_rst; //global system reset
@@ -41,7 +33,70 @@ module top_level(
   logic [9:0] vcount;     // line number
   logic hsync, vsync, blank; //control signals for vga
   logic hsync_t, vsync_t, blank_t; //control signals out of transform
+  
+  //vary the packed width based on signal
+  //vary the unpacked width based on pipeling depth needed
+  logic [10:0] hcount_pipe [6:0];
 
+  always_ff @(posedge clk_65mhz)begin
+    hcount_pipe[0] <= hcount;
+    for (int i=1; i<7; i = i+1)begin
+      hcount_pipe[i] <= hcount_pipe[i-1];
+    end
+  end
+  
+  logic [9:0] vcount_pipe [6:0];
+
+  always_ff @(posedge clk_65mhz)begin
+    vcount_pipe[0] <= vcount;
+    for (int i=1; i<7; i = i+1)begin
+      vcount_pipe[i] <= vcount_pipe[i-1];
+    end
+  end
+  
+  logic crosshair_pipe [3:0];
+  always_ff @(posedge clk_65mhz)begin
+    crosshair_pipe[0] <= crosshair;
+    for (int i=1; i<4; i = i+1)begin
+      crosshair_pipe[i] <= crosshair_pipe[i-1];
+    end
+  end
+
+  logic [15:0] pipe_pixel_ps5;
+  
+  logic [15:0] full_pixel_pipe[2:0];
+  always_ff @(posedge clk_65mhz)begin
+    full_pixel_pipe[0] <= full_pixel;
+    for (int i=1; i<3; i = i+1)begin
+      full_pixel_pipe[i] <= full_pixel_pipe[i-1];
+    end
+    pipe_pixel_ps5 <= full_pixel_pipe[1]; 
+  end
+  
+  logic blank_pipe[6:0];
+  always_ff @(posedge clk_65mhz)begin
+    blank_pipe[0] <= blank;
+    for (int i=1; i<7; i = i+1)begin
+      blank_pipe[i] <= blank_pipe[i-1];
+    end
+  end
+  
+  logic hsync_pipe[7:0];
+  always_ff @(posedge clk_65mhz)begin
+    hsync_pipe[0] <= hsync;
+    for (int i=1; i<8; i = i+1)begin
+      hsync_pipe[i] <= hsync_pipe[i-1];
+    end
+  end
+  
+  logic vsync_pipe[7:0];
+  always_ff @(posedge clk_65mhz)begin
+    vsync_pipe[0] <= vsync;
+    for (int i=1; i<8; i = i+1)begin
+      vsync_pipe[i] <= vsync_pipe[i-1];
+    end
+  end
+  
 
   //camera module: (see datasheet)
   logic cam_clk_buff, cam_clk_in; //returning camera clock
@@ -198,8 +253,8 @@ module top_level(
   //Latency: 0
   scale scale_m(
     .scale_in(sw[1:0]),
-    .hcount_in(hcount), //TODO: needs to use pipelined signal (PS2)
-    .vcount_in(vcount), //TODO: needs to use pipelined signal (PS2)
+    .hcount_in(hcount_pipe[0]), //TODO: needs to use pipelined signal (PS2)
+    .vcount_in(vcount_pipe[0]), //TODO: needs to use pipelined signal (PS2)
     .frame_buff_in(frame_buff),
     .cam_out(full_pixel)
     );
@@ -229,10 +284,15 @@ module top_level(
   //Thresholder: Takes in the full RGB and YCrCb information and
   //based on upper and lower bounds masks
   //module has 0 cycle latency
+  
+  
   threshold( .sel_in(sw[5:3]),
-     .r_in(full_pixel[15:12]), //TODO: needs to use pipelined signal (PS5)
-     .g_in(full_pixel[10:7]),  //TODO: needs to use pipelined signal (PS5)
-     .b_in(full_pixel[4:1]),   //TODO: needs to use pipelined signal (PS5)
+     .r_in(pipe_pixel_ps5[15:12]), //TODO: needs to use pipelined signal (PS5)
+     .g_in(pipe_pixel_ps5[10:7]),  //TODO: needs to use pipelined signal (PS5)
+     .b_in(pipe_pixel_ps5[4:1]),   //TODO: needs to use pipelined signal (PS5)
+     //.r_in(full_pixel[15:12]), //TODO: needs to use pipelined signal (PS5)
+     //.g_in(full_pixel[10:7]),  //TODO: needs to u se pipelined signal (PS5)
+     //.b_in(full_pixel[4:1]),   //TODO: needs to use pipelined signal (PS5)
      .y_in(y[9:6]),
      .cr_in(cr[9:6]),
      .cb_in(cb[9:6]),
@@ -246,8 +306,8 @@ module top_level(
   center_of_mass com_m(
     .clk_in(clk_65mhz),
     .rst_in(sys_rst),
-    .x_in(hcount),  //TODO: needs to use pipelined signal! (PS3)
-    .y_in(vcount), //TODO: needs to use pipelined signal! (PS3)
+    .x_in(hcount_pipe[2]),  //TODO: needs to use pipelined signal! (PS3)
+    .y_in(vcount_pipe[2]), //TODO: needs to use pipelined signal! (PS3)
     .valid_in(mask),
     .tabulate_in((hcount==0 && vcount==0)),
     .x_out(x_com_calc),
@@ -284,11 +344,12 @@ module top_level(
   //    10: image sprite on top of center of mass
   //    11: all pink screen (for VGA functionality testing)
   vga_mux (.sel_in(sw[9:6]),
-  .camera_pixel_in({full_pixel[15:12],full_pixel[10:7],full_pixel[4:1]}), //TODO: needs to use pipelined signal(PS5)
+  //.camera_pixel_in({full_pixel[15:12],full_pixel[10:7],full_pixel[4:1]}), //TODO: needs to use pipelined signal(PS5)
+  .camera_pixel_in({pipe_pixel_ps5[15:12],pipe_pixel_ps5[10:7],pipe_pixel_ps5[4:1]}), //TODO: needs to use pipelined signal(PS5)
   .camera_y_in(y[9:6]),
   .channel_in(sel_channel),
   .thresholded_pixel_in(mask),
-  .crosshair_in(crosshair), //TODO: needs to use pipelined signal (PS4)
+  .crosshair_in(crosshair_pipe[3]), //TODO: needs to use pipelined signal (PS4)
   .com_sprite_pixel_in(com_sprite_pixel),
   .pixel_out(mux_pixel)
   );
@@ -296,15 +357,20 @@ module top_level(
   //blankig logic.
   //latency 1 cycle
   always_ff @(posedge clk_65mhz)begin
-    vga_r <= ~blank?mux_pixel[11:8]:0; //TODO: needs to use pipelined signal (PS6)
-    vga_g <= ~blank?mux_pixel[7:4]:0;  //TODO: needs to use pipelined signal (PS6)
-    vga_b <= ~blank?mux_pixel[3:0]:0;  //TODO: needs to use pipelined signal (PS6)
+    vga_r <= ~blank_pipe[6]?mux_pixel[11:8]:0; //TODO: needs to use pipelined signal (PS6)
+    vga_g <= ~blank_pipe[6]?mux_pixel[7:4]:0;  //TODO: needs to use pipelined signal (PS6)
+    vga_b <= ~blank_pipe[6]?mux_pixel[3:0]:0;  //TODO: needs to use pipelined signal (PS6)
+    //vga_r <= ~blank?mux_pixel[11:8]:0; //TODO: needs to use pipelined signal (PS6)
+    //vga_g <= ~blank?mux_pixel[7:4]:0;  //TODO: needs to use pipelined signal (PS6)
+    //vga_b <= ~blank?mux_pixel[3:0]:0;  //TODO: needs to use pipelined signal (PS6)
   end
 
-  assign vga_hs = ~hsync;  //TODO: needs to use pipelined signal (PS7)
-  assign vga_vs = ~vsync;  //TODO: needs to use pipelined signal (PS7)
-  
-  
+  assign vga_hs = ~hsync_pipe[0];  //TODO: needs to use pipelined signal (PS7)
+  assign vga_vs = ~vsync_pipe[0];  //TODO: needs to use pipelined signal (PS7)
+  //assign vga_hs = ~hsync;  //TODO: needs to use pipelined signal (PS7)
+  //assign vga_vs = ~vsync;  //TODO: needs to use pipelined signal (PS7)
+
+
   ////////////////////////////////////////////////////
   // VGA INFORMATION
   //
@@ -340,74 +406,74 @@ module top_level(
   // SECTION: CAMERA DATA
   //
 
-  logic [11:0] hand_x_left_bottom;
-  logic [11:0] hand_y_left_bottom;
-  logic [13:0] hand_z_left_bottom;
-  logic [11:0] hand_x_left_top;
-  logic [11:0] hand_y_left_top;
-  logic [13:0] hand_z_left_top;
-  logic [11:0] hand_x_right_bottom;
-  logic [11:0] hand_y_right_bottom;
-  logic [13:0] hand_z_right_bottom;
-  logic [11:0] hand_x_right_top;
-  logic [11:0] hand_y_right_top;
-  logic [13:0] hand_z_right_top;
-  logic [11:0] head_x;
-  logic [11:0] head_y;
-  logic [13:0] head_z;
+//   logic [11:0] hand_x_left_bottom;
+//   logic [11:0] hand_y_left_bottom;
+//   logic [13:0] hand_z_left_bottom;
+//   logic [11:0] hand_x_left_top;
+//   logic [11:0] hand_y_left_top;
+//   logic [13:0] hand_z_left_top;
+//   logic [11:0] hand_x_right_bottom;
+//   logic [11:0] hand_y_right_bottom;
+//   logic [13:0] hand_z_right_bottom;
+//   logic [11:0] hand_x_right_top;
+//   logic [11:0] hand_y_right_top;
+//   logic [13:0] hand_z_right_top;
+//   logic [11:0] head_x;
+//   logic [11:0] head_y;
+//   logic [13:0] head_z;
   
-  ////////////////////////////////////////////////////
-  // REQUIRED LOGIC/WIRES
-  //
-  // SECTION: GAME LOGIC AND RENDERER
-  //
+//   ////////////////////////////////////////////////////
+//   // REQUIRED LOGIC/WIRES
+//   //
+//   // SECTION: GAME LOGIC AND RENDERER
+//   //
 
-  logic [4:0] r_out;
-  logic [5:0] g_out;
-  logic [4:0] b_out;
+//   logic [4:0] r_out;
+//   logic [5:0] g_out;
+//   logic [4:0] b_out;
 
-  ////////////////////////////////////////////////////
-  // MODULES
-  //
-  // contains aggregated modules that are encapulated for simplicity
-  // and so that unit/integration testing can be done more easily
-  //
+//   ////////////////////////////////////////////////////
+//   // MODULES
+//   //
+//   // contains aggregated modules that are encapulated for simplicity
+//   // and so that unit/integration testing can be done more easily
+//   //
 
-  game_logic_and_renderer game_logic_and_renderer(
-    .clk_in(clk_65mhz),
-    .rst_in(btnc),
-    // retrieve from VGA
-    .x_in(hcount),
-    .y_in(vcount),
+//   game_logic_and_renderer game_logic_and_renderer(
+//     .clk_in(clk_65mhz),
+//     .rst_in(btnc),
+//     // retrieve from VGA
+//     .x_in(hcount),
+//     .y_in(vcount),
     
-    // retrieve from camera data
-    .hand_x_left_bottom(hand_x_left_bottom),
-    .hand_y_left_bottom(hand_y_left_bottom),
-    .hand_z_left_bottom(hand_z_left_bottom),
-    .hand_x_left_top(hand_x_left_top),
-    .hand_y_left_top(hand_y_left_top),
-    .hand_z_left_top(hand_z_left_top),
-    .hand_x_right_bottom(hand_x_right_bottom),
-    .hand_y_right_bottom(hand_y_right_bottom),
-    .hand_z_right_bottom(hand_z_right_bottom),
-    .hand_x_right_top(hand_x_right_top),
-    .hand_y_right_top(hand_y_right_top),
-    .hand_z_right_top(hand_z_right_top),
-    .head_x(head_x),
-    .head_y(head_y),
-    .head_z(head_z),
+//     // retrieve from camera data
+//     .hand_x_left_bottom(hand_x_left_bottom),
+//     .hand_y_left_bottom(hand_y_left_bottom),
+//     .hand_z_left_bottom(hand_z_left_bottom),
+//     .hand_x_left_top(hand_x_left_top),
+//     .hand_y_left_top(hand_y_left_top),
+//     .hand_z_left_top(hand_z_left_top),
+//     .hand_x_right_bottom(hand_x_right_bottom),
+//     .hand_y_right_bottom(hand_y_right_bottom),
+//     .hand_z_right_bottom(hand_z_right_bottom),
+//     .hand_x_right_top(hand_x_right_top),
+//     .hand_y_right_top(hand_y_right_top),
+//     .hand_z_right_top(hand_z_right_top),
+//     .head_x(head_x),
+//     .head_y(head_y),
+//     .head_z(head_z),
 
-    // outputs
-    .r_out(r_out),
-    .g_out(g_out),
-    .b_out(b_out)
-  );
+//     // outputs
+//     .r_out(r_out),
+//     .g_out(g_out),
+//     .b_out(b_out)
+//   );
 
-  ////////////////////////////////////////////////////
-  // OUTPUT TO PIXELS
-  //
-  //
-  //
+//   ////////////////////////////////////////////////////
+//   // OUTPUT TO PIXELS
+//   //
+//   //
+//   //
 
   
 endmodule
