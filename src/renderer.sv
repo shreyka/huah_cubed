@@ -44,11 +44,49 @@ module renderer(
     output logic [4:0] b_out
     );
 
+    typedef enum {
+        UP, RIGHT, DOWN, LEFT, ANY
+    } direction;
+
+    typedef enum {
+        BLUE, RED
+    } block_color_enum;
+
     /*
     Given a specific time, need to figure out how to place the blocks on the map
     */
 
     logic [9:0] block_size;
+    logic [9:0] block_size_2;
+    assign block_size = 512 + ($signed(block_z) * $signed(-502) >>> 11);
+    assign block_size_2 = (block_size > 512 ? 0 : block_size) >> 1;
+
+    logic in_region_a; //TL
+    logic in_region_b; //BR
+    logic in_region_c; //TR
+    logic in_region_d; //BL
+    logic should_draw_arrow;
+
+    always_comb begin
+        if(block_visible) begin
+            in_region_a = $signed(y_in + x_in) < $signed($signed(block_y) + $signed(block_x));
+            in_region_b = $signed(y_in + x_in) > $signed($signed(block_y) + $signed(block_x));
+
+            in_region_c = $signed(y_in) < $signed($signed(x_in) + $signed($signed(block_y) - $signed(block_x)));
+            in_region_d = $signed(y_in) > $signed($signed(x_in) + $signed($signed(block_y) - $signed(block_x)));
+
+            case(block_direction)
+                UP: should_draw_arrow = in_region_a && in_region_c;
+                RIGHT: should_draw_arrow = in_region_b && in_region_c;
+                DOWN: should_draw_arrow = in_region_b && in_region_d;
+                LEFT: should_draw_arrow = in_region_a && in_region_d;
+                default: should_draw_arrow = 0;
+            endcase
+
+            // $display("\tRANGES: %d %d %d %d (%d, %d) should=%d vis=%d", block_x - block_size_2, block_x + block_size_2, block_y - block_size_2, block_y + block_size_2, x_in, y_in, should_draw_arrow, block_visible);
+            // $display("\REGIONS: %d %d %d %d", in_region_a, in_region_b, in_region_c, in_region_d);
+        end
+    end
 
     always_ff @(posedge clk_in) begin
         if (rst_in) begin
@@ -56,14 +94,21 @@ module renderer(
             g_out <= 0;
             b_out <= 0;
         end else begin
-            block_size <= 512 + ($signed(block_z) * $signed(502) / $signed(-3000));
-
-            // $display("size is z=%d, %d", block_z, block_size);
-
-            if(x_in >= block_x && x_in <= block_x + block_size && y_in >= block_y && y_in <= block_y + block_size) begin
-                r_out <= 0;
-                g_out <= 0;
-                b_out <= 4'hF;
+            if(block_visible &&
+                    (x_in >= block_x - block_size_2 && x_in <= block_x + block_size_2 && y_in >= block_y - block_size_2 && y_in <= block_y + block_size_2)) begin
+                if(should_draw_arrow) begin
+                    r_out <= 4'hF;
+                    g_out <= 4'hF;
+                    b_out <= 4'hF;
+                end else if(block_color == BLUE) begin
+                    r_out <= 0;
+                    g_out <= 0;
+                    b_out <= 4'hF;
+                end else begin
+                    r_out <= 4'hF;
+                    g_out <= 0;
+                    b_out <= 0;
+                end
             end else begin
                 r_out <= 0;
                 g_out <= 0;

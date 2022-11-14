@@ -68,33 +68,18 @@ module game_logic_and_renderer(
     logic [17:0] curr_time;
     logic [17:0] max_time;
 
-    // INPUTS TO BLOCK_POSITIONS
-    // TODO: how do we know how many blocks exist?
-    // -> temp solution: assume 5 blocks total, each in each frame
-    logic [7:0] curr_block_index_in;
-
-    // OUTPUTS FROM BLOCK_POSITIONS
-    logic block_visible;
-    logic [7:0] curr_block_index_out;
+    // OUTPUTS FROM BLOCK_LOADER
+    logic [7:0] curr_block_index_loader_out;
     logic [11:0] block_x;
     logic [11:0] block_y;
     logic [13:0] block_z;
+    logic [17:0] block_time;
     logic block_color;
     logic [2:0] block_direction;
 
-    // INIT LOGIC
-    always_ff @(posedge clk_in) begin
-        if(rst_in) begin
-            curr_block_index_in <= 0;
-        end else begin
-            // loop all blocks in order
-            if (curr_block_index_in == 5) begin
-                curr_block_index_in <= 0;
-            end else begin
-                curr_block_index_in <= curr_block_index_in + 1;
-            end
-        end
-    end
+    // OUTPUTS FROM BLOCK_POSITIONS
+    logic block_visible;
+    logic [7:0] curr_block_index_positions_out;
 
     ////////////////////////////////////////////////////
     // MODULES
@@ -129,19 +114,32 @@ module game_logic_and_renderer(
         .max_time(max_time)
     );
 
+    block_loader block_loader(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+
+        .curr_block_index_out(curr_block_index_loader_out),
+        .block_x(block_x),
+        .block_y(block_y),
+        .block_time(block_time),
+        .block_color(block_color),
+        .block_direction(block_direction)
+    );
+
     block_positions block_positions(
         .clk_in(clk_in),
         .rst_in(rst_in),
-        .curr_block_index_in(curr_block_index_in),
+        .curr_block_index_in(curr_block_index_loader_out),
+        .block_x(block_x),
+        .block_y(block_y),
+        .block_time(block_time),
+        .block_color(block_color),
+        .block_direction(block_direction),
         .curr_time(curr_time),
 
         .block_visible(block_visible),
-        .curr_block_index_out(curr_block_index_out),
-        .block_x(block_x),
-        .block_y(block_y),
+        .curr_block_index_out(curr_block_index_positions_out),
         .block_z(block_z),
-        .block_color(block_color),
-        .block_direction(block_direction),
         .block_position_ready(block_position_ready)
     );
 
@@ -149,7 +147,7 @@ module game_logic_and_renderer(
         .clk_in(clk_in),
         .rst_in(rst_in),
         .block_visible(block_visible),
-        .curr_block_index_in(curr_block_index_out),
+        .curr_block_index_in(curr_block_index_loader_out),
         .block_x(block_x),
         .block_y(block_y),
         .block_z(block_z),
@@ -183,7 +181,7 @@ module game_logic_and_renderer(
         .x_in(x_in),
         .y_in(y_in),
         .block_visible(block_visible),
-        .curr_block_index_in(curr_block_index_out),
+        .curr_block_index_in(curr_block_index_loader_out),
         .block_x(block_x),
         .block_y(block_y),
         .block_z(block_z),
