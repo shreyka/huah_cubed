@@ -129,9 +129,12 @@ module top_level(
   //sel_channel could contain any of the six color channels depend on selection
 
   //Center of Mass variables
-  logic [10:0] x_com, x_com_calc; //long term x_com and output from module, resp
-  logic [9:0] y_com, y_com_calc; //long term y_com and output from module, resp
-  logic new_com; //used to know when to update x_com and y_com ...
+  logic [10:0] x_com_cr, x_com_calc_cr; //long term x_com and output from module, resp
+  logic [9:0] y_com_cr, y_com_calc_cr; //long term y_com and output from module, resp
+  logic new_com_cr; //used to know when to update x_com and y_com ...
+  logic [10:0] x_com_cb, x_com_calc_cb; //long term x_com and output from module, resp
+  logic [9:0] y_com_cb, y_com_calc_cb; //long term y_com and output from module, resp
+  logic new_com_cb; //used to know when to update x_com and y_com ...
   //using x_com_calc and y_com_calc values
 
   //output of image sprite
@@ -304,7 +307,7 @@ module top_level(
      .channel_out(sel_channel)
      );
 
-  //Center of Mass:
+  //Center of Mass: for Cr
   center_of_mass com_m(
     .clk_in(clk_65mhz),
     .rst_in(sys_rst),
@@ -312,25 +315,42 @@ module top_level(
     .y_in(vcount_pipe[2]), //TODO: needs to use pipelined signal! (PS3)
     .valid_in(mask_cr),
     .tabulate_in((hcount==0 && vcount==0)),
-    .x_out(x_com_calc),
-    .y_out(y_com_calc),
-    .valid_out(new_com));
+    .x_out(x_com_calc_cr),
+    .y_out(y_com_calc_cr),
+    .valid_out(new_com_cr));
+
+  center_of_mass com_m2( // for Cb
+    .clk_in(clk_65mhz),
+    .rst_in(sys_rst),
+    .x_in(hcount_pipe[2]),  //TODO: needs to use pipelined signal! (PS3)
+    .y_in(vcount_pipe[2]), //TODO: needs to use pipelined signal! (PS3)
+    .valid_in(mask_cb),
+    .tabulate_in((hcount==0 && vcount==0)),
+    .x_out(x_com_calc_cb),
+    .y_out(y_com_calc_cb),
+    .valid_out(new_com_cb));
+
 
   //update center of mass x_com, y_com based on new_com signal
   always_ff @(posedge clk_65mhz)begin
     if (sys_rst)begin
-      x_com <= 0;
-      y_com <= 0;
-    end if(new_com)begin
-      x_com <= x_com_calc;
-      y_com <= y_com_calc;
+      x_com_cr <= 0;
+      y_com_cr <= 0;
+      x_com_cb <= 0;
+      y_com_cb <= 0;
+    end if(new_com_cr)begin
+      x_com_cr <= x_com_calc_cr;
+      y_com_cr <= y_com_calc_cr;
+    end if(new_com_cb)begin
+      x_com_cb <= x_com_calc_cb;
+      y_com_cb <= y_com_calc_cb;
     end
   end
 
 
   //Create Crosshair patter on center of mass:
   //0 cycle latency
-  assign crosshair = ((vcount==y_com)||(hcount==x_com));;
+  assign crosshair = ((vcount==y_com_cb)||(hcount==x_com_cb));
 
   //VGA MUX:
   //latency 0 cycles (combinational-only module)
