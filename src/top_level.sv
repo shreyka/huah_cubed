@@ -123,7 +123,8 @@ module top_level(
   logic [9:0] y, cr, cb; //ycrcb conversion of full pixel
 
   //output of threshold module:
-  logic mask; //Whether or not thresholded pixel is 1 or 0
+  logic mask_cr; //Whether or not thresholded pixel is 1 or 0
+  logic mask_cb; 
   logic [3:0] sel_channel; //selected channels four bit information intensity
   //sel_channel could contain any of the six color channels depend on selection
 
@@ -286,7 +287,7 @@ module top_level(
   //module has 0 cycle latency
   
   
-  threshold( .sel_in(sw[5:3]),
+  threshold_multi( .sel_in(sw[5:3]),
      .r_in(pipe_pixel_ps5[15:12]), //TODO: needs to use pipelined signal (PS5)
      .g_in(pipe_pixel_ps5[10:7]),  //TODO: needs to use pipelined signal (PS5)
      .b_in(pipe_pixel_ps5[4:1]),   //TODO: needs to use pipelined signal (PS5)
@@ -298,7 +299,8 @@ module top_level(
      .cb_in(cb[9:6]),
      .lower_bound_in(sw[12:10]),
      .upper_bound_in(sw[15:13]),
-     .mask_out(mask),
+     .mask_out_cr(mask_cr),
+     .mask_out_cb(mask_cb),
      .channel_out(sel_channel)
      );
 
@@ -308,7 +310,7 @@ module top_level(
     .rst_in(sys_rst),
     .x_in(hcount_pipe[2]),  //TODO: needs to use pipelined signal! (PS3)
     .y_in(vcount_pipe[2]), //TODO: needs to use pipelined signal! (PS3)
-    .valid_in(mask),
+    .valid_in(mask_cr),
     .tabulate_in((hcount==0 && vcount==0)),
     .x_out(x_com_calc),
     .y_out(y_com_calc),
@@ -348,7 +350,8 @@ module top_level(
   .camera_pixel_in({pipe_pixel_ps5[15:12],pipe_pixel_ps5[10:7],pipe_pixel_ps5[4:1]}), //TODO: needs to use pipelined signal(PS5)
   .camera_y_in(y[9:6]),
   .channel_in(sel_channel),
-  .thresholded_pixel_in(mask),
+  .thresholded_pixel_in(mask_cr),
+  .thresholded_cb_in(mask_cb), // NEW 
   .crosshair_in(crosshair_pipe[3]), //TODO: needs to use pipelined signal (PS4)
   .com_sprite_pixel_in(com_sprite_pixel),
   .pixel_out(mux_pixel)

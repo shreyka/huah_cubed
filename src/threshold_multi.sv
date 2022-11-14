@@ -1,9 +1,10 @@
-module threshold(
+module threshold_multi(
   input wire [2:0] sel_in,
   input wire [3:0] r_in, g_in, b_in,
   input wire [3:0] y_in, cr_in, cb_in,
   input wire [3:0] lower_bound_in, upper_bound_in,
-  output logic mask_out,
+  output logic mask_out_cr,
+  output logic mask_out_cb,
   output logic [3:0] channel_out
 );
 
@@ -22,7 +23,8 @@ module threshold(
       default: channel = 0;
     endcase
   end
-  assign mask_out = (channel[2:0] > lower_bound_in) && (channel[3:1] < upper_bound_in);
+  assign mask_out_cr = (cr_in[2:0] > lower_bound_in) && (cr_in[3:1] < upper_bound_in);
+  assign mask_out_cb = (cb_in[2:0] > lower_bound_in) && (cb_in[3:1] < upper_bound_in);
 endmodule
 
 
