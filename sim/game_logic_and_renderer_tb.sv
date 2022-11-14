@@ -83,45 +83,35 @@ module game_logic_and_renderer_tb;
 
         #30;
 
-        while(uut.curr_time != 0) begin
+        while(uut.curr_time != 190) begin
             #10;
         end
 
-        #10; // we want index 1
+        // for(int j = 0; j < 3; j = j + 1) begin
+        //     $display("CURRENT TIME IS %d", uut.curr_time);
+        //     // $display("\tBLOCK POS i=%d is (%d, %d, %d) TIME_HIT=%d visible=%d", uut.curr_block_index_positions_out, uut.block_x, uut.block_y, uut.block_z, uut.block_time, uut.block_visible);
+        //     // $display("\tXY: (%d, %d)", uut.x_in, uut.y_in);
+        //     // $display("\tRGB: (%d, %d, %d)", uut.r_out, uut.g_out, uut.b_out);
 
-        for(int j = 0; j < 3; j = j + 1) begin
-            $display("CURRENT TIME IS %d", uut.curr_time);
-            // $display("\tBLOCK POS i=%d is (%d, %d, %d) TIME_HIT=%d visible=%d", uut.curr_block_index_positions_out, uut.block_x, uut.block_y, uut.block_z, uut.block_time, uut.block_visible);
-            // $display("\tXY: (%d, %d)", uut.x_in, uut.y_in);
-            // $display("\tRGB: (%d, %d, %d)", uut.r_out, uut.g_out, uut.b_out);
-
-            if(j == 0) begin
-                hcount = 100;
-                vcount = 200;
-            end else if(j == 1) begin
-                hcount = 400;
-                vcount = 200;
-            end else begin
-                hcount = 200;
-                vcount = 400;
-            end
-            #120;
-        end
-
-        // for(int j = 0; j < 30; j = j + 1) begin
-        //     if((uut.curr_time >= 0 && uut.curr_time <= 200) || (uut.curr_time >= 250 && uut.curr_time <= 500)) begin
-        //         $display("CURRENT TIME IS %d", uut.curr_time);
-        //         for(int block_i = 0; block_i < 4; block_i = block_i + 1) begin
-        //             $display("BLOCK POS i=%d is (%d, %d, %d) TIME_HIT=%d", uut.curr_block_index_positions_out, uut.block_x, uut.block_y, uut.block_z, uut.block_time);
-        //             #10;
-        //         end
-        //         $display("MISSED? %d", uut.block_missed);
-        //     end else begin 
-        //         $display("=========");
+        //     if(j == 0) begin
+        //         hcount = 100;
+        //         vcount = 200;
+        //     end else if(j == 1) begin
+        //         hcount = 400;
+        //         vcount = 200;
+        //     end else begin
+        //         hcount = 200;
+        //         vcount = 400;
         //     end
-
-        //     for(int i = 0; i < 48; i = i+1) #10;
+        //     #120;
         // end
+
+        for(int j = 0; j < 5; j = j + 1) begin
+            $display("CURRENT TIME IS %d", uut.curr_time);
+            $display("BLOCK POS (%d, %d, %d)", uut.block_x_selector, uut.block_y_selector, uut.block_z_selector);
+
+            for(int i = 0; i < 1000; i = i+1) #10;
+        end
 
         $display("Finishing Sim");
         $finish;

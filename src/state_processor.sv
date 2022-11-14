@@ -10,11 +10,10 @@ module state_processor(
     input wire clk_in,
     input wire rst_in,
 
-    input wire block_visible,
-    input wire [7:0] curr_block_index_in,
     input wire [11:0] block_x,
     input wire [11:0] block_y,
     input wire [13:0] block_z,
+    input wire block_visible,
     input wire block_color,
     input wire [2:0] block_direction,
 

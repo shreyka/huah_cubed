@@ -43,3 +43,28 @@ vivado -mode batch -source build.tcl
 ### deploy the project
 
 openFPGALoader -b arty_a7_100t output_files/final.bit
+
+# Renderer logic
+
+BLOCK LOADER -> contains a BRAM of all the data necessary. will pass out the next 16 blocks at or in front of time t at any given time, called blocks_16
+
+BLOCK POSITIONS -> given blocks_16, calculate if each block is visible, and pass in their z coordinate
+    -> PASS TO PROCESSOR AND SELECTOR AT THE SAME TIME
+
+STATE PROCESSOR -> given blocks_16, their visibility and z coordinates, calculate if each block has been sliced or is missed
+    -> LATER ON: also calculate if obstacles have been hit
+
+BLOCK SELECTOR -> given XY, blocks_16 and their visibility, calculate which block should be rendered (in opposite order of received)
+
+RENDERER -> given XY, and block data, render the block
+    -> LATER ON: also calculate obstacle data
+
+potential problems:
+- how can obstacles get factored into the rendering
+    -> renderer will later on have a MUX between if it is an obstacle or a block
+- how can hands get factored into rendering
+    -> render hands first always
+- how to render destroyed blocks
+    -> pass it into a separate array that keeps track of this information until it is done rendering a destroyed block
+- how to raycast given this information
+    -> given XY and block to be rendered, you can do the raycasting algorithm to the specific block in space without needing the info of any other block

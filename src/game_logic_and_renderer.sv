@@ -55,9 +55,6 @@ module game_logic_and_renderer(
     //
 
     // INPUTS TO GAME_STATE
-    logic block_sliced;
-    logic player_hit_by_obstacle;
-    logic block_missed;
     logic block_position_ready;
 
     // OUTPUTS FROM GAME_STATE
@@ -69,17 +66,37 @@ module game_logic_and_renderer(
     logic [17:0] max_time;
 
     // OUTPUTS FROM BLOCK_LOADER
-    logic [7:0] curr_block_index_loader_out;
-    logic [11:0] block_x;
-    logic [11:0] block_y;
-    logic [13:0] block_z;
-    logic [17:0] block_time;
-    logic block_color;
-    logic [2:0] block_direction;
+    logic [11:0] [11:0] block_x_blockloader;
+    logic [11:0] [11:0] block_y_blockloader;
+    logic [11:0] [17:0] block_time_blockloader;
+    logic [11:0] block_color_blockloader;
+    logic [11:0] [2:0] block_direction_blockloader;
+    logic [17:0] curr_time_blockloader;
 
     // OUTPUTS FROM BLOCK_POSITIONS
-    logic block_visible;
-    logic [7:0] curr_block_index_positions_out;
+    logic [17:0] curr_time_blockpositions;
+    logic [11:0] [11:0] block_x_blockpositions;
+    logic [11:0] [11:0] block_y_blockpositions;
+    logic [11:0] [13:0] block_z_blockpositions;
+    logic [11:0] block_color_blockpositions;
+    logic [11:0] [2:0] block_direction_blockpositions;
+    logic [11:0] block_visible_blockpositions;
+
+    // OUTPUTS FROM BLOCK SELECTOR
+    logic [17:0] curr_time_selector;
+    logic [10:0] x_out_selector;
+    logic [9:0] y_out_selector;
+    logic [11:0] block_x_selector;
+    logic [11:0] block_y_selector;
+    logic [13:0] block_z_selector;
+    logic block_color_selector;
+    logic [2:0] block_direction_selector;
+    logic block_visible_selector;
+    
+    // OUTPUTS FROM STATE PROCESSOR
+    logic block_sliced;
+    logic player_hit_by_obstacle;
+    logic block_missed;
 
     ////////////////////////////////////////////////////
     // MODULES
@@ -117,42 +134,68 @@ module game_logic_and_renderer(
     block_loader block_loader(
         .clk_in(clk_in),
         .rst_in(rst_in),
+        .curr_time_in(curr_time),
 
-        .curr_block_index_out(curr_block_index_loader_out),
-        .block_x(block_x),
-        .block_y(block_y),
-        .block_time(block_time),
-        .block_color(block_color),
-        .block_direction(block_direction)
+        .block_x(block_x_blockloader),
+        .block_y(block_y_blockloader),
+        .block_time(block_time_blockloader),
+        .block_color(block_color_blockloader),
+        .block_direction(block_direction_blockloader),
+        .curr_time_out(curr_time_blockloader)
     );
 
     block_positions block_positions(
         .clk_in(clk_in),
         .rst_in(rst_in),
-        .curr_block_index_in(curr_block_index_loader_out),
-        .block_x(block_x),
-        .block_y(block_y),
-        .block_time(block_time),
-        .block_color(block_color),
-        .block_direction(block_direction),
-        .curr_time(curr_time),
+        .curr_time_in(curr_time_blockloader),
+        .block_x_in(block_x_blockloader),
+        .block_y_in(block_y_blockloader),
+        .block_time_in(block_time_blockloader),
+        .block_color_in(block_color_blockloader),
+        .block_direction_in(block_direction_blockloader),
 
-        .block_visible(block_visible),
-        .curr_block_index_out(curr_block_index_positions_out),
-        .block_z(block_z),
-        .block_position_ready(block_position_ready)
+        .curr_time_out(curr_time_blockpositions),
+        .block_x_out(block_x_blockpositions),
+        .block_y_out(block_y_blockpositions),
+        .block_z_out(block_z_blockpositions),
+        .block_color_out(block_color_blockpositions),
+        .block_direction_out(block_direction_blockpositions),
+        .block_visible_out(block_visible_blockpositions)
+    );
+
+    block_selector block_selector(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+        .curr_time_in(curr_time_blockpositions),
+        .x_in(x_in),
+        .y_in(y_in),
+        .block_x_in(block_x_blockpositions),
+        .block_y_in(block_y_blockpositions),
+        .block_z_in(block_z_blockpositions),
+        .block_color_in(block_color_blockpositions),
+        .block_direction_in(block_direction_blockpositions),
+        .block_visible_in(block_visible_blockpositions),
+
+        .curr_time_out(curr_time_selector),
+        .x_out(x_out_selector),
+        .y_out(y_out_selector),
+        .block_x_out(block_x_selector),
+        .block_y_out(block_y_selector),
+        .block_z_out(block_z_selector),
+        .block_color_out(block_color_selector),
+        .block_direction_out(block_direction_selector),
+        .block_visible_out(block_visible_selector)
     );
 
     state_processor state_processor(
         .clk_in(clk_in),
         .rst_in(rst_in),
-        .block_visible(block_visible),
-        .curr_block_index_in(curr_block_index_loader_out),
-        .block_x(block_x),
-        .block_y(block_y),
-        .block_z(block_z),
-        .block_color(block_color),
-        .block_direction(block_direction),
+        .block_x(block_x_selector),
+        .block_y(block_y_selector),
+        .block_z(block_z_selector),
+        .block_color(block_color_selector),
+        .block_direction(block_direction_selector),
+        .block_visible(block_visible_selector),
         .state(state),
         .hand_x_left_bottom(hand_x_left_bottom),
         .hand_y_left_bottom(hand_y_left_bottom),
@@ -178,17 +221,16 @@ module game_logic_and_renderer(
     renderer renderer(
         .clk_in(clk_in),
         .rst_in(rst_in),
-        .x_in(x_in),
-        .y_in(y_in),
-        .block_visible(block_visible),
-        .curr_block_index_in(curr_block_index_loader_out),
-        .block_x(block_x),
-        .block_y(block_y),
-        .block_z(block_z),
-        .block_color(block_color),
-        .block_direction(block_direction),
+        .curr_time(curr_time_selector),
+        .x_in(x_out_selector),
+        .y_in(y_out_selector),
+        .block_x(block_x_selector),
+        .block_y(block_y_selector),
+        .block_z(block_z_selector),
+        .block_color(block_color_selector),
+        .block_direction(block_direction_selector),
+        .block_visible(block_visible_selector),
         .state(state),
-        .curr_time(curr_time),
         .max_time(max_time),
         .score_in(score),
         .health_in(health),

@@ -3,20 +3,24 @@
 
 /*
 
-Given a block index, i,
-we want to get the block data.
+Given the current time,
+pass out up to 12 blocks in order of appearance,
+where the first index is the closest block to the
+player and so on
 
 */
 module block_loader(
     input wire clk_in,
     input wire rst_in,
 
-    output logic [7:0] curr_block_index_out,
-    output logic [11:0] block_x,
-    output logic [11:0] block_y,
-    output logic [17:0] block_time,
-    output logic block_color,
-    output logic [2:0] block_direction
+    input wire [17:0] curr_time_in,
+
+    output logic [11:0] [11:0] block_x,
+    output logic [11:0] [11:0] block_y,
+    output logic [11:0] [17:0] block_time,
+    output logic [11:0] block_color,
+    output logic [11:0] [2:0] block_direction,
+    output logic [17:0] curr_time_out
     );
 
     typedef enum {
@@ -36,49 +40,76 @@ module block_loader(
         -> ()
     */
 
-    localparam MAX_BLOCKS = 4;
+    localparam MAX_BLOCK_SIZE = 256;
+
+    logic [$clog2(MAX_BLOCK_SIZE):0] input_block_line;
+    logic [$clog2(MAX_BLOCK_SIZE):0] block_index;
+    logic [47:0] loaded_block_data;
+
+    logic [1:0] pending_shift;
+    logic fill_first_time;
+
+    xilinx_single_port_ram_read_first #(.RAM_WIDTH(48), .RAM_DEPTH(MAX_BLOCK_SIZE + 1), .INIT_FILE("out.mem")) blocks(.addra(input_block_line), .dina(48'b0), .clka(clk_in), .wea(1'b0), .ena(1'b1), .rsta(rst_in), .regcea(1'b1), .douta(loaded_block_data));
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
-            curr_block_index_out <= 0;
+            input_block_line <= 1;
+            pending_shift <= 0;
+            fill_first_time <= 1;
+            //nothing
         end else begin
-            // loop all blocks in order
-            if (curr_block_index_out == MAX_BLOCKS - 1) begin
-                curr_block_index_out <= 0;
+            curr_time_out <= curr_time_in;
+
+            if(input_block_line < 12) begin
+                input_block_line <= input_block_line + 1;
+
+                // first time populating the array
+                block_index <= input_block_line - 2;
             end else begin
-                curr_block_index_out <= curr_block_index_out + 1;
+                if(block_index == 11) begin
+                    block_index <= 0;
+                end else begin
+                    block_index <= block_index + 1;
+                end
+
+                if(pending_shift > 0) begin
+                    //remove first block and shift all other down one
+                    if(pending_shift == 1) begin
+                        for(int i = 0; i < 11; i = i + 1) begin
+                            block_x[i] <= block_x[i + 1];
+                            block_y[i] <= block_y[i + 1];
+                            block_time[i] <= block_time[i + 1];
+                            block_color[i] <= block_color[i + 1];
+                            block_direction[i] <= block_direction[i + 1];
+                        end
+                        block_x[11] <= loaded_block_data[45:34];
+                        block_y[11] <= loaded_block_data[33:22];
+                        block_time[11] <= loaded_block_data[21:4];
+                        block_color[11] <= loaded_block_data[3];
+                        block_direction[11] <= loaded_block_data[2:0];
+                    end
+                    pending_shift <= pending_shift - 1;
+                end else begin
+                    // remove the first block if it's no longer in our timeframe
+                    if(curr_time_in > block_time[0] && input_block_line <= MAX_BLOCK_SIZE) begin
+                        input_block_line <= input_block_line + 1;
+                        pending_shift <= 3;
+                    end
+                end
             end
 
-            case(curr_block_index_out)
-                0: begin
-                    block_x <= 200;
-                    block_y <= 200;
-                    block_time <= 200;
-                    block_color <= RED;
-                    block_direction <= UP;
+            // INITIAL BUFFER LOAD
+            if(input_block_line >= 2 && fill_first_time) begin
+                block_x[block_index] <= loaded_block_data[45:34];
+                block_y[block_index] <= loaded_block_data[33:22];
+                block_time[block_index] <= loaded_block_data[21:4];
+                block_color[block_index] <= loaded_block_data[3];
+                block_direction[block_index] <= loaded_block_data[2:0];
+
+                if(block_index == 11) begin
+                    fill_first_time <= 0;
                 end
-                1: begin
-                    block_x <= 300;
-                    block_y <= 200;
-                    block_time <= 300;
-                    block_color <= BLUE;
-                    block_direction <= RIGHT;
-                end
-                2: begin
-                    block_x <= 400;
-                    block_y <= 200;
-                    block_time <= 400;
-                    block_color <= BLUE;
-                    block_direction <= DOWN;
-                end
-                3: begin
-                    block_x <= 500;
-                    block_y <= 200;
-                    block_time <= 500;
-                    block_color <= RED;
-                    block_direction <= LEFT;
-                end
-            endcase
+            end
         end
     end
 
