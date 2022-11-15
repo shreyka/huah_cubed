@@ -19,6 +19,7 @@ module block_positions(
     input wire [11:0] [17:0] block_time_in,
     input wire [11:0] block_color_in,
     input wire [11:0] [2:0] block_direction_in, 
+    input wire [11:0] [7:0] block_ID_in, 
 
     output logic [17:0] curr_time_out,
 
@@ -27,6 +28,7 @@ module block_positions(
     output logic [11:0] [13:0] block_z_out, //NEW
     output logic [11:0] block_color_out,
     output logic [11:0] [2:0] block_direction_out,
+    output logic [11:0] [7:0] block_ID_out,
     output logic [11:0] block_visible_out //NEW
     );
 
@@ -49,6 +51,7 @@ module block_positions(
             block_y_out <= block_y_in;
             block_color_out <= block_color_in;
             block_direction_out <= block_direction_in;
+            block_ID_out <= block_ID_in;
 
             for (int i = 0; i < 12; i = i + 1) begin
                 block_visible_out[i] <= block_visible_logic[i];

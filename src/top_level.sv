@@ -9,6 +9,9 @@ module top_level(
   input wire btnu,
   input wire btnd,
 
+  //TEMP for score printer
+  output logic [15:0] led,
+
   output logic [3:0] vga_r, vga_g, vga_b,
   output logic vga_hs, vga_vs
   );
@@ -73,6 +76,10 @@ module top_level(
   logic [5:0] g_out;
   logic [4:0] b_out;
 
+  //TEMP to show score
+  logic [11:0] score;
+  assign led = score;
+
   ////////////////////////////////////////////////////
   // MODULES
   //
@@ -124,8 +131,12 @@ module top_level(
     // outputs
     .r_out(r_out),
     .g_out(g_out),
-    .b_out(b_out)
+    .b_out(b_out),
+    .score_out(score)
   );
+
+  //TEMP
+  
 
   ////////////////////////////////////////////////////
   // OUTPUT TO PIXELS

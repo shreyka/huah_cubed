@@ -10,7 +10,7 @@ be replaced by the camera module.
 module hand_controller(
     input wire clk_in,
     input wire rst_in,
-
+    
     input wire left_button,
     input wire right_button,
     input wire up_button,
@@ -27,7 +27,7 @@ module hand_controller(
     localparam MAX_X = 1024;
     localparam MAX_Y = 768;
     localparam MAX_Z = 500;
-    localparam HAND_MOVE_SPEED = 128;
+    localparam HAND_MOVE_SPEED = 16;
 
     function logic [13:0] new_coord;
         input [13:0] pos;
@@ -55,7 +55,7 @@ module hand_controller(
         return new_coord(pos, delta, MAX_Z);
     endfunction
 
-    logic pressing_button;
+    logic [22:0] curr_time_counter;
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
@@ -66,17 +66,15 @@ module hand_controller(
             hand_y_left_top <= 384;
             hand_z_left_top <= 0;
 
-            pressing_button <= 0;
+            curr_time_counter <= 0;
         end else begin
-            if(left_button || right_button || up_button || down_button) begin
-                if(!pressing_button) begin
-                    pressing_button <= 1;
-                end
+            if(curr_time_counter == 1625000) begin //25 ms
+                curr_time_counter <= 0;
             end else begin
-                pressing_button <= 0;
+                curr_time_counter <= curr_time_counter + 1;
             end
 
-            if(!pressing_button) begin
+            if(curr_time_counter == 0) begin
                 if(left_button) begin
                     hand_x_left_bottom <= new_coord_x(hand_x_left_bottom, -HAND_MOVE_SPEED);
                     hand_x_left_top <= new_coord_x(hand_x_left_top, -HAND_MOVE_SPEED);

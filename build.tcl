@@ -2,6 +2,10 @@
 # jay's build script
 # pass -tclargs -d to generate diagnostics
 
+# try to increase max number of threads
+
+set_param general.maxThreads 16
+
 # switches
 
 set partNum xc7a100tcsg324-1

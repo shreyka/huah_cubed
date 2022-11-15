@@ -81,9 +81,51 @@ module game_logic_and_renderer_tb;
         hcount = 200;
         vcount = 200;
 
-        #30;
+        $display("SET TO 0, time=%d", uut.curr_time);
+        hand_x_left_bottom = 0;
+        hand_y_left_bottom = 0;
+        hand_z_left_bottom = 0;
+        hand_x_left_top = 0;
+        hand_y_left_top = 0;
+        hand_z_left_top = 0;
 
-        while(uut.curr_time != 190) begin
+        while(uut.curr_time != 6) begin
+            #10;
+        end
+        #10;
+
+        $display("SET TO 10, time=%d", uut.curr_time);
+        hand_x_left_top = 200;
+        hand_y_left_top = 200;
+        
+        while(uut.curr_time != 95) begin
+            #10;
+        end
+        #10;
+
+        $display("SET TO 20, time=%d", uut.curr_time);
+        hand_x_left_top = 200;
+        hand_y_left_top = 300;
+        
+        while(uut.curr_time != 100) begin
+            #10;
+        end
+        #10;
+
+        $display("SET TO 9, time=%d", uut.curr_time);
+        hand_x_left_top = 9;
+        hand_y_left_top = 9;
+        
+        while(uut.curr_time != 105) begin
+            #10;
+        end
+        #10;
+
+        $display("SET TO 15, time=%d", uut.curr_time);
+        hand_x_left_top = 55;
+        hand_y_left_top = 55;
+        
+        while(uut.curr_time != 300) begin
             #10;
         end
 

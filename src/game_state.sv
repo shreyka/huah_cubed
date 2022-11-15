@@ -6,6 +6,7 @@ module game_state(
     input wire rst_in,
 
     input wire block_sliced,
+    input wire [7:0] block_ID,
     input wire player_hit_by_obstacle,
     input wire block_missed,
 
@@ -17,7 +18,8 @@ module game_state(
     output logic[11:0]  score_out,
     output logic[2:0]   combo_out,
     output logic[17:0]  curr_time,
-    output logic[17:0]  max_time
+    output logic[17:0]  max_time,
+    output logic[11:0] [7:0] sliced_blocks
     );
 
     localparam STATE_MENU = 0;
@@ -27,10 +29,27 @@ module game_state(
 
     logic [19:0] curr_time_counter;
 
+    logic block_ID_has_been_sliced;
+
+    always_comb begin
+        block_ID_has_been_sliced = 0;
+        for(int i = 0; i < 12; i = i + 1) begin
+            if(sliced_blocks[i] == block_ID) begin
+                block_ID_has_been_sliced = 1;
+            end
+        end
+    end
+
     always_ff @(posedge clk_in) begin
         if (rst_in) begin
             curr_time <= 0;
             curr_time_counter <= 0;
+
+            health_out <= 10;
+            score_out <= 0;
+            combo_out <= 0;
+
+            sliced_blocks <= 0;
         end else begin
             // every 10 milliseconds, increment curr_time
             // if clk is 65 MHz = 10^-6 seconds
@@ -40,6 +59,17 @@ module game_state(
                 curr_time <= curr_time + 1;
             end else begin
                 curr_time_counter <= curr_time_counter + 1;
+            end
+
+            // increment score
+            if (block_sliced && !block_ID_has_been_sliced) begin
+                $display("SLICE BLOCK!!! %d", block_ID);
+                score_out <= score_out + 1;
+
+                for(int i = 0; i < 11; i = i + 1) begin
+                    sliced_blocks[i] <= sliced_blocks[i + 1];
+                end
+                sliced_blocks[11] <= block_ID;
             end
         end
     end

@@ -45,7 +45,10 @@ module game_logic_and_renderer(
 
     output logic [4:0] r_out,
     output logic [5:0] g_out,
-    output logic [4:0] b_out
+    output logic [4:0] b_out,
+
+    //this is temporary so that we can see score without a screen
+    output logic [11:0] score_out
     );
 
     ////////////////////////////////////////////////////
@@ -64,6 +67,7 @@ module game_logic_and_renderer(
     logic [2:0] combo;
     logic [17:0] curr_time;
     logic [17:0] max_time;
+    logic [11:0] [7:0] sliced_blocks;
 
     // OUTPUTS FROM BLOCK_LOADER
     logic [11:0] [11:0] block_x_blockloader;
@@ -71,6 +75,7 @@ module game_logic_and_renderer(
     logic [11:0] [17:0] block_time_blockloader;
     logic [11:0] block_color_blockloader;
     logic [11:0] [2:0] block_direction_blockloader;
+    logic [11:0] [7:0] block_ID_blockloader;
     logic [17:0] curr_time_blockloader;
 
     // OUTPUTS FROM BLOCK_POSITIONS
@@ -80,6 +85,7 @@ module game_logic_and_renderer(
     logic [11:0] [13:0] block_z_blockpositions;
     logic [11:0] block_color_blockpositions;
     logic [11:0] [2:0] block_direction_blockpositions;
+    logic [11:0] [7:0] block_ID_blockpositions;
     logic [11:0] block_visible_blockpositions;
 
     // OUTPUTS FROM BLOCK SELECTOR
@@ -91,12 +97,31 @@ module game_logic_and_renderer(
     logic [13:0] block_z_selector;
     logic block_color_selector;
     logic [2:0] block_direction_selector;
+    logic [7:0] block_ID_selector;
     logic block_visible_selector;
+
+    // OUTPUT FROM SABER HISTORY
+    logic [11:0] prev_hand_x_left_bottom;
+    logic [11:0] prev_hand_y_left_bottom;
+    logic [13:0] prev_hand_z_left_bottom;
+    logic [11:0] prev_hand_x_left_top;
+    logic [11:0] prev_hand_y_left_top;
+    logic [13:0] prev_hand_z_left_top;
+    logic [11:0] prev_hand_x_right_bottom;
+    logic [11:0] prev_hand_y_right_bottom;
+    logic [13:0] prev_hand_z_right_bottom;
+    logic [11:0] prev_hand_x_right_top;
+    logic [11:0] prev_hand_y_right_top;
+    logic [13:0] prev_hand_z_right_top;
     
     // OUTPUTS FROM STATE PROCESSOR
     logic block_sliced;
+    logic [7:0] block_ID_state_processor;
     logic player_hit_by_obstacle;
     logic block_missed;
+
+    // TEMP
+    assign score_out = score;
 
     ////////////////////////////////////////////////////
     // MODULES
@@ -119,6 +144,7 @@ module game_logic_and_renderer(
         .clk_in(clk_in),
         .rst_in(rst_in),
         .block_sliced(block_sliced),
+        .block_ID(block_ID_state_processor),
         .player_hit_by_obstacle(player_hit_by_obstacle),
         .block_missed(block_missed),
         .block_position_ready(block_position_ready),
@@ -141,6 +167,7 @@ module game_logic_and_renderer(
         .block_time(block_time_blockloader),
         .block_color(block_color_blockloader),
         .block_direction(block_direction_blockloader),
+        .block_ID(block_ID_blockloader),
         .curr_time_out(curr_time_blockloader)
     );
 
@@ -153,6 +180,7 @@ module game_logic_and_renderer(
         .block_time_in(block_time_blockloader),
         .block_color_in(block_color_blockloader),
         .block_direction_in(block_direction_blockloader),
+        .block_ID_in(block_ID_blockloader),
 
         .curr_time_out(curr_time_blockpositions),
         .block_x_out(block_x_blockpositions),
@@ -160,6 +188,7 @@ module game_logic_and_renderer(
         .block_z_out(block_z_blockpositions),
         .block_color_out(block_color_blockpositions),
         .block_direction_out(block_direction_blockpositions),
+        .block_ID_out(block_ID_blockpositions),
         .block_visible_out(block_visible_blockpositions)
     );
 
@@ -169,11 +198,13 @@ module game_logic_and_renderer(
         .curr_time_in(curr_time_blockpositions),
         .x_in(x_in),
         .y_in(y_in),
+        .sliced_blocks(sliced_blocks),
         .block_x_in(block_x_blockpositions),
         .block_y_in(block_y_blockpositions),
         .block_z_in(block_z_blockpositions),
         .block_color_in(block_color_blockpositions),
         .block_direction_in(block_direction_blockpositions),
+        .block_ID_in(block_ID_blockpositions),
         .block_visible_in(block_visible_blockpositions),
 
         .curr_time_out(curr_time_selector),
@@ -184,19 +215,65 @@ module game_logic_and_renderer(
         .block_z_out(block_z_selector),
         .block_color_out(block_color_selector),
         .block_direction_out(block_direction_selector),
+        .block_ID_out(block_ID_selector),
         .block_visible_out(block_visible_selector)
+    );
+
+    saber_history saber_history(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+        .curr_time(curr_time),
+        .hand_x_left_bottom(hand_x_left_bottom),
+        .hand_y_left_bottom(hand_y_left_bottom),
+        .hand_z_left_bottom(hand_z_left_bottom),
+        .hand_x_left_top(hand_x_left_top),
+        .hand_y_left_top(hand_y_left_top),
+        .hand_z_left_top(hand_z_left_top),
+        .hand_x_right_bottom(hand_x_right_bottom),
+        .hand_y_right_bottom(hand_y_right_bottom),
+        .hand_z_right_bottom(hand_z_right_bottom),
+        .hand_x_right_top(hand_x_right_top),
+        .hand_y_right_top(hand_y_right_top),
+        .hand_z_right_top(hand_z_right_top),
+
+        .prev_hand_x_left_bottom(prev_hand_x_left_bottom),
+        .prev_hand_y_left_bottom(prev_hand_y_left_bottom),
+        .prev_hand_z_left_bottom(prev_hand_z_left_bottom),
+        .prev_hand_x_left_top(prev_hand_x_left_top),
+        .prev_hand_y_left_top(prev_hand_y_left_top),
+        .prev_hand_z_left_top(prev_hand_z_left_top),
+        .prev_hand_x_right_bottom(prev_hand_x_right_bottom),
+        .prev_hand_y_right_bottom(prev_hand_y_right_bottom),
+        .prev_hand_z_right_bottom(prev_hand_z_right_bottom),
+        .prev_hand_x_right_top(prev_hand_x_right_top),
+        .prev_hand_y_right_top(prev_hand_y_right_top),
+        .prev_hand_z_right_top(prev_hand_z_right_top)
     );
 
     state_processor state_processor(
         .clk_in(clk_in),
         .rst_in(rst_in),
+        .curr_time(curr_time),
         .block_x(block_x_selector),
         .block_y(block_y_selector),
         .block_z(block_z_selector),
         .block_color(block_color_selector),
         .block_direction(block_direction_selector),
+        .block_ID(block_ID_selector),
         .block_visible(block_visible_selector),
         .state(state),
+        .prev_hand_x_left_bottom(prev_hand_x_left_bottom),
+        .prev_hand_y_left_bottom(prev_hand_y_left_bottom),
+        .prev_hand_z_left_bottom(prev_hand_z_left_bottom),
+        .prev_hand_x_left_top(prev_hand_x_left_top),
+        .prev_hand_y_left_top(prev_hand_y_left_top),
+        .prev_hand_z_left_top(prev_hand_z_left_top),
+        .prev_hand_x_right_bottom(prev_hand_x_right_bottom),
+        .prev_hand_y_right_bottom(prev_hand_y_right_bottom),
+        .prev_hand_z_right_bottom(prev_hand_z_right_bottom),
+        .prev_hand_x_right_top(prev_hand_x_right_top),
+        .prev_hand_y_right_top(prev_hand_y_right_top),
+        .prev_hand_z_right_top(prev_hand_z_right_top),
         .hand_x_left_bottom(hand_x_left_bottom),
         .hand_y_left_bottom(hand_y_left_bottom),
         .hand_z_left_bottom(hand_z_left_bottom),
@@ -214,6 +291,7 @@ module game_logic_and_renderer(
         .head_z(head_z),
 
         .block_sliced(block_sliced),
+        .block_ID_out(block_ID_state_processor),
         .player_hit_by_obstacle(player_hit_by_obstacle),
         .block_missed(block_missed)
     );

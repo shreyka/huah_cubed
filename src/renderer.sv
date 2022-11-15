@@ -84,11 +84,12 @@ module renderer(
             in_region_c = $signed(y_in_padded) < $signed($signed(x_in_padded) + $signed($signed(block_y_padded) - $signed(block_x_padded)));
             in_region_d = $signed(y_in_padded) > $signed($signed(x_in_padded) + $signed($signed(block_y_padded) - $signed(block_x_padded)));
 
+            // this is the direction at which the saber should hit the block
             case(block_direction)
-                UP: should_draw_arrow = in_region_a && in_region_c;
-                RIGHT: should_draw_arrow = in_region_b && in_region_c;
-                DOWN: should_draw_arrow = in_region_b && in_region_d;
-                LEFT: should_draw_arrow = in_region_a && in_region_d;
+                DOWN: should_draw_arrow = in_region_a && in_region_c;
+                LEFT: should_draw_arrow = in_region_b && in_region_c;
+                UP: should_draw_arrow = in_region_b && in_region_d;
+                RIGHT: should_draw_arrow = in_region_a && in_region_d;
                 default: should_draw_arrow = 0;
             endcase
         end
@@ -99,15 +100,18 @@ module renderer(
     endfunction
 
     function logic [15:0] get_hand_rgb;
-        if(y_in <= hand_y_left_top + 16) begin
-            return {5'b0, 6'hF, 5'b0};
+        input na; //this is here because an empty function failed in iverilog
+
+        // this goes from top down, recall
+        if(y_in <= hand_y_left_top + 64) begin
+            return {5'b0, 6'hF, 5'b0}; //green
         end else begin
             return {5'b0, 6'hF, 5'hF};
         end
     endfunction
 
     logic [15:0] hand_rgb;
-    assign hand_rgb = get_hand_rgb();
+    assign hand_rgb = get_hand_rgb(1'b0);
 
     always_ff @(posedge clk_in) begin
         if (rst_in) begin

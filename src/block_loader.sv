@@ -20,6 +20,7 @@ module block_loader(
     output logic [11:0] [17:0] block_time,
     output logic [11:0] block_color,
     output logic [11:0] [2:0] block_direction,
+    output logic [11:0] [7:0] block_ID,
     output logic [17:0] curr_time_out
     );
 
@@ -81,12 +82,14 @@ module block_loader(
                             block_time[i] <= block_time[i + 1];
                             block_color[i] <= block_color[i + 1];
                             block_direction[i] <= block_direction[i + 1];
+                            block_ID[i] <= block_ID[i + 1];
                         end
                         block_x[11] <= loaded_block_data[45:34];
                         block_y[11] <= loaded_block_data[33:22];
                         block_time[11] <= loaded_block_data[21:4];
                         block_color[11] <= loaded_block_data[3];
                         block_direction[11] <= loaded_block_data[2:0];
+                        block_ID[11] <= block_ID[11] + 1;
                     end
                     pending_shift <= pending_shift - 1;
                 end else begin
@@ -105,6 +108,7 @@ module block_loader(
                 block_time[block_index] <= loaded_block_data[21:4];
                 block_color[block_index] <= loaded_block_data[3];
                 block_direction[block_index] <= loaded_block_data[2:0];
+                block_ID[block_index] <= block_index + 1;
 
                 if(block_index == 11) begin
                     fill_first_time <= 0;
