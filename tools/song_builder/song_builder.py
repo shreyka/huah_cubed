@@ -66,8 +66,8 @@ def verify_file(filename):
                         print(f"Malformed statement at line {i}: invalid time range")
                         valid = False
                     
-                    if time <= last_time:
-                        print(f"Malformed statement at line {i}: time must be strictly increasing")
+                    if time < last_time:
+                        print(f"Malformed statement at line {i}: time must be equal or increasing")
                         valid = False
                     last_time = time
     

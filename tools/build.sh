@@ -15,7 +15,7 @@ function compile_for_test () {
 function compile_for_build () {
     # run personal compiler
     sed -i 's/curr_time_counter == 10/curr_time_counter == 650000/g' src/game_state.sv
-    sed -i 's|.INIT_FILE("data/out.mem")|.INIT_FILE("out.mem")|g' src/block_loader.sv
+    # sed -i 's|.INIT_FILE("data/out.mem")|.INIT_FILE("out.mem")|g' src/block_loader.sv
     # end run personal compiler
 }
 
@@ -31,6 +31,12 @@ then
         compile_for_test
         
         iverilog -g2012 -o sim/block_loader_tb.out sim/block_loader_tb.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v && vvp sim/block_loader_tb.out
+    elif [[ $2 == "controller" ]]
+    then
+        iverilog -g2012 -o sim/hand_controller_tb.out sim/hand_controller_tb.sv src/hand_controller.sv && vvp sim/hand_controller_tb.out
+    elif [[ $2 == "selector" ]]
+    then
+        iverilog -g2012 -o sim/block_selector_tb.out sim/block_selector_tb.sv src/block_selector.sv src/block_positions.sv && vvp sim/block_selector_tb.out
     else
         echo "Unknown test case..."
     fi

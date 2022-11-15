@@ -4,6 +4,10 @@
 module top_level(
   input wire clk_100mhz, //clock @ 100 mhz
   input wire btnc,
+  input wire btnl,
+  input wire btnr,
+  input wire btnu,
+  input wire btnd,
 
   output logic [3:0] vga_r, vga_g, vga_b,
   output logic vga_hs, vga_vs
@@ -75,6 +79,23 @@ module top_level(
   // contains aggregated modules that are encapulated for simplicity
   // and so that unit/integration testing can be done more easily
   //
+
+  // temporary module to test hand movement
+  hand_controller hand_controller(
+    .clk_in(clk_65mhz),
+    .rst_in(btnc),
+    .left_button(btnl),
+    .right_button(btnr),
+    .up_button(btnu),
+    .down_button(btnd),
+
+    .hand_x_left_bottom(hand_x_left_bottom),
+    .hand_y_left_bottom(hand_y_left_bottom),
+    .hand_z_left_bottom(hand_z_left_bottom),
+    .hand_x_left_top(hand_x_left_top),
+    .hand_y_left_top(hand_y_left_top),
+    .hand_z_left_top(hand_z_left_top)
+  );
 
   game_logic_and_renderer game_logic_and_renderer(
     .clk_in(clk_65mhz),

@@ -57,8 +57,11 @@ module block_selector(
             block_size = 512 + ($signed(block_z_in[i]) * $signed(-502) >>> 11);
             block_size_2 = (block_size > 512 ? 0 : block_size) >> 1;
 
-            if(block_visible_in[i] && (x_in >= block_x_in[i] - block_size_2 && x_in <= block_x_in[i] + block_size_2 && y_in >= block_y_in[i] - block_size_2 && y_in <= block_y_in[i] + block_size_2)) begin
-                select_index = i;
+            if(block_visible_in[i]) begin
+                $display("z=%d, SIZE/2 IS %d", block_z_in[i], block_size_2);
+                if((x_in >= block_x_in[i] - block_size_2 && x_in <= block_x_in[i] + block_size_2 && y_in >= block_y_in[i] - block_size_2 && y_in <= block_y_in[i] + block_size_2)) begin
+                    select_index = i;
+                end
             end
         end
     end

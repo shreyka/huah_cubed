@@ -94,13 +94,34 @@ module renderer(
         end
     end
 
+    function logic should_draw_hand;
+        return x_in >= hand_x_left_bottom - 16 && x_in <= hand_x_left_bottom + 16 && y_in >= hand_y_left_bottom - 32 && y_in <= hand_y_left_top + 96;
+    endfunction
+
+    function logic [15:0] get_hand_rgb;
+        if(y_in <= hand_y_left_top + 16) begin
+            return {5'b0, 6'hF, 5'b0};
+        end else begin
+            return {5'b0, 6'hF, 5'hF};
+        end
+    endfunction
+
+    logic [15:0] hand_rgb;
+    assign hand_rgb = get_hand_rgb();
+
     always_ff @(posedge clk_in) begin
         if (rst_in) begin
             r_out <= 0;
             g_out <= 0;
             b_out <= 0;
         end else begin
-            if(block_visible) begin
+            // implicit ordering occurs here. first, draw the hand.
+            // then, draw the blocks
+            if(should_draw_hand()) begin
+                r_out <= hand_rgb[15:11];
+                g_out <= hand_rgb[10:5];
+                b_out <= hand_rgb[4:0];
+            end else if(block_visible) begin
                 if(should_draw_arrow) begin
                     r_out <= 4'hF;
                     g_out <= 4'hF;
