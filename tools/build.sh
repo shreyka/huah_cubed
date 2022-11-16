@@ -49,6 +49,9 @@ then
         eval "$(ssh-agent)" > /dev/null 2>&1
         ssh-add ~/.ssh/id_rsa_6111 > /dev/null 2>&1
         time python3 lab-bc.py -o output_files && openFPGALoader -b arty_a7_100t output_files/out.bit
+    elif [[ $2 == "gui" ]]
+    then
+        vivado -source build.tcl
     else
         time vivado -mode batch -source build.tcl && openFPGALoader -b arty_a7_100t output_files/final.bit
     fi

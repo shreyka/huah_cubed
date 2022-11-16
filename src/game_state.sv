@@ -54,7 +54,7 @@ module game_state(
             // every 10 milliseconds, increment curr_time
             // if clk is 65 MHz = 10^-6 seconds
             // 650000 to loop 10 milliseconds
-            if(curr_time_counter == 10) begin
+            if(curr_time_counter == 650000) begin
                 curr_time_counter <= 0;
                 curr_time <= curr_time + 1;
             end else begin
