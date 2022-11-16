@@ -5,6 +5,7 @@ module threshold_multi(
   input wire [3:0] lower_bound_in, upper_bound_in,
   output logic mask_out_cr,
   output logic mask_out_cb,
+  output logic mask_out_green,
   output logic [3:0] channel_out
 );
 
@@ -23,8 +24,15 @@ module threshold_multi(
       default: channel = 0;
     endcase
   end
+  // assign mask_out_cr = (cr_in[2:0] > lower_bound_in) && (cr_in[3:1] < upper_bound_in);
+  // assign mask_out_cb = (cb_in[2:0] > lower_bound_in) && (cb_in[3:1] < upper_bound_in);
+
   assign mask_out_cr = (cr_in[2:0] > lower_bound_in) && (cr_in[3:1] < upper_bound_in);
-  assign mask_out_cb = (cb_in[2:0] > lower_bound_in) && (cb_in[3:1] < upper_bound_in);
+  assign mask_out_cb = (cb_in[2:0] > 3'b010) && (cb_in[3:1] < 3'b100);
+  assign mask_out_green = (cb_in[2:0] > 0) && (cb_in[3:1] < 1) && (cr_in[2:0] > 0) && (cr_in[3:1] < 1);
+
+
+
 endmodule
 
 

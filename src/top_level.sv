@@ -125,6 +125,7 @@ module top_level(
   //output of threshold module:
   logic mask_cr; //Whether or not thresholded pixel is 1 or 0
   logic mask_cb; 
+  logic mask_green;
   logic [3:0] sel_channel; //selected channels four bit information intensity
   //sel_channel could contain any of the six color channels depend on selection
 
@@ -202,6 +203,7 @@ module top_level(
     .frame_done_in(frame_done),
     .pixel_addr_in(pixel_addr_in));
 
+
   //Two Clock Frame Buffer:
   //Data written on 16.67 MHz (From camera)
   //Data read on 65 MHz (start of video pipeline information)
@@ -245,7 +247,7 @@ module top_level(
   //for CHECKOFF 3!
   mirror mirror_m(
     .clk_in(clk_65mhz),
-    .mirror_in(sw[2]),
+    .mirror_in(0),
     .scale_in(sw[1:0]),
     .hcount_in(hcount), //
     .vcount_in(vcount),
@@ -279,11 +281,32 @@ module top_level(
   //module not in video pipeline, provides diagnostic information
   //about high/low mask state as well as what channel is selected:
   //: "r:red, g:green, b:blue, y: luminance, Cr: Red Chrom, Cb: Blue Chrom
-  lab04_ssc mssc(.clk_in(clk_65mhz),
-                 .rst_in(btnc),
-                 .val_in({sw[15:10],sw[5:3]}),
-                 .cat_out({cag, caf, cae, cad, cac, cab, caa}),
-                 .an_out(an));
+  // lab04_ssc mssc(.clk_in(clk_65mhz),
+  //                .rst_in(btnc),
+  //                .val_in({sw[15:10],sw[5:3]}),
+  //                .cat_out({cag, caf, cae, cad, cac, cab, caa}),
+  //                .an_out(an));
+  logic [31:0] top_seven_seg; 
+  logic [15:0] bottom_seven_seg;
+
+  always_ff @(posedge clk_65mhz)begin
+        if (btnc) begin
+            top_seven_seg <= 0; 
+            bottom_seven_seg <= 0;
+        end if (new_com_cb)begin
+            // seven_seg <= x_com_cb*16*16*16*16 + y_com_cb; 
+            // seven_seg <= x_com_cb;
+            top_seven_seg <= x_com_cb;
+            bottom_seven_seg <= y_com_cb;
+        end
+  end
+
+  seven_segment_controller ssc_uut(
+        .clk_in(clk_65mhz),
+        .rst_in(btnc),
+        .val_in({top_seven_seg, bottom_seven_seg}),
+        .cat_out({cag, caf, cae, cad, cac, cab, caa}),
+        .an_out(an));
 
   //Thresholder: Takes in the full RGB and YCrCb information and
   //based on upper and lower bounds masks
@@ -304,6 +327,7 @@ module top_level(
      .upper_bound_in(sw[15:13]),
      .mask_out_cr(mask_cr),
      .mask_out_cb(mask_cb),
+     .mask_out_green(mask_green),
      .channel_out(sel_channel)
      );
 
@@ -330,6 +354,18 @@ module top_level(
     .y_out(y_com_calc_cb),
     .valid_out(new_com_cb));
 
+  // linear_regr lin_reg( // for Cb
+  //   .clk_in(clk_65mhz),
+  //   .rst_in(sys_rst),
+  //   .x_in(hcount_pipe[2]),  //TODO: needs to use pipelined signal! (PS3)
+  //   .y_in(vcount_pipe[2]), //TODO: needs to use pipelined signal! (PS3)
+  //   .valid_in(mask_cb),
+  //   .tabulate_in((hcount==0 && vcount==0)),
+  //   .a_out(lin_reg_a), // todo create this variable
+  //   .b_out(lin_reg_b),// todo create this variable
+  //   .valid_out(new_lin_reg)); // todo create this variable 
+
+  
 
   //update center of mass x_com, y_com based on new_com signal
   always_ff @(posedge clk_65mhz)begin
@@ -350,7 +386,7 @@ module top_level(
 
   //Create Crosshair patter on center of mass:
   //0 cycle latency
-  assign crosshair = ((vcount==y_com_cb)||(hcount==x_com_cb));
+  assign crosshair = ((vcount==y_com_cr)||(hcount==x_com_cr));
 
   //VGA MUX:
   //latency 0 cycles (combinational-only module)
@@ -372,6 +408,7 @@ module top_level(
   .channel_in(sel_channel),
   .thresholded_pixel_in(mask_cr),
   .thresholded_cb_in(mask_cb), // NEW 
+  .thresholded_green_in(mask_green), // NEW 
   .crosshair_in(crosshair_pipe[3]), //TODO: needs to use pipelined signal (PS4)
   .com_sprite_pixel_in(com_sprite_pixel),
   .pixel_out(mux_pixel)
@@ -392,6 +429,45 @@ module top_level(
   assign vga_vs = ~vsync_pipe[0];  //TODO: needs to use pipelined signal (PS7)
   //assign vga_hs = ~hsync;  //TODO: needs to use pipelined signal (PS7)
   //assign vga_vs = ~vsync;  //TODO: needs to use pipelined signal (PS7)
+
+
+  ////////////////////////////////////////
+  //   DETERMINING WHICH CAMERA I AM based on switch 2
+  //
+  //
+  //
+
+  logic [11:0] hand_x_left_bottom;
+  logic [11:0] hand_y_left_bottom;
+  logic [13:0] hand_z_left_bottom;
+  //   logic [11:0] hand_x_left_top;
+  //   logic [11:0] hand_y_left_top;
+  //   logic [13:0] hand_z_left_top;
+  //   logic [11:0] hand_x_right_bottom;
+  //   logic [11:0] hand_y_right_bottom;
+  //   logic [13:0] hand_z_right_bottom;
+  //   logic [11:0] hand_x_right_top;
+  //   logic [11:0] hand_y_right_top;
+  //   logic [13:0] hand_z_right_top;
+  //   logic [11:0] head_x;
+  //   logic [11:0] head_y;
+  //   logic [13:0] head_z;
+
+  // future receive camera2_x_com_cr;
+  logic [11:0] camera2_x_com_cr; 
+  assign camera2_x_com_cr = 0; // for now hardcode  
+
+  always_comb begin
+    if (sw[2]) begin // i am camera 1
+      hand_x_left_bottom = y_com_cr;
+      hand_y_left_bottom = x_com_cr;
+      hand_z_left_bottom = camera2_x_com_cr; 
+    end else begin // i am camera 2
+      // send data over 
+    end
+  end
+
+  
 
 
   ////////////////////////////////////////////////////

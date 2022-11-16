@@ -5,6 +5,7 @@ module vga_mux (
   input wire [3:0] channel_in,
   input wire thresholded_pixel_in,
   input wire thresholded_cb_in,
+  input wire thresholded_green_in,
   input wire [11:0] com_sprite_pixel_in,
   input wire crosshair_in,
   output logic [11:0] pixel_out
@@ -35,7 +36,9 @@ module vga_mux (
           l_1 =  12'hA26;
         end else if (thresholded_cb_in != 0) begin 
           l_1 = 12'h5C9; 
-        end  else begin 
+        end  else if (thresholded_green_in != 0) begin 
+          l_1 = 12'h25E; 
+        end else begin 
           l_1 =  {camera_y_in,camera_y_in,camera_y_in};
         end 
         
