@@ -25,18 +25,18 @@ then
     then
         compile_for_test
 
-        iverilog -g2012 -o sim/game_logic_and_renderer_tb.out sim/game_logic_and_renderer_tb.sv src/game_logic_and_renderer.sv src/game_state.sv src/block_positions.sv src/block_selector.sv src/state_processor.sv src/renderer.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v src/saber_history.sv && vvp sim/game_logic_and_renderer_tb.out
+        iverilog -g2012 -o sim/game_logic_and_renderer_tb.out -Isrc sim/game_logic_and_renderer_tb.sv src/game_logic_and_renderer.sv src/game_state.sv src/block_positions.sv src/block_selector.sv src/state_processor.sv src/renderer.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v src/saber_history.sv src/broken_blocks.sv && vvp sim/game_logic_and_renderer_tb.out
     elif [[ $2 == "loader" ]]
     then
         compile_for_test
         
-        iverilog -g2012 -o sim/block_loader_tb.out sim/block_loader_tb.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v && vvp sim/block_loader_tb.out
+        iverilog -g2012 -o sim/block_loader_tb.out -Isrc sim/block_loader_tb.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v && vvp sim/block_loader_tb.out
     elif [[ $2 == "controller" ]]
     then
-        iverilog -g2012 -o sim/hand_controller_tb.out sim/hand_controller_tb.sv src/hand_controller.sv && vvp sim/hand_controller_tb.out
+        iverilog -g2012 -o sim/hand_controller_tb.out -Isrc sim/hand_controller_tb.sv src/hand_controller.sv && vvp sim/hand_controller_tb.out
     elif [[ $2 == "selector" ]]
     then
-        iverilog -g2012 -o sim/block_selector_tb.out sim/block_selector_tb.sv src/block_selector.sv src/block_positions.sv && vvp sim/block_selector_tb.out
+        iverilog -g2012 -o sim/block_selector_tb.out -Isrc sim/block_selector_tb.sv src/block_selector.sv src/block_positions.sv && vvp sim/block_selector_tb.out
     else
         echo "Unknown test case..."
     fi
@@ -51,7 +51,7 @@ then
         time python3 lab-bc.py -o output_files && openFPGALoader -b arty_a7_100t output_files/out.bit
     elif [[ $2 == "gui" ]]
     then
-        vivado -source build.tcl
+        vivado -source build.tcl | tee output.log
     else
         time vivado -mode batch -source build.tcl && openFPGALoader -b arty_a7_100t output_files/final.bit
     fi

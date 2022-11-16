@@ -35,12 +35,15 @@ module block_positions(
     logic [11:0] block_visible_logic;
     logic [11:0] [13:0] block_z_out_logic;
 
+    logic [11:0] [13:0] block_z_out_pipeline;
+    logic [11:0] block_visible_out_pipeline;
+
     always_comb begin
         for (int i = 0; i < 12; i = i + 1) begin
             block_visible_logic[i] = block_time_in[i] > curr_time_in && block_time_in[i] - curr_time_in <= 150;
-            block_z_out_logic[i] = block_visible_logic 
-                        ? 3000 - (20 * (150 - (block_time_in[i] - curr_time_in))) 
-                        : 0;
+            // block_z_out_logic[i] = block_visible_logic 
+            //             ? 3000 - (20 * (150 - (block_time_in[i] - curr_time_in))) 
+            //             : 0;
         end
     end
 
@@ -49,7 +52,7 @@ module block_positions(
             block_visible_out <= 0;
             block_z_out <= 0;
         end else begin
-            // passthrough
+            // passthrough, we can assume this is okay?? but not really
             curr_time_out <= curr_time_in;
             block_x_out <= block_x_in;
             block_y_out <= block_y_in;
@@ -58,8 +61,19 @@ module block_positions(
             block_ID_out <= block_ID_in;
 
             for (int i = 0; i < 12; i = i + 1) begin
+                block_z_out_pipeline[i] <= block_visible_logic[i] 
+                        ? 20 * (150 - (block_time_in[i] - curr_time_in)) 
+                        : 0;
+                block_z_out[i] <= block_visible_logic[i] ? 3000 - block_z_out_pipeline[i] : 0;
+
+                // pipelining
+                // block_z_out_pipeline[i] <= block_z_out_logic[i];
+                // block_visible_out_pipeline[i] <= block_visible_logic[i];
+
+                // block_z_out[i] <= block_z_out_pipeline[i];
+                // block_visible_out[i] <= block_visible_out_pipeline[i];
+                // block_z_out[i] <= block_z_out_logic[i];
                 block_visible_out[i] <= block_visible_logic[i];
-                block_z_out[i] <= block_z_out_logic[i];
             end
         end
     end

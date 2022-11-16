@@ -29,17 +29,6 @@ module game_state(
 
     logic [19:0] curr_time_counter;
 
-    logic block_ID_has_been_sliced;
-
-    always_comb begin
-        block_ID_has_been_sliced = 0;
-        for(int i = 0; i < 12; i = i + 1) begin
-            if(sliced_blocks[i] == block_ID) begin
-                block_ID_has_been_sliced = 1;
-            end
-        end
-    end
-
     always_ff @(posedge clk_in) begin
         if (rst_in) begin
             curr_time <= 0;
@@ -62,7 +51,7 @@ module game_state(
             end
 
             // increment score
-            if (block_sliced && !block_ID_has_been_sliced) begin
+            if (block_sliced) begin
                 $display("SLICE BLOCK!!! %d", block_ID);
                 score_out <= score_out + 1;
 

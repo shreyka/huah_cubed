@@ -28,6 +28,13 @@ module renderer(
     input wire [3:0] health_in,
     input wire [2:0] combo_in,
 
+    input wire [9:0] [11:0] broken_blocks_x,
+    input wire [9:0] [11:0] broken_blocks_y,
+    input wire [9:0] [13:0] broken_blocks_z,
+    input wire [9:0] broken_blocks_color,
+    input wire [9:0] [11:0] broken_blocks_width,
+    input wire [9:0] [11:0] broken_blocks_height,
+
     input wire [11:0] hand_x_left_bottom,
     input wire [11:0] hand_y_left_bottom,
     input wire [13:0] hand_z_left_bottom,
@@ -92,6 +99,8 @@ module renderer(
                 RIGHT: should_draw_arrow = in_region_a && in_region_d;
                 default: should_draw_arrow = 0;
             endcase
+        end else begin
+            should_draw_arrow = 0;
         end
     end
 
@@ -110,6 +119,19 @@ module renderer(
         end
     endfunction
 
+    logic [15:0] broken_block_rgb;
+
+    always_comb begin
+        broken_block_rgb = 16'b0;
+        for (int i = 0; i < 10; i = i + 1) begin
+            if(broken_blocks_x[i] != 0 &&
+                    x_in >= broken_blocks_x[i] - (broken_blocks_width[i] >> 1) && x_in <= broken_blocks_x[i] + (broken_blocks_width[i] >> 1) &&
+                    y_in >= broken_blocks_y[i] - (broken_blocks_height[i] >> 1) && y_in <= broken_blocks_y[i] + (broken_blocks_height[i] >> 1)) begin
+                broken_block_rgb = broken_blocks_color[i] == BLUE ? {5'h0, 6'h0, 5'hF} : {5'hF, 6'h0, 5'h0};
+            end
+        end
+    end
+
     logic [15:0] hand_rgb;
     assign hand_rgb = get_hand_rgb(1'b0);
 
@@ -120,11 +142,16 @@ module renderer(
             b_out <= 0;
         end else begin
             // implicit ordering occurs here. first, draw the hand.
-            // then, draw the blocks
+            // then, draw the broken blocks
+            // finally, draw the blocks
             if(should_draw_hand()) begin
                 r_out <= hand_rgb[15:11];
                 g_out <= hand_rgb[10:5];
                 b_out <= hand_rgb[4:0];
+            end else if(broken_block_rgb != 16'b0) begin
+                r_out <= broken_block_rgb[15:11];
+                g_out <= broken_block_rgb[10:5];
+                b_out <= broken_block_rgb[4:0];
             end else if(block_visible) begin
                 if(should_draw_arrow) begin
                     r_out <= 4'hF;

@@ -116,12 +116,25 @@ module game_logic_and_renderer(
     
     // OUTPUTS FROM STATE PROCESSOR
     logic block_sliced;
+    logic [11:0] block_x_state_processor;
+    logic [11:0] block_y_state_processor;
+    logic [13:0] block_z_state_processor;
+    logic block_color_state_processor;
+    logic [2:0] block_direction_state_processor;
     logic [7:0] block_ID_state_processor;
     logic player_hit_by_obstacle;
     logic block_missed;
 
     // TEMP
     assign score_out = score;
+
+    // OUTPUTS FROM BROKEN BLOCKS  
+    logic [9:0] [11:0] broken_blocks_x;
+    logic [9:0] [11:0] broken_blocks_y;
+    logic [9:0] [13:0] broken_blocks_z;
+    logic [9:0] broken_blocks_color;
+    logic [9:0] [11:0] broken_blocks_width;
+    logic [9:0] [11:0] broken_blocks_height;
 
     ////////////////////////////////////////////////////
     // MODULES
@@ -154,7 +167,8 @@ module game_logic_and_renderer(
         .score_out(score),
         .combo_out(combo),
         .curr_time(curr_time),
-        .max_time(max_time)
+        .max_time(max_time),
+        .sliced_blocks(sliced_blocks)
     );
 
     block_loader block_loader(
@@ -291,9 +305,34 @@ module game_logic_and_renderer(
         .head_z(head_z),
 
         .block_sliced(block_sliced),
+        .block_x_out(block_x_state_processor),
+        .block_y_out(block_y_state_processor),
+        .block_z_out(block_z_state_processor),
+        .block_color_out(block_color_state_processor),
+        .block_direction_out(block_direction_state_processor),
         .block_ID_out(block_ID_state_processor),
         .player_hit_by_obstacle(player_hit_by_obstacle),
         .block_missed(block_missed)
+    );
+
+    broken_blocks broken_blocks(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+        .curr_time(curr_time),
+        .block_sliced(block_sliced),
+        .block_x(block_x_state_processor),
+        .block_y(block_y_state_processor),
+        .block_z(block_z_state_processor),
+        .block_ID_in(block_ID_state_processor),
+        .block_color(block_color_state_processor),
+        .block_direction(block_direction_state_processor),
+
+        .broken_blocks_x(broken_blocks_x),
+        .broken_blocks_y(broken_blocks_y),
+        .broken_blocks_z(broken_blocks_z),
+        .broken_blocks_color(broken_blocks_color),
+        .broken_blocks_width(broken_blocks_width),
+        .broken_blocks_height(broken_blocks_height)
     );
 
     renderer renderer(
@@ -313,6 +352,12 @@ module game_logic_and_renderer(
         .score_in(score),
         .health_in(health),
         .combo_in(combo),
+        .broken_blocks_x(broken_blocks_x),
+        .broken_blocks_y(broken_blocks_y),
+        .broken_blocks_z(broken_blocks_z),
+        .broken_blocks_color(broken_blocks_color),
+        .broken_blocks_width(broken_blocks_width),
+        .broken_blocks_height(broken_blocks_height),
         .hand_x_left_bottom(hand_x_left_bottom),
         .hand_y_left_bottom(hand_y_left_bottom),
         .hand_z_left_bottom(hand_z_left_bottom),

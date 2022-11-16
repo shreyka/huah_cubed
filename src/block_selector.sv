@@ -42,14 +42,6 @@ module block_selector(
     output logic block_visible_out
     );
 
-    typedef enum {
-        UP, RIGHT, DOWN, LEFT, ANY
-    } direction;
-
-    typedef enum {
-        BLUE, RED
-    } block_color_enum;
-
     logic [9:0] block_size;
     logic [9:0] block_size_2;
 
@@ -71,6 +63,7 @@ module block_selector(
                         block_hit = 1;
                     end
                 end
+
                 if(!block_hit) begin
                     // $display("z=%d, SIZE/2 IS %d", block_z_in[i], block_size_2);
                     if((x_in >= block_x_in[i] - block_size_2 && x_in <= block_x_in[i] + block_size_2 && y_in >= block_y_in[i] - block_size_2 && y_in <= block_y_in[i] + block_size_2)) begin

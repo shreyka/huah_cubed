@@ -53,6 +53,11 @@ module state_processor(
     input wire [13:0] head_z,
 
     output logic block_sliced,
+    output logic [11:0] block_x_out,
+    output logic [11:0] block_y_out,
+    output logic [13:0] block_z_out,
+    output logic block_color_out,
+    output logic [2:0] block_direction_out,
     output logic [7:0] block_ID_out,
     output logic player_hit_by_obstacle,
     output logic block_missed
@@ -103,13 +108,14 @@ module state_processor(
     endfunction
 
     logic [17:0] last_sliced_time;
+    logic [7:0] last_sliced_block_ID;
 
     function logic saber_overlaps;
         input [11:0] top_x;
         input [11:0] top_y;
         input [13:0] top_z;
 
-        return block_x >= top_x - 64 && block_x <= top_x + 64 && block_y >= top_y - 64 && block_y <= top_y + 64;
+        return block_x >= top_x - 128 && block_x <= top_x + 128 && block_y >= top_y - 128 && block_y <= top_y + 128;
     endfunction
 
     logic [2:0] left_hand_direction;
@@ -124,8 +130,8 @@ module state_processor(
 
     always_comb begin
         if(left_hand_direction != ANY) begin
-            $display("LEFT DIRS (U, R, D, L, A): %d", left_hand_direction);
-            $display("BLOCK (%d,%d,%d) VS HAND (%d,%d) => OVERLAP? %d", block_x, block_y, block_z, hand_x_left_top, hand_y_left_top, saber_overlaps(prev_hand_x_left_top, prev_hand_y_left_top, prev_hand_z_left_top));
+            // $display("LEFT DIRS (U, R, D, L, A): %d", left_hand_direction);
+            // $display("BLOCK (%d,%d,%d) VS HAND (%d,%d) => OVERLAP? %d", block_x, block_y, block_z, hand_x_left_top, hand_y_left_top, saber_overlaps(prev_hand_x_left_top, prev_hand_y_left_top, prev_hand_z_left_top));
         end
     end
 
@@ -135,12 +141,20 @@ module state_processor(
             player_hit_by_obstacle <= 0;
             block_missed <= 0;
             last_sliced_time <= 0;
+            last_sliced_block_ID <= 0;
         end else begin
             //TODO: same for right hand
             //we only can slice once per timestep so that the
             // broken state change can propagate correctly
-            if(last_sliced_time != curr_time && left_hand_direction == block_direction && block_z <= 500 && saber_overlaps(prev_hand_x_left_top, prev_hand_y_left_top, prev_hand_z_left_top)) begin
+            if(block_visible && last_sliced_block_ID != block_ID && last_sliced_time != curr_time && left_hand_direction == block_direction && block_z <= 750 && saber_overlaps(prev_hand_x_left_top, prev_hand_y_left_top, prev_hand_z_left_top)) begin
                 last_sliced_time <= curr_time;
+                block_x_out <= block_x;
+                block_y_out <= block_y; 
+                block_z_out <= block_z;
+                last_sliced_block_ID <= block_ID;
+                block_color_out <= block_color;
+                block_direction_out <= block_direction;
+
                 block_sliced <= 1;
                 block_ID_out <= block_ID;
             end else begin
