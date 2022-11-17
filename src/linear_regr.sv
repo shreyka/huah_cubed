@@ -35,10 +35,10 @@ module linear_regr (
   logic [30:0] y_n; // sum of y's 
   logic [60:0] xy_n; // sum of xy's
   logic [60:0] xx_n; // sum of x^2's 
-  logic signed [40:0] a_num_signed; 
-  logic signed [40:0] a_denom_signed; 
-  logic signed [40:0] b_num_signed; 
-  logic signed [40:0] b_denom_signed; 
+  logic signed [60:0] a_num_signed; 
+  logic signed [60:0] a_denom_signed; 
+  logic signed [60:0] b_num_signed; 
+  logic signed [60:0] b_denom_signed; 
   
   logic [17:0] a_quotient; 
   logic [24:0] b_quotient; 
@@ -62,10 +62,10 @@ module linear_regr (
   logic b_sign; 
   assign a_sign = a_num_signed[60] ^ a_denom_signed[60];
   assign b_sign = b_num_signed[60] ^ b_denom_signed[60];
-  logic signed [40:0] a_num_unsigned; 
-  logic signed [40:0] a_denom_unsigned; 
-  logic signed [40:0] b_num_unsigned; 
-  logic signed [40:0] b_denom_unsigned; 
+  logic signed [60:0] a_num_unsigned; 
+  logic signed [60:0] a_denom_unsigned; 
+  logic signed [60:0] b_num_unsigned; 
+  logic signed [60:0] b_denom_unsigned; 
 
   always_comb begin
 	if (a_num_signed < 0) begin
@@ -95,7 +95,7 @@ module linear_regr (
   
   divider  #(.WIDTH (60)) a_div(.clk_in(clk_in),
 			.rst_in(rst_in),
-			.dividend_in(a_num_unsigned),
+			.dividend_in(a_num_unsigned << 3),
 			.divisor_in(a_denom_unsigned),
 			.data_valid_in(divide),
 			.quotient_out(a_quotient),
@@ -109,7 +109,7 @@ module linear_regr (
 			
   divider #(.WIDTH (60)) b_div(.clk_in(clk_in),
 			.rst_in(rst_in),
-			.dividend_in(b_num_unsigned << 6),
+			.dividend_in(b_num_unsigned << 10),
 			.divisor_in(b_denom_unsigned),
 			.data_valid_in(divide),
 			.quotient_out(b_quotient),
