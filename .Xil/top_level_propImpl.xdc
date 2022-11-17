@@ -1,4 +1,4 @@
-set_property SRC_FILE_INFO {cfile:/media/koops/VIVADO/huah_cubed/xdc/top_level.xdc rfile:../xdc/top_level.xdc id:1} [current_design]
+set_property SRC_FILE_INFO {cfile:/media/koops/VIVADO/huah_cubed_3drender/xdc/top_level.xdc rfile:../xdc/top_level.xdc id:1} [current_design]
 set_property src_info {type:XDC file:1 line:15 export:INPUT save:INPUT read:READ} [current_design]
 set_property -dict { PACKAGE_PIN E3    IOSTANDARD LVCMOS33 } [get_ports { clk_100mhz }]; #IO_L12P_T1_MRCC_35 Sch=clk_100mhz
 set_property src_info {type:XDC file:1 line:21 export:INPUT save:INPUT read:READ} [current_design]

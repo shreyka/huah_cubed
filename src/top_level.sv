@@ -47,38 +47,12 @@ module top_level(
   ////////////////////////////////////////////////////
   // REQUIRED LOGIC/WIRES
   //
-  // SECTION: CAMERA DATA
-  //
-
-  logic [11:0] hand_x_left_bottom;
-  logic [11:0] hand_y_left_bottom;
-  logic [13:0] hand_z_left_bottom;
-  logic [11:0] hand_x_left_top;
-  logic [11:0] hand_y_left_top;
-  logic [13:0] hand_z_left_top;
-  logic [11:0] hand_x_right_bottom;
-  logic [11:0] hand_y_right_bottom;
-  logic [13:0] hand_z_right_bottom;
-  logic [11:0] hand_x_right_top;
-  logic [11:0] hand_y_right_top;
-  logic [13:0] hand_z_right_top;
-  logic [11:0] head_x;
-  logic [11:0] head_y;
-  logic [13:0] head_z;
-  
-  ////////////////////////////////////////////////////
-  // REQUIRED LOGIC/WIRES
-  //
   // SECTION: GAME LOGIC AND RENDERER
   //
 
   logic [4:0] r_out;
   logic [5:0] g_out;
   logic [4:0] b_out;
-
-  //TEMP to show score
-  logic [11:0] score;
-  assign led = score;
 
   ////////////////////////////////////////////////////
   // MODULES
@@ -87,56 +61,9 @@ module top_level(
   // and so that unit/integration testing can be done more easily
   //
 
-  // temporary module to test hand movement
-  hand_controller hand_controller(
-    .clk_in(clk_65mhz),
-    .rst_in(btnc),
-    .left_button(btnl),
-    .right_button(btnr),
-    .up_button(btnu),
-    .down_button(btnd),
-
-    .hand_x_left_bottom(hand_x_left_bottom),
-    .hand_y_left_bottom(hand_y_left_bottom),
-    .hand_z_left_bottom(hand_z_left_bottom),
-    .hand_x_left_top(hand_x_left_top),
-    .hand_y_left_top(hand_y_left_top),
-    .hand_z_left_top(hand_z_left_top)
-  );
-
-  game_logic_and_renderer game_logic_and_renderer(
-    .clk_in(clk_65mhz),
-    .rst_in(btnc),
-    // retrieve from VGA
-    .x_in(hcount),
-    .y_in(vcount),
-    
-    // retrieve from camera data
-    .hand_x_left_bottom(hand_x_left_bottom),
-    .hand_y_left_bottom(hand_y_left_bottom),
-    .hand_z_left_bottom(hand_z_left_bottom),
-    .hand_x_left_top(hand_x_left_top),
-    .hand_y_left_top(hand_y_left_top),
-    .hand_z_left_top(hand_z_left_top),
-    .hand_x_right_bottom(hand_x_right_bottom),
-    .hand_y_right_bottom(hand_y_right_bottom),
-    .hand_z_right_bottom(hand_z_right_bottom),
-    .hand_x_right_top(hand_x_right_top),
-    .hand_y_right_top(hand_y_right_top),
-    .hand_z_right_top(hand_z_right_top),
-    .head_x(head_x),
-    .head_y(head_y),
-    .head_z(head_z),
-
-    // outputs
-    .r_out(r_out),
-    .g_out(g_out),
-    .b_out(b_out),
-    .score_out(score)
-  );
-
-  //TEMP
-  
+  assign r_out = 5'hF;
+  assign g_out = 6'h0;
+  assign b_out = 5'h0;
 
   ////////////////////////////////////////////////////
   // OUTPUT TO PIXELS

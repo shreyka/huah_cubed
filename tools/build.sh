@@ -7,16 +7,18 @@ command=$1
 
 function compile_for_test () {
     # run personal compiler
-    sed -i 's/curr_time_counter == 650000/curr_time_counter == 10/g' src/game_state.sv
-    sed -i 's|.INIT_FILE("out.mem")|.INIT_FILE("data/out.mem")|g' src/block_loader.sv
+    # sed -i 's/curr_time_counter == 650000/curr_time_counter == 10/g' src/game_state.sv
+    # sed -i 's|.INIT_FILE("out.mem")|.INIT_FILE("data/out.mem")|g' src/block_loader.sv
     # end run personal compiler
+    echo ""
 }
 
 function compile_for_build () {
     # run personal compiler
-    sed -i 's/curr_time_counter == 10/curr_time_counter == 650000/g' src/game_state.sv
+    # sed -i 's/curr_time_counter == 10/curr_time_counter == 650000/g' src/game_state.sv
     # sed -i 's|.INIT_FILE("data/out.mem")|.INIT_FILE("out.mem")|g' src/block_loader.sv
     # end run personal compiler
+    echo ""
 }
 
 if [[ $command == "test" ]]
