@@ -8,8 +8,9 @@ module linear_regr (
                          input wire [9:0]  y_in,
                          input wire valid_in,
                          input wire tabulate_in,
-                         output logic [10:0] a_out, // y = mx + b 
-                         output logic [9:0] b_out,
+                         output logic signed [17:0] a_out, // the b in y = mx + b 
+                         output logic signed [24:0] b_out, // the m in y = mx + b  
+						 // a_out and b_out are both SCALED by factor of 10 so that can divide and get fraction later
                          output logic valid_out);
 
 
@@ -34,13 +35,13 @@ module linear_regr (
   logic [30:0] y_n; // sum of y's 
   logic [60:0] xy_n; // sum of xy's
   logic [60:0] xx_n; // sum of x^2's 
-  logic [60:0] a_numerator; // sum of x's 
-  logic [60:0] a_denominator; // sum of y's 
-  logic [60:0] b_denominator; // sum of xy's
-  logic [60:0] b_numerator; // sum of x^2's 
+  logic signed [40:0] a_num_signed; 
+  logic signed [40:0] a_denom_signed; 
+  logic signed [40:0] b_num_signed; 
+  logic signed [40:0] b_denom_signed; 
   
-  logic [10:0] a_quotient; 
-  logic [9:0] b_quotient; 
+  logic [17:0] a_quotient; 
+  logic [24:0] b_quotient; 
   logic [2:0] a_remainder; // are these needed? no
   logic [2:0] b_remainder; // are these needed?
   logic a_div_done; 
@@ -51,12 +52,52 @@ module linear_regr (
   logic b_busy;
   logic got_b;
   logic got_a;
+
+
+  logic divide;
+  assign divide = (state == DIVIDING);
+
+
+  logic a_sign;
+  logic b_sign; 
+  assign a_sign = a_num_signed[60] ^ a_denom_signed[60];
+  assign b_sign = b_num_signed[60] ^ b_denom_signed[60];
+  logic signed [40:0] a_num_unsigned; 
+  logic signed [40:0] a_denom_unsigned; 
+  logic signed [40:0] b_num_unsigned; 
+  logic signed [40:0] b_denom_unsigned; 
+
+  always_comb begin
+	if (a_num_signed < 0) begin
+		a_num_unsigned = ~a_num_signed + 1; // making it unsigned 
+	end else begin
+		a_num_unsigned = a_num_signed;
+	end
+
+	if (a_denom_signed < 0) begin
+		a_denom_unsigned = ~a_denom_signed + 1; // making it unsigned 
+	end else begin
+		a_denom_unsigned = a_denom_signed;
+	end
+
+	if (b_num_signed < 0) begin
+		b_num_unsigned = ~b_num_signed + 1; // making it unsigned 
+	end else begin
+		b_num_unsigned = b_num_signed;
+	end
+
+	if (b_denom_signed < 0) begin
+		b_denom_unsigned = ~b_denom_signed + 1; // making it unsigned 
+	end else begin
+		b_denom_unsigned = b_denom_signed;
+	end
+  end
   
-  divider  #(.WIDTH (32)) a_div(.clk_in(clk_in),
+  divider  #(.WIDTH (60)) a_div(.clk_in(clk_in),
 			.rst_in(rst_in),
-			.dividend_in(a_numerator),
-			.divisor_in(a_denominator),
-			.data_valid_in(1),
+			.dividend_in(a_num_unsigned),
+			.divisor_in(a_denom_unsigned),
+			.data_valid_in(divide),
 			.quotient_out(a_quotient),
 			.remainder_out(a_remainder),
 			.data_valid_out(a_div_done),
@@ -66,18 +107,18 @@ module linear_regr (
 			// busy_out and valid_out both 0 when reset
 			
 			
-  divider #(.WIDTH (32)) b_div(.clk_in(clk_in),
+  divider #(.WIDTH (60)) b_div(.clk_in(clk_in),
 			.rst_in(rst_in),
-			.dividend_in(b_numerator),
-			.divisor_in(b_denominator),
-			.data_valid_in(1),
+			.dividend_in(b_num_unsigned << 6),
+			.divisor_in(b_denom_unsigned),
+			.data_valid_in(divide),
 			.quotient_out(b_quotient),
 			.remainder_out(b_remainder),
 			.data_valid_out(b_div_done),
 			.error_out(b_error),
 			.busy_out(b_busy));
   
-  always_ff @ (posedge clk_in) begin
+  always_ff @(posedge clk_in) begin
   
   	if (rst_in)begin
   		a_out <= 0;
@@ -90,10 +131,10 @@ module linear_regr (
         xx_n <= 0; 
   		got_b <= 0;
   		got_a <= 0;
-        a_numerator <= 0;
-        a_denominator <= 0;
-        b_numerator <= 0;
-        b_denominator <= 0;
+        a_num_signed <= 0;
+        a_denom_signed <= 0;
+        b_num_signed <= 0;
+        b_denom_signed <= 0;
   		state <= RESTING; 
   	end else begin
   		
@@ -101,18 +142,19 @@ module linear_regr (
   		
   		case (state)
   			RESTING: begin
-  				if (valid_in && y_in < 317) begin // if valid in then count up
+  				if (valid_in ) begin // TODO add if y_in < 317 for real// if valid in then count up 
   					x_n <= x_n + x_in; 
   					y_n <= y_n + y_in;
                     xy_n <= xy_n + x_in*y_in;
-                    xx_n <= xx_n + x_n*x_n;  
+                    xx_n <= xx_n + x_in*x_in;  
   					m_total <= m_total + 1; 
   					state <= RESTING; 
   				end else if (tabulate_in) begin
-                    a_numerator <= (y_n * xx_n) - (x_n * xy_n);
-                    a_denominator <= (m_total*xx_n) - (x_n * x_n);  
-                    b_numerator <= (m_total*xy_n) - (x_n*y_n);
-                    b_denominator <= (m_total*xx_n) - (x_n*x_n);
+                    a_num_signed <= (y_n * xx_n) - (x_n * xy_n);
+                    a_denom_signed <= (m_total*xx_n) - (x_n * x_n);  
+                    b_num_signed <= (m_total*xy_n) - (x_n*y_n);
+                    b_denom_signed <= (m_total*xx_n) - (x_n*x_n);
+					
   					state <= DIVIDING; 
   				end
   			end
@@ -141,16 +183,36 @@ module linear_regr (
   			
   			TABULATE: begin
   				if (b_div_done && !b_busy && a_div_done && !a_busy) begin
-  					b_out <= b_quotient;
-  					a_out <= a_quotient; 
+					if (a_sign) begin
+						a_out <= $signed({1'b0, a_quotient}) * -1;				// quotient should be neg
+					end else begin
+						a_out <= $signed({1'b0, a_quotient}); // quotient should be positive
+					end 
+
+  					if (b_sign) begin
+						// b_out <= $signed({1'b1, b_quotient});
+						b_out <= $signed({1'b0, b_quotient}) * -1;					// quotient should be neg
+					end else begin
+						b_out <= $signed({1'b0, b_quotient}); // quotient should be positive
+					end 
+
   					valid_out <= 1;
   					state <= VALID_OUT;
   				end else if (b_div_done && !b_busy) begin 
-  					b_out <= b_quotient;
+  					if (b_sign) begin
+						// b_out <= $signed({1'b1, b_quotient});
+						b_out <= $signed({1'b0, b_quotient}) * -1;					// quotient should be neg
+					end else begin
+						b_out <= $signed({1'b0, b_quotient}); // quotient should be positive
+					end 
   					got_b <= 1;
   					state <= TABULATE;
   				end else if (a_div_done && !a_busy ) begin 
-  					a_out <= a_quotient; 
+  					if (a_sign) begin
+						a_out <= $signed({1'b0, a_quotient}) * -1;				// quotient should be neg
+					end else begin
+						a_out <= $signed({1'b0, a_quotient}); // quotient should be positive
+					end 
   					got_a <= 1; 
   					state <= TABULATE;
   				end else if (got_a && got_b) begin
@@ -175,6 +237,7 @@ module linear_regr (
   				got_a <= 0;
   				got_b <= 0;
   				state <= RESTING;
+				
   			end
   			
   				

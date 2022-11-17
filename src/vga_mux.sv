@@ -8,6 +8,7 @@ module vga_mux (
   input wire thresholded_green_in,
   input wire [11:0] com_sprite_pixel_in,
   input wire crosshair_in,
+  input wire lin_reg_line_in,
   output logic [11:0] pixel_out
 );
 
@@ -50,7 +51,7 @@ module vga_mux (
   logic [11:0] l_2;
   always_comb begin
     case (options)
-      2'b00: l_2 = l_1;
+      2'b00: l_2 = lin_reg_line_in? 12'hE22: l_1;
       2'b01: l_2 = crosshair_in? 12'h0F0:l_1;
       2'b10: l_2 = (com_sprite_pixel_in >0)?com_sprite_pixel_in:l_1;
       2'b11: l_2 = 12'hA26; //test color

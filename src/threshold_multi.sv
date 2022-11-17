@@ -29,7 +29,8 @@ module threshold_multi(
 
   assign mask_out_cr = (cr_in[2:0] > lower_bound_in) && (cr_in[3:1] < upper_bound_in);
   assign mask_out_cb = (cb_in[2:0] > 3'b010) && (cb_in[3:1] < 3'b100);
-  assign mask_out_green = (cb_in[2:0] > 0) && (cb_in[3:1] < 1) && (cr_in[2:0] > 0) && (cr_in[3:1] < 1);
+  // assign mask_out_green = (cb_in[2:0] > 0) && (cb_in[3:1] < 1) && (cr_in[2:0] > 0) && (cr_in[3:1] < 1);
+  assign mask_out_green = 0;
 
 
 
