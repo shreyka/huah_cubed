@@ -419,7 +419,7 @@ module top_level(
   // 1024 / 320 ~= 3.2
   // 768 / 240 ~= 3.2
   // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6)*3 + (draw_a >>> 3)*3;
-  assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 10) + (draw_a >>> 3);
+  assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 10) + (draw_a );
   assign lin_reg_line = (vcount == mx_plus_b) ? 1 : 0;
 
   //VGA MUX:

@@ -34,10 +34,17 @@ module linear_regr (
   logic [30:0] x_n; // sum of x's 
   logic [30:0] y_n; // sum of y's 
   logic [60:0] xy_n; // sum of xy's
-  logic [60:0] xx_n; // sum of x^2's 
+  logic [60:0] xx_n; // sum of x^2's
+  logic [60:0] yy_n; 
+
   logic signed [60:0] a_num_signed; 
-  logic signed [60:0] denom_signed; 
   logic signed [60:0] b_num_signed; 
+  logic signed [60:0] denom_signed; 
+
+  logic signed [60:0] a_num_signed_2; 
+  logic signed [60:0] b_num_signed_2; 
+  logic signed [60:0] denom_signed_2;
+  
   
   logic [17:0] a_quotient; 
   logic [24:0] b_quotient; 
@@ -52,6 +59,18 @@ module linear_regr (
   logic got_b;
   logic got_a;
 
+  logic [17:0] a_quotient_2; 
+  logic [24:0] b_quotient_2; 
+  logic a_div_done_2; 
+  logic b_div_done_2;
+  logic a_error_2;
+  logic a_busy_2;
+  logic b_error_2;
+  logic b_busy_2;
+  logic got_b_2;
+  logic got_a_2;
+
+
 
   logic divide;
   assign divide = (state == DIVIDING);
@@ -65,7 +84,18 @@ module linear_regr (
   logic signed [60:0] b_num_unsigned; 
   logic signed [60:0] denom_unsigned; 
 
+  logic a_sign_2;
+  logic b_sign_2; 
+  assign a_sign_2 = a_num_signed_2[60] ^ denom_signed_2[60];
+  assign b_sign_2 = b_num_signed_2[60] ^ denom_signed_2[60];
+  logic signed [60:0] a_num_unsigned_2; 
+  logic signed [60:0] b_num_unsigned_2; 
+  logic signed [60:0] denom_unsigned_2; 
+
+
+
   ///////////// calculating absolute value ///////////////
+  // og version///
   always_comb begin 
 	if (a_num_signed < 0) begin
 		a_num_unsigned = ~a_num_signed + 1; // making it unsigned 
@@ -85,11 +115,34 @@ module linear_regr (
 		b_num_unsigned = b_num_signed;
 	end
   end
-  /////////////////////////////////////////////////////////
+
+ //// for the reverse version // 
+  always_comb begin 
+	if (a_num_signed_2 < 0) begin
+		a_num_unsigned_2 = ~a_num_signed_2 + 1; // making it unsigned 
+	end else begin
+		a_num_unsigned_2 = a_num_signed_2;
+	end
+
+	if (denom_signed_2 < 0) begin
+		denom_unsigned_2 = ~denom_signed_2 + 1; // making it unsigned 
+	end else begin
+		denom_unsigned_2 = denom_signed_2;
+	end
+
+	if (b_num_signed_2 < 0) begin
+		b_num_unsigned_2 = ~b_num_signed_2 + 1; // making it unsigned 
+	end else begin
+		b_num_unsigned_2 = b_num_signed_2;
+	end
+  end
+  //////////////// calculating absolute value ///////////////////////
+
+  ///////////////// linear regression dividers //////////////////
   
   divider  #(.WIDTH (60)) a_div(.clk_in(clk_in),
 			.rst_in(rst_in),
-			.dividend_in(a_num_unsigned << 3),
+			.dividend_in(a_num_unsigned),
 			.divisor_in(denom_unsigned),
 			.data_valid_in(divide),
 			.quotient_out(a_quotient),
@@ -111,6 +164,34 @@ module linear_regr (
 			.data_valid_out(b_div_done),
 			.error_out(b_error),
 			.busy_out(b_busy));
+
+divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
+			.rst_in(rst_in),
+			.dividend_in(a_num_unsigned_2 << 3),
+			.divisor_in(denom_unsigned_2),
+			.data_valid_in(divide),
+			.quotient_out(a_quotient_2),
+			.remainder_out(a_remainder),
+			.data_valid_out(a_div_done_2),
+			.error_out(a_error_2),
+			.busy_out(a_busy_2)); // x_busy is high when dividing
+			
+			// busy_out and valid_out both 0 when reset
+			
+			
+  divider #(.WIDTH (60)) b_div_2(.clk_in(clk_in),
+			.rst_in(rst_in),
+			.dividend_in(b_num_unsigned_2 << 10),
+			.divisor_in(denom_unsigned_2),
+			.data_valid_in(divide),
+			.quotient_out(b_quotient_2),
+			.remainder_out(b_remainder),
+			.data_valid_out(b_div_done_2),
+			.error_out(b_error_2),
+			.busy_out(b_busy_2));
+
+
+///////////////// linear regression dividers //////////////////
   
   always_ff @(posedge clk_in) begin
   
