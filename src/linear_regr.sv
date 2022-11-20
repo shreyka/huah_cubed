@@ -65,6 +65,8 @@ module linear_regr (
 
   logic [17:0] a_quotient_2; 
   logic [24:0] b_quotient_2; 
+  logic [2:0] a_remainder_2; // are these needed? no
+  logic [2:0] b_remainder_2; // are these needed?
   logic a_div_done_2; 
   logic b_div_done_2;
   logic a_error_2;
@@ -90,8 +92,7 @@ module linear_regr (
 
   logic a_sign_2;
   logic b_sign_2; 
-  assign a_sign_2 = a_num_signed_2[60] ^ denom_signed_2[60];
-  assign b_sign_2 = b_num_signed_2[60] ^ denom_signed_2[60];
+  
   logic signed [60:0] a_num_unsigned_2; 
   logic signed [60:0] b_num_unsigned_2; 
   logic signed [60:0] denom_unsigned_2; 
@@ -99,6 +100,10 @@ module linear_regr (
 
 
   ///////////// calculating absolute value ///////////////
+
+  assign a_sign_2 = a_num_signed_2[60] ^ denom_signed_2[60];
+  assign b_sign_2 = b_num_signed_2[60] ^ denom_signed_2[60];
+
   // og version///
   always_comb begin 
 	if (a_num_signed < 0) begin
@@ -146,6 +151,20 @@ module linear_regr (
 
   always_comb begin 
 	
+	// if (a_sign) begin
+	// 	a_out = $signed({1'b0, a_quotient}) * -1;				// quotient should be neg
+	// end else begin
+	// 	a_out = $signed({1'b0, a_quotient}); // quotient should be positive
+	// end 
+	
+	// if (b_sign) begin
+	// 	// b_out <= $signed({1'b1, b_quotient});
+	// 	b_out = $signed({1'b0, b_quotient}) * -1;					// quotient should be neg
+	// end else begin
+	// 	b_out = $signed({1'b0, b_quotient}); // quotient should be positive
+	// end 
+
+
   end
 
   ///////////////// linear regression dividers //////////////////
@@ -181,7 +200,7 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
 			.divisor_in(denom_unsigned_2),
 			.data_valid_in(divide),
 			.quotient_out(a_quotient_2),
-			.remainder_out(a_remainder),
+			.remainder_out(a_remainder_2),
 			.data_valid_out(a_div_done_2),
 			.error_out(a_error_2),
 			.busy_out(a_busy_2)); // x_busy is high when dividing
@@ -192,7 +211,7 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
 			.divisor_in(denom_unsigned_2),
 			.data_valid_in(divide),
 			.quotient_out(b_quotient_2),
-			.remainder_out(b_remainder),
+			.remainder_out(b_remainder_2),
 			.data_valid_out(b_div_done_2),
 			.error_out(b_error_2),
 			.busy_out(b_busy_2));
@@ -280,12 +299,17 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
   			end
   			
   			TABULATE: begin
-  				if (b_div_done && a_div_done ) begin
+				if (a_div_done ) begin
 					if (a_sign) begin
 						a_out <= $signed({1'b0, a_quotient}) * -1;				// quotient should be neg
 					end else begin
 						a_out <= $signed({1'b0, a_quotient}); // quotient should be positive
 					end 
+					got_a <= 1; 
+  					state <= TABULATE;
+  				end
+
+				if (b_div_done ) begin
 
   					if (b_sign) begin
 						// b_out <= $signed({1'b1, b_quotient});
@@ -293,32 +317,56 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
 					end else begin
 						b_out <= $signed({1'b0, b_quotient}); // quotient should be positive
 					end 
-
-  					valid_out <= 1;
-  					state <= VALID_OUT;
-  				end else if (b_div_done ) begin 
-  					if (b_sign) begin
-						// b_out <= $signed({1'b1, b_quotient});
-						b_out <= $signed({1'b0, b_quotient}) * -1;					// quotient should be neg
-					end else begin
-						b_out <= $signed({1'b0, b_quotient}); // quotient should be positive
-					end 
-  					got_b <= 1;
+					got_b <= 1;
   					state <= TABULATE;
-  				end else if (a_div_done  ) begin 
-  					if (a_sign) begin
-						a_out <= $signed({1'b0, a_quotient}) * -1;				// quotient should be neg
-					end else begin
-						a_out <= $signed({1'b0, a_quotient}); // quotient should be positive
-					end 
-  					got_a <= 1; 
-  					state <= TABULATE;
-  				end else if (got_a && got_b) begin
+				end
+  					
+  				if (got_a && got_b) begin
   					valid_out <= 1;
   					state <= VALID_OUT;
   				end else begin
   					state <= TABULATE;
   				end
+
+  				// if (b_div_done && a_div_done ) begin
+				// 	if (a_sign) begin
+				// 		a_out <= $signed({1'b0, a_quotient}) * -1;				// quotient should be neg
+				// 	end else begin
+				// 		a_out <= $signed({1'b0, a_quotient}); // quotient should be positive
+				// 	end 
+
+  				// 	if (b_sign) begin
+				// 		// b_out <= $signed({1'b1, b_quotient});
+				// 		b_out <= $signed({1'b0, b_quotient}) * -1;					// quotient should be neg
+				// 	end else begin
+				// 		b_out <= $signed({1'b0, b_quotient}); // quotient should be positive
+				// 	end 
+
+  				// 	valid_out <= 1;
+  				// 	state <= VALID_OUT;
+  				// end else if (b_div_done ) begin 
+  				// 	if (b_sign) begin
+				// 		// b_out <= $signed({1'b1, b_quotient});
+				// 		b_out <= $signed({1'b0, b_quotient}) * -1;					// quotient should be neg
+				// 	end else begin
+				// 		b_out <= $signed({1'b0, b_quotient}); // quotient should be positive
+				// 	end 
+  				// 	got_b <= 1;
+  				// 	state <= TABULATE;
+  				// end else if (a_div_done  ) begin 
+  				// 	if (a_sign) begin
+				// 		a_out <= $signed({1'b0, a_quotient}) * -1;				// quotient should be neg
+				// 	end else begin
+				// 		a_out <= $signed({1'b0, a_quotient}); // quotient should be positive
+				// 	end 
+  				// 	got_a <= 1; 
+  				// 	state <= TABULATE;
+  				// end else if (got_a && got_b) begin
+  				// 	valid_out <= 1;
+  				// 	state <= VALID_OUT;
+  				// end else begin
+  				// 	state <= TABULATE;
+  				// end
   				
   			end
   			
