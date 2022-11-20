@@ -9,7 +9,11 @@ module linear_regr (
                          input wire valid_in,
                          input wire tabulate_in,
                          output logic signed [17:0] a_out, // the b in y = mx + b 
-                         output logic signed [24:0] b_out, // the m in y = mx + b  
+                         output logic signed [30:0] b_out, // the m in y = mx + b  
+
+						//  output logic signed [17:0] a_out, // the b in y = mx + b 
+                        //  output logic signed [24:0] b_out, // the m in y = mx + b 
+
 						 // a_out and b_out are both SCALED by factor of 10 so that can divide and get fraction later
                          output logic valid_out);
 
@@ -138,6 +142,12 @@ module linear_regr (
   end
   //////////////// calculating absolute value ///////////////////////
 
+
+
+  always_comb begin 
+	
+  end
+
   ///////////////// linear regression dividers //////////////////
   
   divider  #(.WIDTH (60)) a_div(.clk_in(clk_in),
@@ -156,7 +166,7 @@ module linear_regr (
 			
   divider #(.WIDTH (60)) b_div(.clk_in(clk_in),
 			.rst_in(rst_in),
-			.dividend_in(b_num_unsigned << 10),
+			.dividend_in(b_num_unsigned << 8),
 			.divisor_in(denom_unsigned),
 			.data_valid_in(divide),
 			.quotient_out(b_quotient),
@@ -167,7 +177,7 @@ module linear_regr (
 
 divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
 			.rst_in(rst_in),
-			.dividend_in(a_num_unsigned_2 << 3),
+			.dividend_in(a_num_unsigned_2),
 			.divisor_in(denom_unsigned_2),
 			.data_valid_in(divide),
 			.quotient_out(a_quotient_2),
@@ -175,9 +185,6 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
 			.data_valid_out(a_div_done_2),
 			.error_out(a_error_2),
 			.busy_out(a_busy_2)); // x_busy is high when dividing
-			
-			// busy_out and valid_out both 0 when reset
-			
 			
   divider #(.WIDTH (60)) b_div_2(.clk_in(clk_in),
 			.rst_in(rst_in),
@@ -199,18 +206,31 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
   		a_out <= 0;
   		b_out <= 0;
   		valid_out <= 0;
+
+		// a_out_2 <= 0;
+  		// b_out_2 <= 0;
+  		// valid_out_2 <= 0;
+
   		m_total <= 0;
   		y_n <= 0;
   		x_n <= 0;
         xy_n <= 0;
         xx_n <= 0; 
+		yy_n <= 0;
+
   		got_b <= 0;
   		got_a <= 0;
         a_num_signed <= 0;
         denom_signed <= 0;
         b_num_signed <= 0;
-        denom_signed <= 0;
-  		state <= RESTING; 
+  		
+		got_b_2 <= 0;
+  		got_a_2 <= 0;
+        a_num_signed_2 <= 0;
+        denom_signed_2 <= 0;
+        b_num_signed_2 <= 0;
+		
+		state <= RESTING; 
   	end else begin
   		
   		// will valid in and tabulate in ever be high at same time? no
@@ -222,12 +242,17 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
   					y_n <= y_n + y_in;
                     xy_n <= xy_n + x_in*y_in;
                     xx_n <= xx_n + x_in*x_in;  
+					yy_n <= yy_n + y_in*y_in;  
   					m_total <= m_total + 1; 
   					state <= RESTING; 
   				end else if (tabulate_in) begin
                     a_num_signed <= (y_n * xx_n) - (x_n * xy_n);
                     denom_signed <= (m_total*xx_n) - (x_n * x_n);  
                     b_num_signed <= (m_total*xy_n) - (x_n*y_n);
+
+					a_num_signed_2 <= (x_n * yy_n) - (y_n * xy_n);
+                    denom_signed_2 <= (m_total*yy_n) - (y_n * y_n);  
+                    b_num_signed_2 <= (m_total*xy_n) - (x_n*y_n);
 					
   					state <= DIVIDING; 
   				end
@@ -239,12 +264,11 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
   				// go to tabulate state
   				if (m_total ==0) begin
   					state <= RESTING; 
-  				end else if (b_div_done && !b_busy &&
-  					     a_div_done && !a_busy) begin	
+  				end else if (b_div_done  && a_div_done ) begin	
   					state <= TABULATE;
-  				end else if (b_div_done && !b_busy) begin
+  				end else if (b_div_done) begin
   					got_b <= 1;
-  				end else if (a_div_done && !a_busy) begin // outputting too early 
+  				end else if (a_div_done) begin // outputting too early 
   					got_a <= 1; 
   				end else if (got_a && got_b) begin
   					got_a <= 0;
@@ -256,7 +280,7 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
   			end
   			
   			TABULATE: begin
-  				if (b_div_done && !b_busy && a_div_done && !a_busy) begin
+  				if (b_div_done && a_div_done ) begin
 					if (a_sign) begin
 						a_out <= $signed({1'b0, a_quotient}) * -1;				// quotient should be neg
 					end else begin
@@ -272,7 +296,7 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
 
   					valid_out <= 1;
   					state <= VALID_OUT;
-  				end else if (b_div_done && !b_busy) begin 
+  				end else if (b_div_done ) begin 
   					if (b_sign) begin
 						// b_out <= $signed({1'b1, b_quotient});
 						b_out <= $signed({1'b0, b_quotient}) * -1;					// quotient should be neg
@@ -281,7 +305,7 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
 					end 
   					got_b <= 1;
   					state <= TABULATE;
-  				end else if (a_div_done && !a_busy ) begin 
+  				end else if (a_div_done  ) begin 
   					if (a_sign) begin
 						a_out <= $signed({1'b0, a_quotient}) * -1;				// quotient should be neg
 					end else begin

@@ -379,7 +379,7 @@ module top_level(
     logic new_lin_reg;
 
     logic signed [17:0] draw_a;
-    logic signed [24:0] draw_b; 
+    logic signed [30:0] draw_b; 
 
     always_ff @(posedge clk_65mhz)begin
       if (new_lin_reg) begin
@@ -419,7 +419,7 @@ module top_level(
   // 1024 / 320 ~= 3.2
   // 768 / 240 ~= 3.2
   // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6)*3 + (draw_a >>> 3)*3;
-  assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 10) + (draw_a );
+  assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 8) + (draw_a );
   assign lin_reg_line = (vcount == mx_plus_b) ? 1 : 0;
 
   //VGA MUX:
