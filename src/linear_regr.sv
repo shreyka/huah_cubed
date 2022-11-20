@@ -36,9 +36,8 @@ module linear_regr (
   logic [60:0] xy_n; // sum of xy's
   logic [60:0] xx_n; // sum of x^2's 
   logic signed [60:0] a_num_signed; 
-  logic signed [60:0] a_denom_signed; 
+  logic signed [60:0] denom_signed; 
   logic signed [60:0] b_num_signed; 
-  logic signed [60:0] b_denom_signed; 
   
   logic [17:0] a_quotient; 
   logic [24:0] b_quotient; 
@@ -60,24 +59,24 @@ module linear_regr (
 
   logic a_sign;
   logic b_sign; 
-  assign a_sign = a_num_signed[60] ^ a_denom_signed[60];
-  assign b_sign = b_num_signed[60] ^ b_denom_signed[60];
+  assign a_sign = a_num_signed[60] ^ denom_signed[60];
+  assign b_sign = b_num_signed[60] ^ denom_signed[60];
   logic signed [60:0] a_num_unsigned; 
-  logic signed [60:0] a_denom_unsigned; 
   logic signed [60:0] b_num_unsigned; 
-  logic signed [60:0] b_denom_unsigned; 
+  logic signed [60:0] denom_unsigned; 
 
-  always_comb begin
+  ///////////// calculating absolute value ///////////////
+  always_comb begin 
 	if (a_num_signed < 0) begin
 		a_num_unsigned = ~a_num_signed + 1; // making it unsigned 
 	end else begin
 		a_num_unsigned = a_num_signed;
 	end
 
-	if (a_denom_signed < 0) begin
-		a_denom_unsigned = ~a_denom_signed + 1; // making it unsigned 
+	if (denom_signed < 0) begin
+		denom_unsigned = ~denom_signed + 1; // making it unsigned 
 	end else begin
-		a_denom_unsigned = a_denom_signed;
+		denom_unsigned = denom_signed;
 	end
 
 	if (b_num_signed < 0) begin
@@ -85,18 +84,13 @@ module linear_regr (
 	end else begin
 		b_num_unsigned = b_num_signed;
 	end
-
-	if (b_denom_signed < 0) begin
-		b_denom_unsigned = ~b_denom_signed + 1; // making it unsigned 
-	end else begin
-		b_denom_unsigned = b_denom_signed;
-	end
   end
+  /////////////////////////////////////////////////////////
   
   divider  #(.WIDTH (60)) a_div(.clk_in(clk_in),
 			.rst_in(rst_in),
 			.dividend_in(a_num_unsigned << 3),
-			.divisor_in(a_denom_unsigned),
+			.divisor_in(denom_unsigned),
 			.data_valid_in(divide),
 			.quotient_out(a_quotient),
 			.remainder_out(a_remainder),
@@ -110,7 +104,7 @@ module linear_regr (
   divider #(.WIDTH (60)) b_div(.clk_in(clk_in),
 			.rst_in(rst_in),
 			.dividend_in(b_num_unsigned << 10),
-			.divisor_in(b_denom_unsigned),
+			.divisor_in(denom_unsigned),
 			.data_valid_in(divide),
 			.quotient_out(b_quotient),
 			.remainder_out(b_remainder),
@@ -132,9 +126,9 @@ module linear_regr (
   		got_b <= 0;
   		got_a <= 0;
         a_num_signed <= 0;
-        a_denom_signed <= 0;
+        denom_signed <= 0;
         b_num_signed <= 0;
-        b_denom_signed <= 0;
+        denom_signed <= 0;
   		state <= RESTING; 
   	end else begin
   		
@@ -151,9 +145,8 @@ module linear_regr (
   					state <= RESTING; 
   				end else if (tabulate_in) begin
                     a_num_signed <= (y_n * xx_n) - (x_n * xy_n);
-                    a_denom_signed <= (m_total*xx_n) - (x_n * x_n);  
+                    denom_signed <= (m_total*xx_n) - (x_n * x_n);  
                     b_num_signed <= (m_total*xy_n) - (x_n*y_n);
-                    b_denom_signed <= (m_total*xx_n) - (x_n*x_n);
 					
   					state <= DIVIDING; 
   				end
