@@ -61,9 +61,16 @@ module top_level(
   // and so that unit/integration testing can be done more easily
   //
 
-  assign r_out = 5'hF;
-  assign g_out = 6'h0;
-  assign b_out = 5'h0;
+  three_dim_renderer renderer(
+    .clk_in(clk_65mhz),
+    .rst_in(btnc),
+    .x_in(hcount),
+    .y_in(vcount),
+    
+    .r_out(r_out),
+    .g_out(g_out),
+    .b_out(b_out)
+  );
 
   ////////////////////////////////////////////////////
   // OUTPUT TO PIXELS

@@ -23,29 +23,9 @@ function compile_for_build () {
 
 if [[ $command == "test" ]]
 then
-    if [[ $2 == "all" ]]
-    then
-        compile_for_test
-
-        iverilog -g2012 -o sim/game_logic_and_renderer_tb.out -Isrc sim/game_logic_and_renderer_tb.sv src/game_logic_and_renderer.sv src/game_state.sv src/block_positions.sv src/block_selector.sv src/state_processor.sv src/renderer.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v src/saber_history.sv src/broken_blocks.sv && vvp sim/game_logic_and_renderer_tb.out
-    elif [[ $2 == "loader" ]]
-    then
-        compile_for_test
-        
-        iverilog -g2012 -o sim/block_loader_tb.out -Isrc sim/block_loader_tb.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v && vvp sim/block_loader_tb.out
-    elif [[ $2 == "controller" ]]
-    then
-        iverilog -g2012 -o sim/hand_controller_tb.out -Isrc sim/hand_controller_tb.sv src/hand_controller.sv && vvp sim/hand_controller_tb.out
-    elif [[ $2 == "selector" ]]
-    then
-        iverilog -g2012 -o sim/block_selector_tb.out -Isrc sim/block_selector_tb.sv src/block_selector.sv src/block_positions.sv && vvp sim/block_selector_tb.out
-    else
-        echo "Unknown test case..."
-    fi
+    iverilog -g2012 -o sim/three_dim_renderer_tb.out sim/three_dim_renderer_tb.sv src/three_dim_renderer.sv src/xilinx_true_dual_port_read_first_1_clock_ram.v && vvp sim/three_dim_renderer_tb.out
 elif [[ $command == "build" ]]
 then
-    compile_for_build
-
     if [[ $2 == "bc" ]]
     then
         eval "$(ssh-agent)" > /dev/null 2>&1
