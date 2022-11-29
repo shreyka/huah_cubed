@@ -50,9 +50,9 @@ module top_level(
   // SECTION: GAME LOGIC AND RENDERER
   //
 
-  logic [4:0] r_out;
-  logic [5:0] g_out;
-  logic [4:0] b_out;
+  logic [3:0] r_out;
+  logic [3:0] g_out;
+  logic [3:0] b_out;
 
   ////////////////////////////////////////////////////
   // MODULES
@@ -78,9 +78,9 @@ module top_level(
   //
   //
 
-  assign vga_r = ~blank ? r_out[3:0] : 0;
-  assign vga_g = ~blank ? g_out[3:0] : 0;
-  assign vga_b = ~blank ? b_out[3:0] : 0;
+  assign vga_r = ~blank ? r_out : 0;
+  assign vga_g = ~blank ? g_out : 0;
+  assign vga_b = ~blank ? b_out : 0;
 
   assign vga_hs = ~hsync;
   assign vga_vs = ~vsync;

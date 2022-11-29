@@ -8,9 +8,9 @@ module three_dim_renderer_tb;
     logic [10:0] hcount;
     logic [9:0] vcount;
 
-    logic [4:0] r_out;
-    logic [5:0] g_out;
-    logic [4:0] b_out;
+    logic [3:0] r_out;
+    logic [3:0] g_out;
+    logic [3:0] b_out;
 
     three_dim_renderer renderer(
         .clk_in(clk),
@@ -51,13 +51,13 @@ module three_dim_renderer_tb;
         vcount = 0;
         #10;
 
-        for(int i = 0; i < 20; i = i + 1) begin
+        for(int i = 0; i < 25; i = i + 1) begin
             $display("READ FROM\t%d -> RGB: (%d, %d, %d)", hcount + (vcount * 4), r_out, g_out, b_out);
-            if(hcount == 3) begin
+            if(hcount == 5) begin
                 if(vcount == 1) begin
                     vcount = 0;
                 end else begin
-                    vcount = vcount + 1;
+                    vcount = vcount % 2;
                 end
                 hcount = 0;
             end else begin

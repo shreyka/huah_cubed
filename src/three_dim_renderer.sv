@@ -8,20 +8,22 @@ module three_dim_renderer(
     input wire [10:0] x_in,
     input wire [9:0] y_in,
 
-    output logic [4:0] r_out,
-    output logic [5:0] g_out,
-    output logic [4:0] b_out
+    output logic [3:0] r_out,
+    output logic [3:0] g_out,
+    output logic [3:0] b_out
     );
 
-    localparam WIDTH = 1024;
-    localparam HEIGHT = 768;
+    // localparam WIDTH = 1024;
+    // localparam HEIGHT = 768;
+    localparam WIDTH = 512;
+    localparam HEIGHT = 384;
     // localparam WIDTH = 4;
     // localparam HEIGHT = 2;
 
-    logic [19:0] input_loc_read;
+    logic [$clog2(WIDTH*HEIGHT)-1:0] input_loc_read;
     logic [11:0] output_pixel_read;
 
-    logic [19:0] input_loc_write;
+    logic [$clog2(WIDTH*HEIGHT)-1:0] input_loc_write;
     logic [11:0] input_pixel_write;
     logic input_write_enable;
 
@@ -83,7 +85,7 @@ module three_dim_renderer(
         if(rst_in) begin
             input_pixel_write <= 12'b0;
         end else begin
-            //start the process to update the buffer
+            //TODO: based on the input variables, write the correct RGB value to the buffer
             if(1) begin
                 $display("WRITE TO  \t%d -> (%d, %d, %d)", input_loc_write, input_pixel_write[11:8], input_pixel_write[7:4], input_pixel_write[3:0]);
                 input_loc_write <= x_in + (y_in * WIDTH);
