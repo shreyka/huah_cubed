@@ -10,13 +10,13 @@ module perpendicularize (
                          input wire [9:0]  y_com,
                          input wire valid_in,
                          input wire tabulate_in,
-                         output signed logic [24:0] m_out,
-                         output signed logic [17:0]  b_out,
+                         output logic signed [24:0] m_out,
+                         output logic signed [17:0]  b_out,
                          output logic valid_out);
   
   logic [47:0] dividend;
-  assign dividend = 48'h1000_0000_0000; // will need to shift it down by 47 bits.. but instead shift it by 39 so that we still have 8b decimal
-
+//   assign dividend = 48'h1000_0000_0000; // will need to shift it down by 47 bits.. but instead shift it by 39 so that we still have 8b decimal
+  assign dividend = 1000; 
   // quotient will just be already in 16bits.8bits whole num.decimal form
 
   logic [10:0] quotient; 
@@ -36,19 +36,23 @@ module perpendicularize (
   logic divide;
 
   logic [1:0] state;
+  localparam RESTING = 0;
+  localparam DIVIDING = 1; 
+  localparam TABULATE = 2; 
+  localparam VALID_OUT = 3;
   
   ////////////////// calculates 1/m ///////////////////
-  divider  #(.WIDTH (32)) reciprocal_m_division(
+  divider  #(.WIDTH (50)) reciprocal_m_division(
             .clk_in(clk_in),
 			.rst_in(rst_in),
 			.dividend_in(dividend),
 			.divisor_in(m_unsigned),
 			.data_valid_in(divide),
 			.quotient_out(reciprocal_m),
-			.remainder_out(x_remainder),
-			.data_valid_out(x_div_done),
-			.error_out(x_error),
-			.busy_out(x_busy)); // x_busy is high when dividing
+			.remainder_out(remainder),
+			.data_valid_out(div_done),
+			.error_out(error),
+			.busy_out(busy)); // x_busy is high when dividing
 			
 			// busy_out and valid_out both 0 when reset
 			
@@ -82,16 +86,16 @@ module perpendicularize (
   			end
   			
   			TABULATE: begin
-  				if (div_done && busy) begin
+  				if (div_done && !busy) begin
   					// set quotients and new slope
-                    m_out <= $signed{(m_out_sign, reciprocal_m)};
+                    m_out <= $signed({m_out_sign, reciprocal_m});
                     got_new_m <= 1;
 
   					
   				end 
 
                 if (got_new_m) begin
-                    b_out <= m_out * $signed{(1'b0, x_com)} + y_com;
+                    b_out <= m_out * $signed({1'b0, x_com}) + y_com;
                     valid_out <= 1;
   					state <= VALID_OUT;
                 end
@@ -105,6 +109,7 @@ module perpendicularize (
   				m_out <= 0; 
   				valid_out <= 0;
   				got_new_m <= 0;
+				divide <= 0; 
   				state <= RESTING;
   			end
   			
