@@ -152,7 +152,6 @@ module top_level(
 
   //Crosshair value hot when hcount,vcount== (x_com, y_com)
   logic crosshair;
-  logic lin_reg_line; 
 
   //vga_mux output:
   logic [11:0] mux_pixel; //final 12 bit information from vga multiplexer
@@ -370,26 +369,47 @@ module top_level(
     .y_in(vcount_pipe[2]), //TODO: needs to use pipelined signal! (PS3)
     .valid_in(mask_cr),
     .tabulate_in((hcount==0 && vcount==0)),
-    .a_out(lin_reg_a), // todo create this variable
-    .b_out(lin_reg_b),// todo create this variable
+    .a_out(a_out), // todo create this variable
+    .b_out(b_out),// todo create this variable
+    .a_out_2(a_out_2), // todo create this variable
+    .b_out_2(b_out_2),// todo create this variable
     .valid_out(new_lin_reg)); // todo create this variable 
 
-    logic signed [14:0] lin_reg_a;
-    logic signed [13:0] lin_reg_b;
-    logic new_lin_reg;
+  logic signed [17:0] a_out;
+  logic signed [24:0] b_out;
+  logic signed [17:0] a_out_2;
+  logic signed [24:0] b_out_2;
+  logic new_lin_reg;
 
-    logic signed [17:0] draw_a;
-    logic signed [30:0] draw_b; 
+  logic signed [17:0] draw_a;
+  logic signed [24:0] draw_b; 
+  logic signed [17:0] draw_a_2;
+  logic signed [24:0] draw_b_2; 
 
-    always_ff @(posedge clk_65mhz)begin
-      if (new_lin_reg) begin
-        draw_a <= lin_reg_a;
-        draw_b <= lin_reg_b; 
-      end
-
+  always_ff @(posedge clk_65mhz)begin
+    if (new_lin_reg) begin
+      draw_a <= a_out;
+      draw_b <= b_out; 
+      draw_a_2 <= a_out_2;
+      draw_b_2 <= b_out_2; 
     end
 
+  end
 
+  logic lin_reg_line; 
+  logic signed [16:0] mx_plus_b;
+  // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6) + (draw_a >>> 6); // unsure if decimal for A is needed. since offset must be int pixel 
+  // 1024 / 320 ~= 3.2
+  // 768 / 240 ~= 3.2
+  // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6)*3 + (draw_a >>> 3)*3;
+  assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 8) + (draw_a );
+  assign lin_reg_line = (vcount == mx_plus_b) ? 1 : 0;
+
+
+  logic lin_reg_line_2; 
+  logic signed [16:0] mx_plus_b_2;
+  assign mx_plus_b_2 = (($signed({1'b0 , hcount})*(draw_b_2 ))>>> 8) + (draw_a_2 );
+  assign lin_reg_line_2 = (vcount == mx_plus_b_2) ? 1 : 0;
   
 
   //update center of mass x_com, y_com based on new_com signal
@@ -412,15 +432,8 @@ module top_level(
   //Create Crosshair patter on center of mass:
   //0 cycle latency
   assign crosshair = ((vcount==y_com_cr)||(hcount==x_com_cr));
-  // assign lin_reg_line = ((vcount == hcount*(draw_b >>> 3) + (draw_a >>> 3)));
 
-  logic signed [16:0] mx_plus_b;
-  // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6) + (draw_a >>> 6); // unsure if decimal for A is needed. since offset must be int pixel 
-  // 1024 / 320 ~= 3.2
-  // 768 / 240 ~= 3.2
-  // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6)*3 + (draw_a >>> 3)*3;
-  assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 8) + (draw_a );
-  assign lin_reg_line = (vcount == mx_plus_b) ? 1 : 0;
+  
 
   //VGA MUX:
   //latency 0 cycles (combinational-only module)
@@ -445,6 +458,7 @@ module top_level(
   .thresholded_green_in(mask_green), // NEW 
   .crosshair_in(crosshair_pipe[3]), //TODO: needs to use pipelined signal (PS4)
   .lin_reg_line_in(lin_reg_line),
+  .lin_reg_line_2_in(lin_reg_line_2),
   .com_sprite_pixel_in(com_sprite_pixel),
   .pixel_out(mux_pixel)
   );

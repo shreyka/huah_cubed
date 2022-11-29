@@ -9,10 +9,10 @@ module linear_regr (
                          input wire valid_in,
                          input wire tabulate_in,
                          output logic signed [17:0] a_out, // the b in y = mx + b 
-                         output logic signed [30:0] b_out, // the m in y = mx + b  
+                         output logic signed [24:0] b_out, // the m in y = mx + b  
 
-						//  output logic signed [17:0] a_out, // the b in y = mx + b 
-                        //  output logic signed [24:0] b_out, // the m in y = mx + b 
+						 output logic signed [17:0] a_out_2, // the b in y = mx + b 
+                         output logic signed [24:0] b_out_2, // the m in y = mx + b 
 
 						 // a_out and b_out are both SCALED by factor of 10 so that can divide and get fraction later
                          output logic valid_out);
@@ -207,7 +207,7 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
 			
   divider #(.WIDTH (60)) b_div_2(.clk_in(clk_in),
 			.rst_in(rst_in),
-			.dividend_in(b_num_unsigned_2 << 10),
+			.dividend_in(b_num_unsigned_2 << 8),
 			.divisor_in(denom_unsigned_2),
 			.data_valid_in(divide),
 			.quotient_out(b_quotient_2),
@@ -281,21 +281,55 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
   				// if tabulate in then 
   				// set x_out and y_out and valid_out
   				// go to tabulate state
-  				if (m_total ==0) begin
+
+				if (m_total ==0) begin
   					state <= RESTING; 
-  				end else if (b_div_done  && a_div_done ) begin	
-  					state <= TABULATE;
-  				end else if (b_div_done) begin
+  				end 
+				
+				// if (b_div_done  && a_div_done ) begin	
+  				// 	state <= TABULATE;
+  				// end 
+				
+				if (b_div_done) begin
   					got_b <= 1;
-  				end else if (a_div_done) begin // outputting too early 
+  				end 
+				
+				if (a_div_done) begin // outputting too early 
   					got_a <= 1; 
-  				end else if (got_a && got_b) begin
+  				end 
+
+				if (b_div_done_2) begin
+  					got_b_2 <= 1;
+  				end 
+				
+				if (a_div_done_2) begin // outputting too early 
+  					got_a_2 <= 1; 
+  				end 
+				
+				if (got_a && got_b && got_a_2 && got_b_2) begin
   					got_a <= 0;
   					got_b <= 0;	
+					got_a_2 <= 0;
+  					got_b_2 <= 0;	
   					state <= TABULATE;  // indicate valid out for 1 cycle!
-  				end else begin
-  					state <= DIVIDING; 
-  				end
+  				end 
+
+
+  				// if (m_total ==0) begin
+  				// 	state <= RESTING; 
+  				// end else if (b_div_done  && a_div_done ) begin	
+  				// 	state <= TABULATE;
+  				// end else if (b_div_done) begin
+  				// 	got_b <= 1;
+  				// end else if (a_div_done) begin // outputting too early 
+  				// 	got_a <= 1; 
+  				// end else if (got_a && got_b) begin
+  				// 	got_a <= 0;
+  				// 	got_b <= 0;	
+  				// 	state <= TABULATE;  // indicate valid out for 1 cycle!
+  				// end else begin
+  				// 	state <= DIVIDING; 
+  				// end
   			end
   			
   			TABULATE: begin
@@ -310,9 +344,7 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
   				end
 
 				if (b_div_done ) begin
-
   					if (b_sign) begin
-						// b_out <= $signed({1'b1, b_quotient});
 						b_out <= $signed({1'b0, b_quotient}) * -1;					// quotient should be neg
 					end else begin
 						b_out <= $signed({1'b0, b_quotient}); // quotient should be positive
@@ -321,7 +353,27 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
   					state <= TABULATE;
 				end
   					
-  				if (got_a && got_b) begin
+				if (a_div_done_2 ) begin
+					if (a_sign_2) begin
+						a_out_2 <= $signed({1'b0, a_quotient_2}) * -1;				// quotient should be neg
+					end else begin
+						a_out_2 <= $signed({1'b0, a_quotient_2}); // quotient should be positive
+					end 
+					got_a_2 <= 1; 
+  					state <= TABULATE;
+  				end
+
+				if (b_div_done_2 ) begin
+  					if (b_sign_2) begin
+						b_out_2 <= $signed({1'b0, b_quotient_2}) * -1;					// quotient should be neg
+					end else begin
+						b_out_2 <= $signed({1'b0, b_quotient_2}); // quotient should be positive
+					end 
+					got_b_2 <= 1;
+  					state <= TABULATE;
+				end
+
+  				if (got_a && got_b && got_a_2 && got_b_2) begin
   					valid_out <= 1;
   					state <= VALID_OUT;
   				end else begin
@@ -372,17 +424,35 @@ divider  #(.WIDTH (60)) a_div_2(.clk_in(clk_in),
   			
   			VALID_OUT: begin
   				// reset x_out y_out valid_out and go back to resting
-  				a_out <= 0; 
-  				b_out <= 0; 
-  				valid_out <= 0;
-  				y_n <= 0; // reset count
-  				x_n <= 0; 
-                xx_n <= 0;
-                xy_n <= 0;  
-  				m_total <= 0; 
-  				got_a <= 0;
-  				got_b <= 0;
   				state <= RESTING;
+
+				a_out <= 0;
+				b_out <= 0;
+				a_out_2 <= 0;
+				b_out_2 <= 0;
+
+				valid_out <= 0;
+
+				// reset count
+				m_total <= 0;
+				y_n <= 0;
+				x_n <= 0;
+				xy_n <= 0;
+				xx_n <= 0; 
+				yy_n <= 0;
+
+				got_b <= 0;
+				got_a <= 0;
+				a_num_signed <= 0;
+				denom_signed <= 0;
+				b_num_signed <= 0;
+				
+				got_b_2 <= 0;
+				got_a_2 <= 0;
+				a_num_signed_2 <= 0;
+				denom_signed_2 <= 0;
+				b_num_signed_2 <= 0;
+		
 				
   			end
   			

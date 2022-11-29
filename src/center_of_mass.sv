@@ -84,7 +84,7 @@ module center_of_mass (
   		
   		case (state)
   			RESTING: begin
-  				if (valid_in && y_in < 317) begin // if valid in then count up
+  				if (valid_in ) begin // if valid in then count up
   					x_n <= x_n + x_in; 
   					y_n <= y_n + y_in;
   					m_total <= m_total + 1; 
