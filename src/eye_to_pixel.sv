@@ -277,6 +277,15 @@ module eye_to_pixel(
         .res_data_z(dir_norm_z),
         .res_valid(dir_norm_valid)
     );
+    
+    always_comb begin
+        if (dir_sub_valid) begin
+            $display("VALID DIR SUB %b", dir_sub_x);
+        end
+        if (dir_norm_valid) begin
+            $display("VALID DIR NORM %b", dir_norm_x);
+        end
+    end
 
     assign dir_valid = dir_norm_valid;
     assign dir_x = dir_norm_x;

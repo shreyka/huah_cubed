@@ -332,7 +332,6 @@ module vec_normalize(
     vec_reciprocal_square_root mod(
         .clk_in(clk_in),
         .rst_in(rst_in),    
-
         .v_x(v_x),
         .v_y(v_y),
         .v_z(v_z),
@@ -349,13 +348,25 @@ module vec_normalize(
     logic [31:0] v_z_pipe [RESQRT_DELAY-1:0];
 
     always_ff @(posedge clk_in) begin
-        v_x_pipe[0] <= v_x;
-        v_y_pipe[0] <= v_y;
-        v_z_pipe[0] <= v_z;
-        for (int i=1; i<RESQRT_DELAY; i = i+1) begin
-            v_x_pipe[i] <= v_x_pipe[i-1];
-            v_y_pipe[i] <= v_y_pipe[i-1];
-            v_z_pipe[i] <= v_z_pipe[i-1];
+        if(rst_in) begin
+            for(int i=0; i<RESQRT_DELAY; i = i+1) begin
+                v_x_pipe[i] <= 0;
+                v_y_pipe[i] <= 0;
+                v_z_pipe[i] <= 0;
+            end
+        end else begin
+            v_x_pipe[0] <= v_x;
+            v_y_pipe[0] <= v_y;
+            v_z_pipe[0] <= v_z;
+            for (int i=1; i<RESQRT_DELAY; i = i+1) begin
+                v_x_pipe[i] <= v_x_pipe[i-1];
+                v_y_pipe[i] <= v_y_pipe[i-1];
+                v_z_pipe[i] <= v_z_pipe[i-1];
+            end
+        end
+
+        if (v_valid) begin
+            $display("VEC_RECP VALID: %d", v_x);
         end
 
         if (resqrt_valid) begin
@@ -369,7 +380,6 @@ module vec_normalize(
     vec_scale mod2(
         .clk_in(clk_in),
         .rst_in(rst_in),
-
         .v_x(v_x_pipe[RESQRT_DELAY-1]),
         .v_y(v_y_pipe[RESQRT_DELAY-1]),
         .v_z(v_z_pipe[RESQRT_DELAY-1]),

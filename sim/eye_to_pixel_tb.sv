@@ -101,13 +101,13 @@ module eye_to_pixel_tb;
 
         #200;
 
-        for(int i = 0; i < 500; i = i + 1) begin
+        for(int i = 0; i < 1000; i = i + 1) begin
             if(res_valid) begin
-                $display("%d: VALID IS %f %f %f", i, res_x, res_y, res_z);
+                $display("EYETOPIXEL %d: VALID IS %b %b %b", i, res_x, res_y, res_z);
             end
-            if(val_valid_x) begin
-                $display("RESULT IS %d %d %d", val_data_x, val_data_y, val_data_z);
-            end
+            // if(val_valid_x) begin
+            //     $display("RESULT IS %d %d %d", val_data_x, val_data_y, val_data_z);
+            // end
             #10;
         end
 
