@@ -21,14 +21,32 @@ module vec_reciprocal_square_root(
     output wire res_valid
     );
 
-    // floating_point_re_sqrt mod(
-    //     .aclk(clk_in),
-    //     .aresetn(~rst_in),
-    //     .s_axis_a_tvalid(v_valid),
-    //     .s_axis_a_tdata(v_x),
-    //     .m_axis_result_tvalid(res_valid),
-    //     .m_axis_result_tdata()
-    // );
+    logic dot_valid;
+    logic [31:0] dot_data;
+
+    vec_dot dot(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+        .v1_x(v_x),
+        .v1_y(v_y),
+        .v1_z(v_z),
+        .v2_x(v_x),
+        .v2_y(v_y),
+        .v2_z(v_z),
+        .v_valid(v_valid),
+
+        .res_data(dot_data),
+        .res_valid(dot_valid)
+    );
+
+    floating_point_re_sqrt mod(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(dot_valid),
+        .s_axis_a_tdata(dot_data),
+        .m_axis_result_tvalid(res_valid),
+        .m_axis_result_tdata(res_data)
+    );
 
 endmodule
 
@@ -308,6 +326,45 @@ module vec_normalize(
     output wire res_valid
     );
 
+    logic resqrt_valid;
+    logic [31:0] resqrt_data;
+
+    assign res_data_x = v_x;
+    assign res_data_y = v_y;
+    assign res_data_z = v_z;
+    assign res_valid = v_valid;
+
+    // vec_reciprocal_square_root(
+    //     .clk_in(clk_in),
+    //     .rst_in(rst_in),
+
+    //     .v_x(v_x),
+    //     .v_y(v_y),
+    //     .v_z(v_z),
+    //     .v_valid(v_valid),
+
+    //     .res_data(resqrt_data),
+    //     .res_valid(resqrt_valid)
+    // );
+
+    //TODO: need to pipeline the v_x/v_y/v_z to pass into scale correctly
+
+    // vec_scale(
+    //     .clk_in(clk_in),
+    //     .rst_in(rst_in),
+
+    //     .v_x(),
+    //     .v_y(),
+    //     .v_z(),
+    //     .c(resqrt_data),
+    //     .v_valid(resqrt_valid),
+
+    //     .res_data_x(res_data_x),
+    //     .res_data_y(res_data_y),
+    //     .res_data_z(res_data_z),
+    //     .res_valid(res_valid)
+    // );
+
 endmodule
 
 module float_less_than(
@@ -321,6 +378,21 @@ module float_less_than(
     output wire res_data,
     output wire res_valid
     );
+
+    logic [7:0] comp_data;
+
+    floating_point_lt mod(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tdata(a),
+        .s_axis_b_tdata(b),
+        .s_axis_a_tvalid(v_valid),
+        .s_axis_b_tvalid(v_valid),
+        .m_axis_result_tvalid(res_valid),
+        .m_axis_result_tdata(comp_data)
+    );
+
+    assign res_data = comp_data[0];
 
 endmodule
 
@@ -336,6 +408,21 @@ module float_less_than_equal(
     output wire res_valid
     );
 
+    logic [7:0] comp_data;
+
+    floating_point_lte mod(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tdata(a),
+        .s_axis_b_tdata(b),
+        .s_axis_a_tvalid(v_valid),
+        .s_axis_b_tvalid(v_valid),
+        .m_axis_result_tvalid(res_valid),
+        .m_axis_result_tdata(comp_data)
+    );
+
+    assign res_data = comp_data[0];
+
 endmodule
 
 module float_equals(
@@ -349,6 +436,21 @@ module float_equals(
     output wire res_data,
     output wire res_valid
     );
+
+    logic [7:0] comp_data;
+
+    floating_point_equal mod(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tdata(a),
+        .s_axis_b_tdata(b),
+        .s_axis_a_tvalid(v_valid),
+        .s_axis_b_tvalid(v_valid),
+        .m_axis_result_tvalid(res_valid),
+        .m_axis_result_tdata(comp_data)
+    );
+
+    assign res_data = comp_data[0];
 
 endmodule
 

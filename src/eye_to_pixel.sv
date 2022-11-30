@@ -236,7 +236,7 @@ module eye_to_pixel(
         .v1_y(sum_scales_y),
         .v1_z(sum_scales_z),
         .v2_x(ex_minus_w_data), //ASSERTION: v2 is always constant
-        .v2_y(ex_minus_w_data),
+        .v2_y(ey_minus_h_data),
         .v2_z(float_100_data),
         .v_valid(sum_scales_valid),
 
@@ -279,9 +279,9 @@ module eye_to_pixel(
     );
 
     assign dir_valid = dir_norm_valid;
-    assign dir_x = dir_norm_valid ? dir_norm_x : 0;
-    assign dir_y = dir_norm_valid ? dir_norm_y : 0;
-    assign dir_z = dir_norm_valid ? dir_norm_z : 0;    
+    assign dir_x = dir_norm_x;
+    assign dir_y = dir_norm_y;
+    assign dir_z = dir_norm_z;    
 
 endmodule
 
