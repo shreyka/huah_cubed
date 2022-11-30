@@ -8,6 +8,7 @@ module vga_mux (
   input wire thresholded_green_in,
   input wire [11:0] com_sprite_pixel_in,
   input wire crosshair_in,
+  input wire crosshair_in_cr,
   input wire lin_reg_line_in,
   input wire lin_reg_line_2_in,
   output logic [11:0] pixel_out
@@ -54,12 +55,15 @@ module vga_mux (
     case (options)
       // 2'b00: l_2 = lin_reg_line_in? 12'hE22: l_1;
       2'b00:
-        if (lin_reg_line_in) begin
-          l_2 = 12'hE22; 
-        end else if (crosshair_in) begin 
+        // if (lin_reg_line_in) begin
+        //   l_2 = 12'hE22; 
+        // end else if (crosshair_in) begin 
+        if (crosshair_in) begin 
           l_2 = 12'h0F0;
-        end else if (lin_reg_line_2_in) begin 
-          l_2 = 12'h22E;
+        end else if (crosshair_in_cr) begin 
+          l_2 = 12'h0FF;
+        // end else if (lin_reg_line_2_in) begin 
+        //   l_2 = 12'h22E;
         end else begin 
           l_2 = l_1; 
         end 

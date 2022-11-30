@@ -62,6 +62,14 @@ module top_level(
     end
   end
 
+  logic crosshair_pipe_cr [3:0];
+  always_ff @(posedge clk_65mhz)begin
+    crosshair_pipe_cr[0] <= crosshair_cr;
+    for (int i=1; i<4; i = i+1)begin
+      crosshair_pipe_cr[i] <= crosshair_pipe_cr[i-1];
+    end
+  end
+
   logic lin_reg_pipe [3:0];
   always_ff @(posedge clk_65mhz)begin
     lin_reg_pipe[0] <= lin_reg_line;
@@ -152,6 +160,7 @@ module top_level(
 
   //Crosshair value hot when hcount,vcount== (x_com, y_com)
   logic crosshair;
+  logic crosshair_cr;
 
   //vga_mux output:
   logic [11:0] mux_pixel; //final 12 bit information from vga multiplexer
@@ -431,8 +440,8 @@ module top_level(
 
   //Create Crosshair patter on center of mass:
   //0 cycle latency
-  assign crosshair = ((vcount==y_com_cr)||(hcount==x_com_cr));
-
+  assign crosshair = ((vcount==y_com_cb)||(hcount==x_com_cb));
+  assign crosshair_cr = ((vcount==y_com_cr)||(hcount==x_com_cr));
   
 
   //VGA MUX:
@@ -457,6 +466,7 @@ module top_level(
   .thresholded_cb_in(mask_cb), // NEW 
   .thresholded_green_in(mask_green), // NEW 
   .crosshair_in(crosshair_pipe[3]), //TODO: needs to use pipelined signal (PS4)
+  .crosshair_in_cr(crosshair_pipe_cr[3]),
   .lin_reg_line_in(lin_reg_line),
   .lin_reg_line_2_in(lin_reg_line_2),
   .com_sprite_pixel_in(com_sprite_pixel),
