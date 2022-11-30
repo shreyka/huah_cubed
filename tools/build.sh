@@ -23,7 +23,11 @@ function compile_for_build () {
 
 if [[ $command == "test" ]]
 then
-    iverilog -g2012 -o sim/three_dim_renderer_tb.out sim/three_dim_renderer_tb.sv src/three_dim_renderer.sv src/xilinx_true_dual_port_read_first_1_clock_ram.v && vvp sim/three_dim_renderer_tb.out
+    # iverilog -g2012 -o sim/three_dim_renderer_tb.out sim/three_dim_renderer_tb.sv src/three_dim_renderer.sv src/xilinx_true_dual_port_read_first_1_clock_ram.v src/float_functions.sv src/eye_to_pixel.sv src/get_pixel_color.sv src/does_ray_block_intersect.sv src/floating_point_*.v && vvp sim/three_dim_renderer_tb.out
+    iverilog -g2012 -o sim/float_functions_tb.out sim/float_functions_tb.sv src/float_functions.sv src/floating_point_*.v && vvp sim/float_functions_tb.out
+elif [[ $command == "test_vivado" ]]
+then
+    echo "hii"
 elif [[ $command == "build" ]]
 then
     if [[ $2 == "bc" ]]
