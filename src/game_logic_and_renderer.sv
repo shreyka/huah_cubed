@@ -43,9 +43,9 @@ module game_logic_and_renderer(
     input wire [11:0] head_y,
     input wire [13:0] head_z,
 
-    output logic [4:0] r_out,
-    output logic [5:0] g_out,
-    output logic [4:0] b_out,
+    output logic [3:0] r_out,
+    output logic [3:0] g_out,
+    output logic [3:0] b_out,
 
     //this is temporary so that we can see score without a screen
     output logic [11:0] score_out

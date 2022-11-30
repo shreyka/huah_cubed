@@ -24,9 +24,9 @@ module game_logic_and_renderer_tb;
     logic [11:0] head_y;
     logic [13:0] head_z;
 
-    logic [4:0] r_out;
-    logic [5:0] g_out;
-    logic [4:0] b_out;
+    logic [3:0] r_out;
+    logic [3:0] g_out;
+    logic [3:0] b_out;
 
     game_logic_and_renderer uut(
         .clk_in(clk),

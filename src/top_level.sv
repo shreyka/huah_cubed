@@ -72,9 +72,9 @@ module top_level(
   // SECTION: GAME LOGIC AND RENDERER
   //
 
-  logic [4:0] r_out;
-  logic [5:0] g_out;
-  logic [4:0] b_out;
+  logic [3:0] r_out;
+  logic [3:0] g_out;
+  logic [3:0] b_out;
 
   //TEMP to show score
   logic [11:0] score;
@@ -130,7 +130,7 @@ module top_level(
 
     // outputs
     .r_out(r_out),
-    .g_out(g_out),
+    .g_out(g_out),  
     .b_out(b_out),
     .score_out(score)
   );
