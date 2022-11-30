@@ -329,41 +329,58 @@ module vec_normalize(
     logic resqrt_valid;
     logic [31:0] resqrt_data;
 
-    assign res_data_x = v_x;
-    assign res_data_y = v_y;
-    assign res_data_z = v_z;
-    assign res_valid = v_valid;
+    vec_reciprocal_square_root mod(
+        .clk_in(clk_in),
+        .rst_in(rst_in),    
 
-    // vec_reciprocal_square_root(
-    //     .clk_in(clk_in),
-    //     .rst_in(rst_in),
+        .v_x(v_x),
+        .v_y(v_y),
+        .v_z(v_z),
+        .v_valid(v_valid),
 
-    //     .v_x(v_x),
-    //     .v_y(v_y),
-    //     .v_z(v_z),
-    //     .v_valid(v_valid),
+        .res_data(resqrt_data),
+        .res_valid(resqrt_valid)
+    );
 
-    //     .res_data(resqrt_data),
-    //     .res_valid(resqrt_valid)
-    // );
+    // pipelining the VX VY VZ
+    localparam RESQRT_DELAY = 62;
+    logic [31:0] v_x_pipe [RESQRT_DELAY-1:0];
+    logic [31:0] v_y_pipe [RESQRT_DELAY-1:0];
+    logic [31:0] v_z_pipe [RESQRT_DELAY-1:0];
 
-    //TODO: need to pipeline the v_x/v_y/v_z to pass into scale correctly
+    always_ff @(posedge clk_in) begin
+        v_x_pipe[0] <= v_x;
+        v_y_pipe[0] <= v_y;
+        v_z_pipe[0] <= v_z;
+        for (int i=1; i<RESQRT_DELAY; i = i+1) begin
+            v_x_pipe[i] <= v_x_pipe[i-1];
+            v_y_pipe[i] <= v_y_pipe[i-1];
+            v_z_pipe[i] <= v_z_pipe[i-1];
+        end
 
-    // vec_scale(
-    //     .clk_in(clk_in),
-    //     .rst_in(rst_in),
+        if (resqrt_valid) begin
+            $display("RESULT IS %b", resqrt_data);
+            $display("VX IS %d", v_x_pipe[RESQRT_DELAY-1]);
+        end else begin
+            $display("NOT VALID, VX IS %d", v_x_pipe[RESQRT_DELAY - 1]);
+        end
+    end
 
-    //     .v_x(),
-    //     .v_y(),
-    //     .v_z(),
-    //     .c(resqrt_data),
-    //     .v_valid(resqrt_valid),
+    vec_scale mod2(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
 
-    //     .res_data_x(res_data_x),
-    //     .res_data_y(res_data_y),
-    //     .res_data_z(res_data_z),
-    //     .res_valid(res_valid)
-    // );
+        .v_x(v_x_pipe[RESQRT_DELAY-1]),
+        .v_y(v_y_pipe[RESQRT_DELAY-1]),
+        .v_z(v_z_pipe[RESQRT_DELAY-1]),
+        .c(resqrt_data),
+        .v_valid(resqrt_valid),
+
+        .res_data_x(res_data_x),
+        .res_data_y(res_data_y),
+        .res_data_z(res_data_z),
+        .res_valid(res_valid)
+    );
 
 endmodule
 
