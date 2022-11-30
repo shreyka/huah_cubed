@@ -37,6 +37,9 @@ then
     elif [[ $2 == "selector" ]]
     then
         iverilog -g2012 -o sim/block_selector_tb.out -Isrc sim/block_selector_tb.sv src/block_selector.sv src/block_positions.sv && vvp sim/block_selector_tb.out
+    elif [[ $2 == "integration" ]]
+    then
+        iverilog -g2012 -Isrc src/game_logic_and_renderer.sv src/game_state.sv src/block_positions.sv src/block_selector.sv src/state_processor.sv src/renderer.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v src/saber_history.sv src/broken_blocks.sv src/camera_top_level.sv src/camera.sv src/center_of_mass.sv src/divider.sv src/mirror.sv src/rgb_to_ycrcb.sv src/rotate.sv src/scale.sv src/seven.sv src/threshold_multi.sv src/threshold.sv src/xilinx_true_dual_port_read_first_2_clock_ram.v src/linear_regr.sv && vvp sim/block_selector_tb.out
     else
         echo "Unknown test case..."
     fi

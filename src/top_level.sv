@@ -1,19 +1,26 @@
 `timescale 1ns / 1ps
 `default_nettype none
 
-module top_level(
+module top_level(  
   input wire clk_100mhz, //clock @ 100 mhz
-  input wire btnc,
+  input wire [15:0] sw, //switches
+  input wire btnc, //btnc (used for reset)
   input wire btnl,
   input wire btnr,
   input wire btnu,
   input wire btnd,
 
-  //TEMP for score printer
-  output logic [15:0] led,
+  input wire [7:0] ja, //lower 8 bits of data from camera
+  input wire [2:0] jb, //upper three bits from camera (return clock, vsync, hsync)
+  output logic jbclk,  //signal we provide to camera
+  output logic jblock, //signal for resetting camera
+
+  output logic [15:0] led, //just here for the funs
 
   output logic [3:0] vga_r, vga_g, vga_b,
-  output logic vga_hs, vga_vs
+  output logic vga_hs, vga_vs,
+  output logic [7:0] an,
+  output logic caa,cab,cac,cad,cae,caf,cag
   );
 
   ////////////////////////////////////////////////////
@@ -87,22 +94,49 @@ module top_level(
   // and so that unit/integration testing can be done more easily
   //
 
-  // temporary module to test hand movement
-  hand_controller hand_controller(
-    .clk_in(clk_65mhz),
-    .rst_in(btnc),
-    .left_button(btnl),
-    .right_button(btnr),
-    .up_button(btnu),
-    .down_button(btnd),
+  camera_top_level cam_uut(
+    .clk_65mhz(clk_65mhz), //clock @ 100 mhz
+    .sw(sw), //switches
+    .btnc(btnc), //btnc (used for reset)
+
+    .ja(ja), //lower 8 bits of data from camera
+    .jb(jb), //upper three bits from camera (return clock, vsync, hsync)
+    .jbclk(jbclk),  //signal we provide to camera
+    .jblock(jblock), //signal for resetting camera
 
     .hand_x_left_bottom(hand_x_left_bottom),
     .hand_y_left_bottom(hand_y_left_bottom),
     .hand_z_left_bottom(hand_z_left_bottom),
     .hand_x_left_top(hand_x_left_top),
     .hand_y_left_top(hand_y_left_top),
-    .hand_z_left_top(hand_z_left_top)
+    .hand_z_left_top(hand_z_left_top),
+
+    // outputs we can just ignore in final game
+    .led(led), //just here for the funs
+
+    // .vga_r(vga_r), .vga_g(vga_g), .vga_b(vga_b),
+    // .vga_hs(vga_hs), .vga_vs(vga_vs),
+    .an(an),
+    .caa(caa),.cab(cab),.cac(cac),.cad(cad),.cae(cae),.caf(caf),.cag(cag)
+
   );
+
+  // temporary module to test hand movement
+  // hand_controller hand_controller(
+  //   .clk_in(clk_65mhz),
+  //   .rst_in(btnc),
+  //   .left_button(btnl),
+  //   .right_button(btnr),
+  //   .up_button(btnu),
+  //   .down_button(btnd),
+
+  //   .hand_x_left_bottom(hand_x_left_bottom),
+  //   .hand_y_left_bottom(hand_y_left_bottom),
+  //   .hand_z_left_bottom(hand_z_left_bottom),
+  //   .hand_x_left_top(hand_x_left_top),
+  //   .hand_y_left_top(hand_y_left_top),
+  //   .hand_z_left_top(hand_z_left_top)
+  // );
 
   game_logic_and_renderer game_logic_and_renderer(
     .clk_in(clk_65mhz),

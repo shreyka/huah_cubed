@@ -5052,3 +5052,5 @@ typeControlKey(RDIResource.TclConsoleView_TCL_CONSOLE_CODE_EDITOR, "RDIResource.
 // WARNING: HEventQueue.dispatchEvent() is taking  2206 ms.
 // WARNING: HEventQueue.dispatchEvent() is taking  11163 ms.
 // HMemoryUtils.trashcanNow. Engine heap size: 3,173 MB. GUI used memory: 133 MB. Current time: 11/30/22, 4:04:14 PM EST
+// HMemoryUtils.trashcanNow. Engine heap size: 3,173 MB. GUI used memory: 156 MB. Current time: 11/30/22, 4:34:14 PM EST
+// HMemoryUtils.trashcanNow. Engine heap size: 3,173 MB. GUI used memory: 156 MB. Current time: 11/30/22, 5:04:15 PM EST
