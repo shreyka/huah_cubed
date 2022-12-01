@@ -35,9 +35,7 @@ module does_ray_block_intersect(
 
     logic [31:0] block_size;
     // 100
-    // assign block_size = 32'b01000010110010000000000000000000;
-    // 1700, testing
-    assign block_size = 32'b01000100110101001000000000000000;
+    assign block_size = 32'b01000010110010000000000000000000;
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
@@ -239,25 +237,6 @@ module does_ray_block_intersect(
         .res_data_z(tx2_z)
     );
 
-    // always_ff @(posedge clk_in) begin
-    //     if(min_e_valid) begin
-    //         $display("MIN_E VALID");
-    //         $display("MIN_E: %b %b %b", min_e_x, min_e_y, min_e_z);
-    //         $display("RAY: %b", ray_x_pipe[RAY_DELAY-1]);
-    //     end else begin
-    //         // $display("MIN_E INVALID RAY: %b", ray_x_pipe[RAY_DELAY-1]);
-    //     end 
-    // end
-
-    // always_ff @(posedge clk_in) begin
-    //     if(tx1_valid) begin
-    //         $display("TX1 VALID");
-    //         $display("VAL: %b %b %b", tx1_x, tx1_y, tx1_z);
-    //     end else begin
-    //         // $display("MIN_E INVALID RAY: %b", ray_x_pipe[RAY_DELAY-1]);
-    //     end 
-    // end
-
     // stage 3, verified
     
     vec_less_than min_tx12_lt(
@@ -296,14 +275,6 @@ module does_ray_block_intersect(
         .res_data_y(max_tx12_lt_y),
         .res_data_z(max_tx12_lt_z)
     );
-
-    // always_ff @(posedge clk_in) begin
-    //     if(min_tx12_lt_valid) begin
-    //         $display("MIN_TX12 VALID");
-    //         $display("MIN: %b %b %b", min_tx12_lt_x, min_tx12_lt_y, min_tx12_lt_z);
-    //         $display("MAX: %b %b %b", max_tx12_lt_x, max_tx12_lt_y, max_tx12_lt_z);
-    //     end 
-    // end
 
     // stage 4
 
@@ -385,15 +356,6 @@ module does_ray_block_intersect(
         .res_data_z(tx12_max_select_z)
     );
 
-    // always_ff @(posedge clk_in) begin
-    //     if(min_tx12_lt_valid) begin
-    //         $display("ENTER TX12 %b", tx1_y_pipe[TX12_DELAY-1]);
-    //         // $display("%b", tx12_min_select_x); 
-    //     // end else begin
-    //         // $display("INVALID TX12 %b", tx1_y_pipe[TX12_DELAY-1]);
-    //     end
-    // end
-
     //stage 5
 
     vec_max tmin_max(
@@ -420,17 +382,6 @@ module does_ray_block_intersect(
 
         .res_data(tmax)
     );
-
-    // always_ff @(posedge clk_in) begin
-    //     if(tx12_min_select_valid) begin
-    //         $display("SELECT VALID");
-    //         $display("%b %b %b", tx12_min_select_x, tx12_min_select_y, tx12_min_select_z); 
-    //     end
-    //     if(tmin_valid) begin
-    //         $display("TMIN VALID");
-    //         $display("MINMAX: %b %b", tmin, tmax);
-    //     end 
-    // end
 
     //stage 6
 
