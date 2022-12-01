@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 `default_nettype none
 
-module top_level(
+module camera_top_level(
   input wire clk_100mhz, //clock @ 100 mhz
   input wire [15:0] sw, //switches
   input wire btnc, //btnc (used for reset)
@@ -11,6 +11,14 @@ module top_level(
   output logic jbclk,  //signal we provide to camera
   output logic jblock, //signal for resetting camera
 
+  output logic [11:0] hand_x_left_bottom,
+  output logic [11:0] hand_y_left_bottom,
+  output logic [13:0] hand_z_left_bottom,
+  output logic [11:0] hand_x_left_top,
+  output logic [11:0] hand_y_left_top,
+  output logic [13:0] hand_z_left_top,
+
+  // outputs we can just ignore in final game
   output logic [15:0] led, //just here for the funs
 
   output logic [3:0] vga_r, vga_g, vga_b,
@@ -20,67 +28,6 @@ module top_level(
 
   );
 
-  logic [11:0] hand_x_left_bottom;
-  logic [11:0] hand_y_left_bottom;
-  logic [13:0] hand_z_left_bottom;
-  logic [11:0] hand_x_left_top;
-  logic [11:0] hand_y_left_top;
-  logic [13:0] hand_z_left_top;
-
-  camera_top_level cam_uut(
-    .clk_100mhz(clk_100mhz), //clock @ 100 mhz
-    .sw(sw), //switches
-    .btnc(btnc), //btnc (used for reset)
-
-    .ja(ja), //lower 8 bits of data from camera
-    .jb(jb), //upper three bits from camera (return clock, vsync, hsync)
-    .jbclk(jbclk),  //signal we provide to camera
-    .jblock(jblock), //signal for resetting camera
-
-    .hand_x_left_bottom(hand_x_left_bottom),
-    .hand_y_left_bottom(hand_y_left_bottom),
-    .hand_z_left_bottom(hand_z_left_bottom),
-    .hand_x_left_top(hand_x_left_top),
-    .hand_y_left_top(hand_y_left_top),
-    .hand_z_left_top(hand_z_left_top),
-
-    // outputs we can just ignore in final game
-    .led(led), //just here for the funs
-
-    .vga_r(vga_r), .vga_g(vga_g), .vga_b(vga_b),
-    .vga_hs(vga_hs), .vga_vs(vga_vs),
-    .an(an),
-    .caa(caa),.cab(cab),.cac(cac),.cad(cad),.cae(cae),.caf(caf),.cag(cag)
-
-  );
-
-
-
-
-  
-endmodule
-
-
-
-
-module old_top_level(
-  input wire clk_100mhz, //clock @ 100 mhz
-  input wire [15:0] sw, //switches
-  input wire btnc, //btnc (used for reset)
-
-  input wire [7:0] ja, //lower 8 bits of data from camera
-  input wire [2:0] jb, //upper three bits from camera (return clock, vsync, hsync)
-  output logic jbclk,  //signal we provide to camera
-  output logic jblock, //signal for resetting camera
-
-  output logic [15:0] led, //just here for the funs
-
-  output logic [3:0] vga_r, vga_g, vga_b,
-  output logic vga_hs, vga_vs,
-  output logic [7:0] an,
-  output logic caa,cab,cac,cad,cae,caf,cag
-
-  );
 
   //system reset switch linking
   logic sys_rst; //global system reset
@@ -392,7 +339,7 @@ module old_top_level(
   //module has 0 cycle latency
   
   
-  threshold_multi( .sel_in(sw[5:3]),
+  threshold_multi thres_multi( .sel_in(sw[5:3]),
      .r_in(pipe_pixel_ps5[15:12]), //TODO: needs to use pipelined signal (PS5)
      .g_in(pipe_pixel_ps5[10:7]),  //TODO: needs to use pipelined signal (PS5)
      .b_in(pipe_pixel_ps5[4:1]),   //TODO: needs to use pipelined signal (PS5)
@@ -519,7 +466,7 @@ module old_top_level(
   //    01: green crosshair on center of mass
   //    10: image sprite on top of center of mass
   //    11: all pink screen (for VGA functionality testing)
-  vga_mux (.sel_in(sw[9:6]),
+  vga_mux vga_mux(.sel_in(sw[9:6]),
   //.camera_pixel_in({full_pixel[15:12],full_pixel[10:7],full_pixel[4:1]}), //TODO: needs to use pipelined signal(PS5)
   .camera_pixel_in({pipe_pixel_ps5[15:12],pipe_pixel_ps5[10:7],pipe_pixel_ps5[4:1]}), //TODO: needs to use pipelined signal(PS5)
   .camera_y_in(y[9:6]),
@@ -558,9 +505,9 @@ module old_top_level(
   //
   //
 
-  logic [11:0] hand_x_left_bottom;
-  logic [11:0] hand_y_left_bottom;
-  logic [13:0] hand_z_left_bottom;
+//   logic [11:0] hand_x_left_bottom;
+//   logic [11:0] hand_y_left_bottom;
+//   logic [13:0] hand_z_left_bottom;
   //   logic [11:0] hand_x_left_top;
   //   logic [11:0] hand_y_left_top;
   //   logic [13:0] hand_z_left_top;
@@ -579,122 +526,18 @@ module old_top_level(
   assign camera2_x_com_cr = 0; // for now hardcode  
 
   always_comb begin
-    if (sw[2]) begin // i am camera 1
+    // if (sw[2]) begin // i am camera 1
       hand_x_left_bottom = y_com_cr;
       hand_y_left_bottom = x_com_cr;
-      hand_z_left_bottom = camera2_x_com_cr; 
-    end else begin // i am camera 2
-      // send data over 
-    end
+    //   hand_z_left_bottom = camera2_x_com_cr; 
+      hand_z_left_bottom = 0; // hardcode to 0 for 2d 
+      hand_x_left_top = y_com_cb;
+      hand_y_left_top = x_com_cb;
+      hand_z_left_top = 0; // hardcode to 0 for 2d 
+    // end else begin // i am camera 2
+    //   send data over 
+    // end
   end
-
-  
-
-
-  ////////////////////////////////////////////////////
-  // VGA INFORMATION
-  //
-  // note that the vga_gen is what gives us the hcount, vcount
-  // combinations (0-1023, then 0-767)
-  //
-
-  // // we need the 65mhz clock for the VGA
-  // // our resolution is: 1024x768 at 60Hz
-  // // reusing from lab 3
-  // logic clk_65mhz;
-  // clk_wiz_lab3 clk_gen(
-  //   .clk_in1(clk_100mhz),
-  //   .clk_out1(clk_65mhz)); 
-  
-  // // MORE VGA REQUIRED DATA
-  // logic [10:0] hcount;    // pixel on current line
-  // logic [9:0] vcount;     // line number
-  // logic hsync, vsync, blank; //control signals for vga
-  // logic hsync_t, vsync_t, blank_t; //control signals out of transform
-
-  // vga vga_gen(
-  //   .pixel_clk_in(clk_65mhz),
-  //   .hcount_out(hcount),
-  //   .vcount_out(vcount),
-  //   .hsync_out(hsync),
-  //   .vsync_out(vsync),
-  //   .blank_out(blank));
-
-  ////////////////////////////////////////////////////
-  // REQUIRED LOGIC/WIRES
-  //
-  // SECTION: CAMERA DATA
-  //
-
-//   logic [11:0] hand_x_left_bottom;
-//   logic [11:0] hand_y_left_bottom;
-//   logic [13:0] hand_z_left_bottom;
-//   logic [11:0] hand_x_left_top;
-//   logic [11:0] hand_y_left_top;
-//   logic [13:0] hand_z_left_top;
-//   logic [11:0] hand_x_right_bottom;
-//   logic [11:0] hand_y_right_bottom;
-//   logic [13:0] hand_z_right_bottom;
-//   logic [11:0] hand_x_right_top;
-//   logic [11:0] hand_y_right_top;
-//   logic [13:0] hand_z_right_top;
-//   logic [11:0] head_x;
-//   logic [11:0] head_y;
-//   logic [13:0] head_z;
-  
-//   ////////////////////////////////////////////////////
-//   // REQUIRED LOGIC/WIRES
-//   //
-//   // SECTION: GAME LOGIC AND RENDERER
-//   //
-
-//   logic [4:0] r_out;
-//   logic [5:0] g_out;
-//   logic [4:0] b_out;
-
-//   ////////////////////////////////////////////////////
-//   // MODULES
-//   //
-//   // contains aggregated modules that are encapulated for simplicity
-//   // and so that unit/integration testing can be done more easily
-//   //
-
-//   game_logic_and_renderer game_logic_and_renderer(
-//     .clk_in(clk_65mhz),
-//     .rst_in(btnc),
-//     // retrieve from VGA
-//     .x_in(hcount),
-//     .y_in(vcount),
-    
-//     // retrieve from camera data
-//     .hand_x_left_bottom(hand_x_left_bottom),
-//     .hand_y_left_bottom(hand_y_left_bottom),
-//     .hand_z_left_bottom(hand_z_left_bottom),
-//     .hand_x_left_top(hand_x_left_top),
-//     .hand_y_left_top(hand_y_left_top),
-//     .hand_z_left_top(hand_z_left_top),
-//     .hand_x_right_bottom(hand_x_right_bottom),
-//     .hand_y_right_bottom(hand_y_right_bottom),
-//     .hand_z_right_bottom(hand_z_right_bottom),
-//     .hand_x_right_top(hand_x_right_top),
-//     .hand_y_right_top(hand_y_right_top),
-//     .hand_z_right_top(hand_z_right_top),
-//     .head_x(head_x),
-//     .head_y(head_y),
-//     .head_z(head_z),
-
-//     // outputs
-//     .r_out(r_out),
-//     .g_out(g_out),
-//     .b_out(b_out)
-//   );
-
-//   ////////////////////////////////////////////////////
-//   // OUTPUT TO PIXELS
-//   //
-//   //
-//   //
-
   
 endmodule
 

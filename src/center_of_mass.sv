@@ -41,7 +41,7 @@ module center_of_mass (
   logic got_y;
   logic got_x;
   
-  divider  #(.WIDTH (32)) x_div(.clk_in(clk_in),
+  divider  #(.WIDTH (31)) x_div(.clk_in(clk_in),
 			.rst_in(rst_in),
 			.dividend_in(x_n),
 			.divisor_in(m_total),
@@ -55,7 +55,7 @@ module center_of_mass (
 			// busy_out and valid_out both 0 when reset
 			
 			
-  divider #(.WIDTH (32)) y_div(.clk_in(clk_in),
+  divider #(.WIDTH (31)) y_div(.clk_in(clk_in),
 			.rst_in(rst_in),
 			.dividend_in(y_n),
 			.divisor_in(m_total),

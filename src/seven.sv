@@ -48,7 +48,9 @@ module seven_segment_controller #(parameter COUNT_TO = 'd100_000)
   		routed_vals = val_in[27:24];
   	end else if (!an_out[7])begin
   		routed_vals = val_in[31:28];
-  	end
+    end else begin
+      routed_vals = 0;
+    end 
   end 
    
   bto7s mbto7s (.x_in(routed_vals), .s_out(led_out));
