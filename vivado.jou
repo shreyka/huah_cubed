@@ -73,3 +73,4 @@ source does_ray_block_intersect_tb.tcl
 relaunch_sim
 relaunch_sim
 relaunch_sim
+close_sim

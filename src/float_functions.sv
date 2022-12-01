@@ -210,6 +210,60 @@ module vec_divide(
 
 endmodule
 
+module vec_multiply(
+    input wire clk_in,
+    input wire rst_in,
+
+    input wire [31:0] v1_x,
+    input wire [31:0] v1_y,
+    input wire [31:0] v1_z,
+    input wire [31:0] v2_x,
+    input wire [31:0] v2_y,
+    input wire [31:0] v2_z,
+    input wire v_valid,
+
+    output logic [31:0] res_data_x,
+    output logic [31:0] res_data_y,
+    output logic [31:0] res_data_z,
+    output logic res_valid
+    );
+
+    floating_point_multiply multiply_x(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tdata(v1_x),
+        .s_axis_b_tdata(v2_x),
+        .s_axis_a_tvalid(v_valid),
+        .s_axis_b_tvalid(v_valid),
+        
+        .m_axis_result_tvalid(res_valid),
+        .m_axis_result_tdata(res_data_x)
+    );
+
+    floating_point_multiply multiply_y(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tdata(v1_y),
+        .s_axis_b_tdata(v2_y),
+        .s_axis_a_tvalid(v_valid),
+        .s_axis_b_tvalid(v_valid),
+        
+        .m_axis_result_tdata(res_data_y)
+    );
+
+    floating_point_multiply multiply_z(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tdata(v1_z),
+        .s_axis_b_tdata(v2_z),
+        .s_axis_a_tvalid(v_valid),
+        .s_axis_b_tvalid(v_valid),
+        
+        .m_axis_result_tdata(res_data_z)
+    );
+
+endmodule
+
 module vec_sub(
     input wire clk_in,
     input wire rst_in,

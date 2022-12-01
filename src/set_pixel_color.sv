@@ -7,7 +7,7 @@ Get the RGB value that should
 be set at a particular XY coordinate.
 
 */
-module set_pixel_color(
+module get_pixel_rgb_formatted(
     input wire clk_in,
     input wire rst_in,
 
@@ -34,6 +34,13 @@ module set_pixel_color(
     output logic [3:0] b_out,
     output logic rgb_valid
     );
+
+    logic [9:0] a;
+    generate
+        for(genvar i=0; i<10; i=i+1)begin
+            mod ma (.clk(clk_in), .a_in(a[i]));
+        end
+    endgenerate
 endmodule
 
 `default_nettype wire
