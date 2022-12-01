@@ -132,3 +132,4 @@ launch_simulation -simset [get_filesets float_test ]
 source eye_to_pixel_tb.tcl
 relaunch_sim
 relaunch_sim
+close_sim
