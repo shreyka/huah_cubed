@@ -152,27 +152,27 @@ module eye_to_pixel(
         .m_axis_result_tdata(float_100_data)
     );
 
-    // constant
+    // constant, try to make never 0
     floating_point_sint32_to_float ex_to_float(
         .aclk(clk_in),
         .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800),
+        .s_axis_a_tdata(1800.00001),
         .m_axis_result_tdata(e_x_data)
     );
 
-    // constant
+    // constant, try to make never 0
     floating_point_sint32_to_float ey_to_float(
         .aclk(clk_in),
         .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800),
+        .s_axis_a_tdata(1800.00001),
         .m_axis_result_tdata(e_y_data)
     );
 
-    // constant
+    // constant, try to make never 0
     floating_point_sint32_to_float ez_to_float(
         .aclk(clk_in),
         .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(-300),
+        .s_axis_a_tdata(-300.00001),
         .m_axis_result_tdata(e_z_data)
     );
 

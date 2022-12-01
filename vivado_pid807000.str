@@ -1,0 +1,807 @@
+/*
+
+Xilinx Vivado v2022.1 (64-bit) [Major: 2022, Minor: 1]
+SW Build: 3526262 on Mon Apr 18 15:47:01 MDT 2022
+IP Build: 3524634 on Mon Apr 18 20:55:01 MDT 2022
+
+Process ID (PID): 807000
+License: Customer
+Mode: GUI Mode
+
+Current time: 	Thu Dec 01 12:02:35 EST 2022
+Time zone: 	Eastern Standard Time (America/New_York)
+
+OS: Linux
+OS Version: 6.0.8-surface
+OS Architecture: amd64
+Available processors (cores): 8
+
+Display: 0
+Screen size: 3000x2000
+Screen resolution (DPI): 200
+Available screens: 1
+Default font: family=Dialog,name=Dialog,style=plain,size=24
+Scale size: 48
+
+Java version: 	11.0.11 64-bit
+Java home: 	/media/koops/VIVADO/Vivado/2022.1/tps/lnx64/jre11.0.11_9
+Java executable: 	/media/koops/VIVADO/Vivado/2022.1/tps/lnx64/jre11.0.11_9/bin/java
+Java arguments: 	[-Dsun.java2d.pmoffscreen=false, -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2, -Dsun.java2d.xrender=false, -Djdk.gtk.version=2, -Dsun.java2d.uiScale.enabled=false, -Xverify:none, -Dswing.aatext=true, -XX:-UsePerfData, -Djdk.map.althashing.threshold=512, -XX:StringTableSize=4072, --add-opens=java.desktop/com.sun.awt=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.desktop/sun.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/java.awt.event=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.base/java.nio=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.table=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.desktop/sun.awt.shell=ALL-UNNAMED, --add-exports=java.base/sun.security.action=ALL-UNNAMED, --add-exports=java.desktop/sun.font=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, -XX:NewSize=60m, -XX:MaxNewSize=60m, -Xms256m, -Xmx3072m, -Xss5m, -Xrs]
+Java initial memory (-Xms): 	256 MB
+Java maximum memory (-Xmx):	 3 GB
+
+
+User name: 	koops
+User home directory: /home/koops
+User working directory: /media/koops/VIVADO/huah_cubed_3drender
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /media/koops/VIVADO/Vivado
+HDI_APPROOT: /media/koops/VIVADO/Vivado/2022.1
+RDI_DATADIR: /media/koops/VIVADO/Vivado/2022.1/data
+RDI_BINDIR: /media/koops/VIVADO/Vivado/2022.1/bin
+
+Vivado preferences file: /home/koops/.Xilinx/Vivado/2022.1/vivado.xml
+Vivado preferences directory: /home/koops/.Xilinx/Vivado/2022.1/
+Vivado layouts directory: /home/koops/.Xilinx/Vivado/2022.1/data/layouts
+PlanAhead jar file: 	/media/koops/VIVADO/Vivado/2022.1/lib/classes/planAhead.jar
+Vivado log file: 	/media/koops/VIVADO/huah_cubed_3drender/vivado.log
+Vivado journal file: 	/media/koops/VIVADO/huah_cubed_3drender/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-807000-koops
+
+Xilinx Environment Variables
+----------------------------
+XILINX: /media/koops/VIVADO/Vivado/2022.1/ids_lite/ISE
+XILINX_DSP: /media/koops/VIVADO/Vivado/2022.1/ids_lite/ISE
+XILINX_HLS: /media/koops/VIVADO/Vitis_HLS/2022.1
+XILINX_PLANAHEAD: /media/koops/VIVADO/Vivado/2022.1
+XILINX_VITIS: 
+XILINX_VIVADO: /media/koops/VIVADO/Vivado/2022.1
+XILINX_VIVADO_HLS: /media/koops/VIVADO/Vivado/2022.1
+
+
+GUI allocated memory:	370 MB
+GUI max memory:		3,072 MB
+Engine allocated memory: 1,993 MB
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+selectList(PAResourceQtoS.SyntheticaGettingStartedView_RECENT_PROJECTS, "/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr", 0); // r
+// Opening Vivado Project: /media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr. Version: Vivado v2022.1 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: FLOW_ADDED
+// Tcl Message: open_project /media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr 
+// HMemoryUtils.trashcanNow. Engine heap size: 1,894 MB. GUI used memory: 77 MB. Current time: 12/1/22, 12:02:36 PM EST
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: PROJECT_NEW
+// Tcl Message: open_project /media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/media/koops/VIVADO/Vivado/2022.1/data/ip'. 
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 118 MB (+121590kb) [00:00:16]
+// [Engine Memory]: 1,942 MB (+1884498kb) [00:00:16]
+// [GUI Memory]: 125 MB (+758kb) [00:00:17]
+// [GUI Memory]: 141 MB (+9753kb) [00:00:18]
+// WARNING: HEventQueue.dispatchEvent() is taking  4061 ms.
+// Tcl Message: open_project: Time (s): cpu = 00:00:27 ; elapsed = 00:00:11 . Memory (MB): peak = 7729.824 ; gain = 127.266 ; free physical = 986 ; free virtual = 10180 
+// Project name: float_testing_vivado; location: /media/koops/VIVADO/float_ip/float_testing_vivado; part: xc7a100tcsg324-1
+// Elapsed time: 13 seconds
+dismissDialog("Open Project"); // bA
+// [Engine Memory]: 2,182 MB (+150484kb) [00:00:22]
+selectTab(PAResourceEtoH.FileSetView_TABBED_PANE, (HResource) null, "IP Sources", 1); // i
+// Tcl Message: update_compile_order -fileset sources_1 
+// [GUI Memory]: 152 MB (+4167kb) [00:00:25]
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed time: 274 seconds
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, floating_point_divide]", 2, true, false, false, false, true, false); // D - Popup Trigger - Node
+selectMenuItem(PAResourceCommand.PACommandNames_RECUSTOMIZE_CORE, "Re-customize IP..."); // ar
+// Run Command: PAResourceCommand.PACommandNames_RECUSTOMIZE_CORE
+// TclEventType: LOAD_FEATURE
+// [GUI Memory]: 167 MB (+8671kb) [00:04:59]
+dismissDialog("Re-customize IP"); // N
+selectTab(PAResourceTtoZ.XPG_TabbedPane_TABBED_PANE, (HResource) null, "Interface Options", 3); // cW
+dismissDialog("Re-customize IP"); // r
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// [GUI Memory]: 184 MB (+9042kb) [00:05:51]
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,222 MB. GUI used memory: 103 MB. Current time: 12/1/22, 12:09:01 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,246 MB. GUI used memory: 103 MB. Current time: 12/1/22, 12:09:36 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,270 MB. GUI used memory: 103 MB. Current time: 12/1/22, 12:24:21 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,294 MB. GUI used memory: 103 MB. Current time: 12/1/22, 12:25:51 PM EST
+// [Engine Memory]: 2,294 MB (+3122kb) [00:23:26]
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,319 MB. GUI used memory: 103 MB. Current time: 12/1/22, 12:26:46 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,344 MB. GUI used memory: 103 MB. Current time: 12/1/22, 12:27:31 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,368 MB. GUI used memory: 103 MB. Current time: 12/1/22, 12:28:46 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,393 MB. GUI used memory: 103 MB. Current time: 12/1/22, 12:30:01 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,417 MB. GUI used memory: 103 MB. Current time: 12/1/22, 12:31:51 PM EST
+// [Engine Memory]: 2,417 MB (+8275kb) [00:29:26]
+// Elapsed time: 1474 seconds
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Project Manager, IP Catalog]", 4, false); // n
+// Run Command: PAResourceCommand.PACommandNames_CORE_GEN
+setText("PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE_SEARCH_FIELD", "float"); // OverlayTextField
+selectTreeTable(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, "Floating-point ; AXI4-Stream ; Production ; Included ; xilinx.com:ip:floating_point:7.1", 3, "Floating-point", 0, false); // L
+expandTreeTable(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, "Floating-point ; AXI4-Stream ; Production ; Included ; xilinx.com:ip:floating_point:7.1", 3); // L
+selectTreeTable(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, "Floating-point ; AXI4-Stream ; Production ; Included ; xilinx.com:ip:floating_point:7.1", 3, "Floating-point", 0, false, false, false, false, false, true); // L - Double Click
+// Run Command: PAResourceCommand.PACommandNames_CUSTOMIZE_CORE
+// WARNING: HEventQueue.dispatchEvent() is taking  1208 ms.
+dismissDialog("Customize IP"); // k
+applyEscape(PAResourceAtoD.CoreTreeTablePanel_CORE_TREE_TABLE, (String) null); // L
+dismissDialog("Customize IP"); // r
+// [GUI Memory]: 201 MB (+7411kb) [00:29:52]
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,439 MB. GUI used memory: 108 MB. Current time: 12/1/22, 12:35:56 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,464 MB. GUI used memory: 99 MB. Current time: 12/1/22, 1:01:11 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,488 MB. GUI used memory: 99 MB. Current time: 12/1/22, 1:03:16 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,520 MB. GUI used memory: 99 MB. Current time: 12/1/22, 1:04:21 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// [Engine Memory]: 2,544 MB (+6654kb) [01:02:59]
+// HMemoryUtils.trashcanNow. Engine heap size: 2,544 MB. GUI used memory: 99 MB. Current time: 12/1/22, 1:05:26 PM EST
+// WARNING: HEventQueue.dispatchEvent() is taking  1263 ms.
+// Elapsed time: 3663 seconds
+selectTab(PAResourceEtoH.FileSetView_TABBED_PANE, (HResource) null, "Hierarchy", 0); // i
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources]", 13, true); // D - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources]", 13, true); // D - Node
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources]", 13); // D
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, float_test]", 14); // D
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, float_test]", 14, true, false, false, false, true, false); // D - Popup Trigger - Node
+selectMenu(PAResourceCommand.PACommandNames_SIMULATION_RUN, "Run Simulation"); // ao
+selectMenu(PAResourceCommand.PACommandNames_SIMULATION_RESET, "Reset Simulation"); // ao
+selectMenu(PAResourceCommand.PACommandNames_SIMULATION_RUN, "Run Simulation"); // ao
+selectMenu(PAResourceCommand.PACommandNames_SIMULATION_RESET, "Reset Simulation"); // ao
+selectMenu(PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, "Hierarchy Update"); // ao
+selectMenuItem(PAResourceCommand.PACommandNames_ADD_SOURCES, "Add Sources..."); // ar
+// Run Command: PAResourceCommand.PACommandNames_ADD_SOURCES
+// Elapsed time: 12 seconds
+selectButton("NEXT", "Next >"); // JButton
+selectButton(PAResourceQtoS.SrcChooserPanel_ADD_OR_CREATE_SOURCE_FILE, "Add"); // D
+selectMenuItem(PAResourceQtoS.SrcChooserPanel_ADD_HDL_AND_NETLIST_FILES_TO_YOUR_PROJECT, "Add Files..."); // ar
+setFileChooser("/media/koops/VIVADO/huah_cubed_3drender/sim/three_dim_renderer_tb.sv");
+selectTable(PAResourceQtoS.SrcChooserTable_SRC_CHOOSER_TABLE, "VSourceFile ; 1 ; three_dim_renderer_tb.sv ; xil_defaultlib ; /media/koops/VIVADO/huah_cubed_3drender/sim", 0, "three_dim_renderer_tb.sv", 2); // bQ
+selectButton(PAResourceQtoS.SrcChooserPanel_ADD_HDL_AND_NETLIST_FILES_TO_YOUR_PROJECT, "Add Files"); // a
+setFileChooser("/media/koops/VIVADO/huah_cubed_3drender/sim/float_functions_max_tb.sv");
+selectButton("FINISH", "Finish"); // JButton
+// 'g' command handler elapsed time: 27 seconds
+dismissDialog("Add Sources"); // c
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property SOURCE_SET sources_1 [get_filesets float_test] 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: add_files -fileset float_test -norecurse /media/koops/VIVADO/huah_cubed_3drender/sim/float_functions_max_tb.sv 
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: update_compile_order -fileset float_test 
+// HMemoryUtils.trashcanNow. Engine heap size: 2,590 MB. GUI used memory: 102 MB. Current time: 12/1/22, 1:34:01 PM EST
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, float_test, float_functions_max_tb (float_functions_max_tb.sv)]", 17, true, false, false, false, true, false); // D - Popup Trigger - Node
+selectMenu(PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, "Hierarchy Update"); // ao
+selectMenu(PAResourceQtoS.SrcMenu_IP_HIERARCHY, "IP Hierarchy"); // ao
+selectMenuItem(PAResourceCommand.PACommandNames_SET_AS_TOP, "Set as Top"); // ar
+// Run Command: PAResourceCommand.PACommandNames_SET_AS_TOP
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property top float_functions_max_tb [get_filesets float_test] 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property top_lib xil_defaultlib [get_filesets float_test] 
+dismissDialog("Set as Top"); // bA
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: update_compile_order -fileset float_test 
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Simulation, Run Simulation]", 10, false); // n
+selectMenuItem(PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL, "Run Behavioral Simulation"); // ar
+// Run Command: PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL
+// TclEventType: LAUNCH_SIM
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// Tcl Message: launch_simulation -simset [get_filesets float_test ] 
+// Tcl Message: Command: launch_simulation  -simset float_test 
+// Tcl Message: INFO: [Vivado 12-12493] Simulation top is 'float_functions_max_tb' 
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// Tcl Message: INFO: [USF-XSim-97] Finding global include files... INFO: [USF-XSim-98] Fetching design files from 'float_test'... INFO: [USF-XSim-2] XSim::Compile design INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' 
+// Tcl Message: xvlog --incr --relax -L uvm -prj float_functions_max_tb_vlog.prj 
+// Tcl Message: INFO: [USF-XSim-69] 'compile' step finished in '1' seconds INFO: [USF-XSim-99] Step results log file:'/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim/xvlog.log' 
+// Tcl Message: ERROR: [USF-XSim-62] 'compile' step failed with error(s). Please check the Tcl console output or '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim/xvlog.log' file for more information. ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation. 
+// Tcl Message: ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors. 
+// CommandFailedException: ERROR: [Common 17-69] Command failed: ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.  
+// HOptionPane Error: 'ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.  (Run Simulation)'
+// 'd' command handler elapsed time: 6 seconds
+selectButton("OptionPane.button", "OK"); // JButton
+selectButton(PAResourceAtoD.CmdMsgDialog_OK, "OK"); // f
+dismissDialog("Critical Messages"); // a
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed time: 63 seconds
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Simulation]", 9, true); // n - Node
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, RTL Analysis]", 10, true); // n - Node
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Simulation]", 9, true); // n - Node
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Simulation, Run Simulation]", 10, false); // n
+selectMenuItem(PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL, "Run Behavioral Simulation"); // ar
+// Run Command: PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL
+// TclEventType: LAUNCH_SIM
+// Tcl Message: launch_simulation -simset [get_filesets float_test ] 
+// Tcl Message: Command: launch_simulation  -simset float_test 
+// Tcl Message: INFO: [Vivado 12-12493] Simulation top is 'float_functions_max_tb' 
+// Tcl Message: INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator... 
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// Tcl Message: INFO: [Vivado 12-5682] Launching behavioral simulation in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs INFO: [SIM-utils-51] Simulation object is 'float_test' INFO: [SIM-utils-72] Using boost library from '/media/koops/VIVADO/Vivado/2022.1/tps/boost_1_72_0' INFO: [USF-XSim-7] Finding pre-compiled libraries... INFO: [USF-XSim-11] File '/media/koops/VIVADO/Vivado/2022.1/data/xsim/xsim.ini' copied to run dir:'/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' INFO: [SIM-utils-54] Inspecting design source files for 'float_functions_max_tb' in fileset 'float_test'... 
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// Tcl Message: INFO: [USF-XSim-97] Finding global include files... INFO: [USF-XSim-98] Fetching design files from 'float_test'... INFO: [USF-XSim-2] XSim::Compile design INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' 
+// Tcl Message: xvlog --incr --relax -L uvm -prj float_functions_max_tb_vlog.prj 
+// TclEventType: LAUNCH_SIM_LOG
+// Tcl Message: Waiting for jobs to finish... No pending jobs, compilation finished. 
+// Tcl Message: INFO: [USF-XSim-69] 'compile' step finished in '2' seconds INFO: [USF-XSim-3] XSim::Elaborate design INFO: [USF-XSim-61] Executing 'ELABORATE' step in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' 
+// Tcl Message: xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_18 -L floating_point_v7_1_14 -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot float_functions_max_tb_behav xil_defaultlib.float_functions_max_tb xil_defaultlib.glbl -log elaborate.log 
+// Tcl Message: Vivado Simulator v2022.1 Copyright 1986-1999, 2001-2022 Xilinx, Inc. All Rights Reserved. Running: /media/koops/VIVADO/Vivado/2022.1/bin/unwrapped/lnx64.o/xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_18 -L floating_point_v7_1_14 -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot float_functions_max_tb_behav xil_defaultlib.float_functions_max_tb xil_defaultlib.glbl -log elaborate.log  Using 8 slave threads. Starting static elaboration Pass Through NonSizing Optimizer 
+// Tcl Message: Completed static elaboration 
+// TclEventType: LAUNCH_SIM
+// TclEventType: LOAD_FEATURE
+// Tcl Message: Built simulation snapshot float_functions_max_tb_behav 
+// Tcl Message: execute_script: Time (s): cpu = 00:00:18 ; elapsed = 00:00:11 . Memory (MB): peak = 8282.742 ; gain = 0.000 ; free physical = 742 ; free virtual = 8555 
+// Tcl Message: INFO: [USF-XSim-69] 'elaborate' step finished in '10' seconds INFO: [USF-XSim-4] XSim::Simulate design INFO: [USF-XSim-61] Executing 'SIMULATE' step in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' INFO: [USF-XSim-98] *** Running xsim 
+// Tcl Message:    with args "float_functions_max_tb_behav -key {Behavioral:float_test:Functional:float_functions_max_tb} -tclbatch {float_functions_max_tb.tcl} -log {simulate.log}" 
+// Tcl Message: INFO: [USF-XSim-8] Loading simulator feature 
+// TclEventType: SIMULATION_CREATE_SIMULATION_OBJECT
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// WARNING: HEventQueue.dispatchEvent() is taking  1228 ms.
+// Tcl Message: Time resolution is 1 ps 
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// Elapsed time: 18 seconds
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // v
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_OPEN_WCFG
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: WAVEFORM_OPEN_WCFG
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MODEL_EVENT
+// Tcl Message: source float_functions_max_tb.tcl 
+// Tcl Message: # set curr_wave [current_wave_config] # if { [string length $curr_wave] == 0 } { #   if { [llength [get_objects]] > 0} { #     add_wave / #     set_property needs_save false [current_wave_config] #   } else { #      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console." #   } # } 
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,626 MB. GUI used memory: 174 MB. Current time: 12/1/22, 1:35:42 PM EST
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_CLEAR_CURRENT_LINE
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: SIMULATION_OBJECT_TREE_RESTORED
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: SIMULATION_CURRENT_SCOPE_CHANGED
+// TclEventType: SIMULATION_CURRENT_STACK_CHANGED
+// TclEventType: SIMULATION_UPDATE_STACK_FRAMES
+// TclEventType: SIMULATION_CURRENT_STACK_FRAME_CHANGED
+// TclEventType: SIMULATION_UPDATE_LOCALS
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// Tcl Message: # run 2000ns 
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// Tcl Message: INFO: [USF-XSim-96] XSim completed. Design snapshot 'float_functions_max_tb_behav' loaded. INFO: [USF-XSim-97] XSim simulation ran for 2000ns 
+// Tcl Message: launch_simulation: Time (s): cpu = 00:00:31 ; elapsed = 00:00:20 . Memory (MB): peak = 8282.742 ; gain = 0.000 ; free physical = 664 ; free virtual = 8500 
+// 'd' command handler elapsed time: 19 seconds
+dismissDialog("Run Simulation"); // e
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,627 MB. GUI used memory: 137 MB. Current time: 12/1/22, 1:35:45 PM EST
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,645 MB. GUI used memory: 111 MB. Current time: 12/1/22, 1:36:06 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed time: 81 seconds
+selectCodeEditor(RDIResource.TclConsoleView_TCL_CONSOLE_CODE_EDITOR, 1370, 185); // dT
+selectButton(PAResourceCommand.PACommandNames_SIMULATION_RELAUNCH, "simulation_relaunch"); // D
+// Run Command: PAResourceCommand.PACommandNames_SIMULATION_RELAUNCH
+// TclEventType: SIMULATION_MODEL_ABOUT_TO_CLOSE
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: SIMULATION_MODEL_RELOADED
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_CLEAR_CURRENT_LINE
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_CURRENT_SCOPE_CHANGED
+// TclEventType: SIMULATION_CURRENT_STACK_CHANGED
+// TclEventType: SIMULATION_UPDATE_STACK_FRAMES
+// TclEventType: SIMULATION_CURRENT_STACK_FRAME_CHANGED
+// TclEventType: SIMULATION_UPDATE_LOCALS
+// TclEventType: LAUNCH_SIM
+// Tcl Message: relaunch_sim 
+// Tcl Message: Command: launch_simulation -step compile -simset float_test -mode behavioral 
+// Tcl Message: INFO: [Vivado 12-12493] Simulation top is 'float_functions_max_tb' 
+// Tcl Message: INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator... 
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// Tcl Message: xvlog --incr --relax -L uvm -prj float_functions_max_tb_vlog.prj 
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// Tcl Message: INFO: [USF-XSim-69] 'compile' step finished in '2' seconds INFO: [USF-XSim-99] Step results log file:'/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim/xvlog.log' 
+// Tcl Message: ERROR: [USF-XSim-62] 'compile' step failed with error(s). Please check the Tcl console output or '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim/xvlog.log' file for more information. ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation. 
+// Tcl Message: ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors. 
+// Tcl Message: ERROR: [Common 17-69] Command failed: ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.  
+// CommandFailedException: ERROR: [Common 17-69] Command failed: ERROR: [Common 17-69] Command failed: ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.   
+// HOptionPane Error: 'ERROR: [Common 17-69] Command failed: ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.   (Relaunch Simulation)'
+// 'a' command handler elapsed time: 8 seconds
+selectButton("OptionPane.button", "OK"); // JButton
+selectButton(PAResourceAtoD.CmdMsgDialog_OK, "OK"); // f
+dismissDialog("Critical Messages"); // a
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Simulation, Run Simulation]", 10, false); // n
+selectMenuItem(PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL, "Run Behavioral Simulation"); // ar
+// Run Command: PAResourceCommand.PACommandNames_SIMULATION_RUN_BEHAVIORAL
+selectButton("OptionPane.button", "Yes"); // JButton
+// TclEventType: WAVEFORM_CLOSE_WCFG
+// TclEventType: SIMULATION_CLOSE_SIMULATION
+// WARNING: HEventQueue.dispatchEvent() is taking  1507 ms.
+// Tcl Message: close_sim 
+// Tcl Message: INFO: [Simtcl 6-16] Simulation closed 
+dismissDialog("Close"); // bA
+// TclEventType: LAUNCH_SIM
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// Tcl Message: launch_simulation -simset [get_filesets float_test ] 
+// Tcl Message: Command: launch_simulation  -simset float_test 
+// Tcl Message: INFO: [Vivado 12-12493] Simulation top is 'float_functions_max_tb' 
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// TclEventType: PACKAGER_MESSAGE_RESET
+// TclEventType: PACKAGER_UNLOAD_CORE
+// Tcl Message: INFO: [USF-XSim-97] Finding global include files... INFO: [USF-XSim-98] Fetching design files from 'float_test'... INFO: [USF-XSim-2] XSim::Compile design INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' 
+// Tcl Message: xvlog --incr --relax -L uvm -prj float_functions_max_tb_vlog.prj 
+// TclEventType: LAUNCH_SIM_LOG
+// Tcl Message: Waiting for jobs to finish... No pending jobs, compilation finished. 
+// Tcl Message: INFO: [USF-XSim-69] 'compile' step finished in '3' seconds INFO: [USF-XSim-3] XSim::Elaborate design INFO: [USF-XSim-61] Executing 'ELABORATE' step in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' 
+// Tcl Message: xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_18 -L floating_point_v7_1_14 -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot float_functions_max_tb_behav xil_defaultlib.float_functions_max_tb xil_defaultlib.glbl -log elaborate.log 
+// Tcl Message: Vivado Simulator v2022.1 Copyright 1986-1999, 2001-2022 Xilinx, Inc. All Rights Reserved. Running: /media/koops/VIVADO/Vivado/2022.1/bin/unwrapped/lnx64.o/xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_18 -L floating_point_v7_1_14 -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot float_functions_max_tb_behav xil_defaultlib.float_functions_max_tb xil_defaultlib.glbl -log elaborate.log  Using 8 slave threads. Starting static elaboration Pass Through NonSizing Optimizer 
+// Tcl Message: Completed static elaboration Starting simulation data flow analysis 
+// Tcl Message: Completed simulation data flow analysis Time Resolution for simulation is 1ps Compiling package std.standard Compiling package std.textio Compiling package ieee.std_logic_1164 Compiling package floating_point_v7_1_14.floating_point_v7_1_14_viv_comp Compiling package ieee.numeric_std Compiling package xbip_utils_v3_0_10.xbip_utils_v3_0_10_pkg Compiling package axi_utils_v2_0_6.axi_utils_v2_0_6_pkg Compiling package floating_point_v7_1_14.floating_point_v7_1_14_consts Compiling package ieee.math_real Compiling package floating_point_v7_1_14.floating_point_v7_1_14_exp_table... Compiling package mult_gen_v12_0_18.mult_gen_v12_0_18_pkg Compiling package ieee.std_logic_arith Compiling package ieee.std_logic_signed 
+// TclEventType: LAUNCH_SIM
+// Tcl Message: Built simulation snapshot float_functions_max_tb_behav 
+// Tcl Message: execute_script: Time (s): cpu = 00:00:19 ; elapsed = 00:00:12 . Memory (MB): peak = 8327.992 ; gain = 0.000 ; free physical = 690 ; free virtual = 8490 
+// Tcl Message: INFO: [USF-XSim-69] 'elaborate' step finished in '12' seconds INFO: [USF-XSim-4] XSim::Simulate design INFO: [USF-XSim-61] Executing 'SIMULATE' step in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' INFO: [USF-XSim-98] *** Running xsim 
+// Tcl Message:    with args "float_functions_max_tb_behav -key {Behavioral:float_test:Functional:float_functions_max_tb} -tclbatch {float_functions_max_tb.tcl} -log {simulate.log}" 
+// Tcl Message: INFO: [USF-XSim-8] Loading simulator feature 
+// TclEventType: SIMULATION_CREATE_SIMULATION_OBJECT
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// WARNING: HEventQueue.dispatchEvent() is taking  1683 ms.
+// Tcl Message: Time resolution is 1 ps 
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// Elapsed time: 19 seconds
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // v
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_OPEN_WCFG
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: WAVEFORM_OPEN_WCFG
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,650 MB. GUI used memory: 163 MB. Current time: 12/1/22, 1:37:43 PM EST
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_CLEAR_CURRENT_LINE
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: SIMULATION_OBJECT_TREE_RESTORED
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: SIMULATION_CURRENT_SCOPE_CHANGED
+// TclEventType: SIMULATION_CURRENT_STACK_CHANGED
+// TclEventType: SIMULATION_UPDATE_STACK_FRAMES
+// TclEventType: SIMULATION_CURRENT_STACK_FRAME_CHANGED
+// TclEventType: SIMULATION_UPDATE_LOCALS
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_STOPPED
+// WARNING: HEventQueue.dispatchEvent() is taking  2633 ms.
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// Tcl Message: source float_functions_max_tb.tcl 
+// Tcl Message: # set curr_wave [current_wave_config] # if { [string length $curr_wave] == 0 } { #   if { [llength [get_objects]] > 0} { #     add_wave / #     set_property needs_save false [current_wave_config] #   } else { #      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console." #   } # } # run 2000ns 
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// Tcl Message: xsim: Time (s): cpu = 00:00:10 ; elapsed = 00:00:07 . Memory (MB): peak = 8327.992 ; gain = 0.000 ; free physical = 644 ; free virtual = 8447 
+// Tcl Message: INFO: [USF-XSim-96] XSim completed. Design snapshot 'float_functions_max_tb_behav' loaded. INFO: [USF-XSim-97] XSim simulation ran for 2000ns 
+// Tcl Message: launch_simulation: Time (s): cpu = 00:00:34 ; elapsed = 00:00:23 . Memory (MB): peak = 8327.992 ; gain = 0.000 ; free physical = 644 ; free virtual = 8447 
+// 'd' command handler elapsed time: 26 seconds
+dismissDialog("Run Simulation"); // e
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// Elapsed time: 37 seconds
+selectCodeEditor(RDIResource.TclConsoleView_TCL_CONSOLE_CODE_EDITOR, 322, 313); // dT
+selectCodeEditor(RDIResource.TclConsoleView_TCL_CONSOLE_CODE_EDITOR, 312, 327); // dT
+selectCodeEditor(RDIResource.TclConsoleView_TCL_CONSOLE_CODE_EDITOR, 435, 367); // dT
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_UPDATE_PROTOCOL_INSTANCE_TREE
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// [Engine Memory]: 2,681 MB (+9507kb) [01:37:31]
+// HMemoryUtils.trashcanNow. Engine heap size: 2,681 MB. GUI used memory: 116 MB. Current time: 12/1/22, 1:39:56 PM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed time: 147 seconds
+selectButton(PAResourceCommand.PACommandNames_SIMULATION_RELAUNCH, "simulation_relaunch"); // D
+// Run Command: PAResourceCommand.PACommandNames_SIMULATION_RELAUNCH
+// TclEventType: SIMULATION_MODEL_ABOUT_TO_CLOSE
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: SIMULATION_MODEL_RELOADED
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_CLEAR_CURRENT_LINE
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_CURRENT_SCOPE_CHANGED
+// TclEventType: SIMULATION_CURRENT_STACK_CHANGED
+// TclEventType: SIMULATION_UPDATE_STACK_FRAMES
+// TclEventType: SIMULATION_CURRENT_STACK_FRAME_CHANGED
+// TclEventType: SIMULATION_UPDATE_LOCALS
+// TclEventType: LAUNCH_SIM
+// Tcl Message: relaunch_sim 
+// Tcl Message: Command: launch_simulation -step compile -simset float_test -mode behavioral 
+// Tcl Message: INFO: [Vivado 12-12493] Simulation top is 'float_functions_max_tb' 
+// Tcl Message: INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator... 
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: INFO: [Vivado 12-5682] Launching behavioral simulation in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs INFO: [SIM-utils-51] Simulation object is 'float_test' INFO: [USF-XSim-2] XSim::Compile design INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' 
+// Tcl Message: xvlog --incr --relax -L uvm -prj float_functions_max_tb_vlog.prj 
+// TclEventType: LAUNCH_SIM
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: Waiting for jobs to finish... No pending jobs, compilation finished. 
+// Tcl Message: execute_script: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 8361.012 ; gain = 0.000 ; free physical = 648 ; free virtual = 8438 
+// Tcl Message: INFO: [USF-XSim-69] 'compile' step finished in '5' seconds 
+// Tcl Message: launch_simulation: Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 8361.012 ; gain = 0.000 ; free physical = 648 ; free virtual = 8438 
+// Tcl Message: Command: launch_simulation -step elaborate -simset float_test -mode behavioral 
+// Tcl Message: INFO: [Vivado 12-12493] Simulation top is 'float_functions_max_tb' 
+// Tcl Message: INFO: [Vivado 12-5698] Checking validity of IPs in the design for the 'XSim' simulator... INFO: [Vivado 12-5682] Launching behavioral simulation in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' INFO: [Vivado 12-4795] Using compiled simulation libraries for IPs INFO: [SIM-utils-51] Simulation object is 'float_test' INFO: [USF-XSim-3] XSim::Elaborate design INFO: [USF-XSim-61] Executing 'ELABORATE' step in '/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.sim/float_test/behav/xsim' 
+// Tcl Message: xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_18 -L floating_point_v7_1_14 -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot float_functions_max_tb_behav xil_defaultlib.float_functions_max_tb xil_defaultlib.glbl -log elaborate.log 
+// Tcl Message: Vivado Simulator v2022.1 Copyright 1986-1999, 2001-2022 Xilinx, Inc. All Rights Reserved. Running: /media/koops/VIVADO/Vivado/2022.1/bin/unwrapped/lnx64.o/xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L xbip_utils_v3_0_10 -L axi_utils_v2_0_6 -L xbip_pipe_v3_0_6 -L xbip_dsp48_wrapper_v3_0_4 -L xbip_dsp48_addsub_v3_0_6 -L xbip_dsp48_multadd_v3_0_6 -L xbip_bram18k_v3_0_6 -L mult_gen_v12_0_18 -L floating_point_v7_1_14 -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot float_functions_max_tb_behav xil_defaultlib.float_functions_max_tb xil_defaultlib.glbl -log elaborate.log  Using 8 slave threads. Starting static elaboration Pass Through NonSizing Optimizer 
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// Tcl Message: Built simulation snapshot float_functions_max_tb_behav 
+// Tcl Message: execute_script: Time (s): cpu = 00:00:19 ; elapsed = 00:00:11 . Memory (MB): peak = 8361.012 ; gain = 0.000 ; free physical = 675 ; free virtual = 8440 
+// Tcl Message: INFO: [USF-XSim-69] 'elaborate' step finished in '12' seconds 
+// Tcl Message: launch_simulation: Time (s): cpu = 00:00:19 ; elapsed = 00:00:12 . Memory (MB): peak = 8361.012 ; gain = 0.000 ; free physical = 680 ; free virtual = 8445 
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_MODEL_ABOUT_TO_CLOSE
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: SIMULATION_MODEL_RELOADED
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_DELETE_ALL_BREAKPOINTS
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_CURRENT_SCOPE_CHANGED
+// TclEventType: SIMULATION_CURRENT_STACK_CHANGED
+// TclEventType: SIMULATION_UPDATE_STACK_FRAMES
+// TclEventType: SIMULATION_CURRENT_STACK_FRAME_CHANGED
+// TclEventType: SIMULATION_UPDATE_LOCALS
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// TclEventType: SIMULATION_CLEAR_CURRENT_LINE
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: SIMULATION_OBJECT_TREE_RESTORED
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: SIMULATION_UPDATE_LATEST_TIME
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: SIMULATION_CURRENT_SCOPE_CHANGED
+// TclEventType: SIMULATION_CURRENT_STACK_CHANGED
+// TclEventType: SIMULATION_UPDATE_STACK_FRAMES
+// TclEventType: SIMULATION_CURRENT_STACK_FRAME_CHANGED
+// TclEventType: SIMULATION_UPDATE_LOCALS
+// TclEventType: SIMULATION_UPDATE_SCOPE_TREE
+// TclEventType: SIMULATION_UPDATE_STACKS
+// TclEventType: SIMULATION_UPDATE_OBJECT_TREE
+// TclEventType: SIMULATION_STOPPED
+// TclEventType: SIMULATION_UPDATE_SIMULATION_STATE
+// 'a' command handler elapsed time: 21 seconds
+// Elapsed time: 21 seconds
+dismissDialog("Relaunch Simulation"); // b
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 2,716 MB. GUI used memory: 114 MB. Current time: 12/1/22, 1:43:31 PM EST
