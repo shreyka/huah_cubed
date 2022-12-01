@@ -31,3 +31,45 @@ close_sim
 launch_simulation -simset [get_filesets float_test ]
 source float_functions_max_tb.tcl
 relaunch_sim
+close_sim
+set_property SOURCE_SET sources_1 [get_filesets float_test]
+add_files -fileset float_test -norecurse /media/koops/VIVADO/huah_cubed_3drender/sim/does_ray_block_intersect_tb.sv
+update_compile_order -fileset float_test
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top does_ray_block_intersect_tb [get_filesets float_test]
+set_property top_lib xil_defaultlib [get_filesets float_test]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset float_test
+launch_simulation -simset [get_filesets float_test ]
+source does_ray_block_intersect_tb.tcl
+set_property -name {xsim.simulate.runtime} -value {5000} -objects [get_filesets float_test]
+relaunch_sim
+relaunch_sim
+set_property -name {xsim.simulate.runtime} -value {2000 ns} -objects [get_filesets float_test]
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+close_sim
+launch_simulation -simset [get_filesets float_test ]
+source does_ray_block_intersect_tb.tcl
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+close_sim
+launch_simulation -simset [get_filesets float_test ]
+source does_ray_block_intersect_tb.tcl
+relaunch_sim
+relaunch_sim
+relaunch_sim

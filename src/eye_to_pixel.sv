@@ -114,6 +114,7 @@ module eye_to_pixel(
 
     floating_point_sint32_to_float x_to_float(
         .aclk(clk_in),
+        .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata({21'b0, x_in}),
         .m_axis_result_tvalid(x_float_valid),
@@ -122,6 +123,7 @@ module eye_to_pixel(
 
     floating_point_sint32_to_float y_to_float(
         .aclk(clk_in),
+        .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata({22'b0, y_in}),
         .m_axis_result_tvalid(y_float_valid),
@@ -131,6 +133,7 @@ module eye_to_pixel(
     // constant
     floating_point_sint32_to_float exminusw_to_float(
         .aclk(clk_in),
+        .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(exminusw),
         .m_axis_result_tdata(ex_minus_w_data)
@@ -139,6 +142,7 @@ module eye_to_pixel(
     // constant
     floating_point_sint32_to_float eyminusw_to_float(
         .aclk(clk_in),
+        .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(eyminush),
         .m_axis_result_tdata(ey_minus_h_data)
@@ -147,6 +151,7 @@ module eye_to_pixel(
     // constant
     floating_point_sint32_to_float float100_to_float(
         .aclk(clk_in),
+        .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(100),
         .m_axis_result_tdata(float_100_data)
@@ -155,6 +160,7 @@ module eye_to_pixel(
     // constant, try to make never 0
     floating_point_sint32_to_float ex_to_float(
         .aclk(clk_in),
+        .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(1800.00001),
         .m_axis_result_tdata(e_x_data)
@@ -163,6 +169,7 @@ module eye_to_pixel(
     // constant, try to make never 0
     floating_point_sint32_to_float ey_to_float(
         .aclk(clk_in),
+        .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(1800.00001),
         .m_axis_result_tdata(e_y_data)
@@ -171,6 +178,7 @@ module eye_to_pixel(
     // constant, try to make never 0
     floating_point_sint32_to_float ez_to_float(
         .aclk(clk_in),
+        .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(-300.00001),
         .m_axis_result_tdata(e_z_data)
