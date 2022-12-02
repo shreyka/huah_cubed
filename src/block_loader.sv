@@ -50,7 +50,7 @@ module block_loader(
     logic [1:0] pending_shift;
     logic fill_first_time;
 
-    xilinx_single_port_ram_read_first #(.RAM_WIDTH(48), .RAM_DEPTH(MAX_BLOCK_SIZE + 1), .INIT_FILE("data/out.mem")) blocks(.addra(input_block_line), .dina(48'b0), .clka(clk_in), .wea(1'b0), .ena(1'b1), .rsta(rst_in), .regcea(1'b1), .douta(loaded_block_data));
+    xilinx_single_port_ram_read_first #(.RAM_WIDTH(48), .RAM_DEPTH(MAX_BLOCK_SIZE + 1), .INIT_FILE("out.mem")) blocks(.addra(input_block_line), .dina(48'b0), .clka(clk_in), .wea(1'b0), .ena(1'b1), .rsta(rst_in), .regcea(1'b1), .douta(loaded_block_data));
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin

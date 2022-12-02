@@ -206,7 +206,7 @@ module game_logic_and_renderer(
         .block_visible_out(block_visible_blockpositions)
     );
 
-    block_selector block_selector(
+    three_dim_block_selector three_dim_block_selector(
         .clk_in(clk_in),
         .rst_in(rst_in),
         .curr_time_in(curr_time_blockpositions),
@@ -232,6 +232,33 @@ module game_logic_and_renderer(
         .block_ID_out(block_ID_selector),
         .block_visible_out(block_visible_selector)
     );
+
+    // block_selector block_selector(
+    //     .clk_in(clk_in),
+    //     .rst_in(rst_in),
+    //     .curr_time_in(curr_time_blockpositions),
+    //     .x_in(x_in),
+    //     .y_in(y_in),
+    //     .sliced_blocks(sliced_blocks),
+    //     .block_x_in(block_x_blockpositions),
+    //     .block_y_in(block_y_blockpositions),
+    //     .block_z_in(block_z_blockpositions),
+    //     .block_color_in(block_color_blockpositions),
+    //     .block_direction_in(block_direction_blockpositions),
+    //     .block_ID_in(block_ID_blockpositions),
+    //     .block_visible_in(block_visible_blockpositions),
+
+    //     .curr_time_out(curr_time_selector),
+    //     .x_out(x_out_selector),
+    //     .y_out(y_out_selector),
+    //     .block_x_out(block_x_selector),
+    //     .block_y_out(block_y_selector),
+    //     .block_z_out(block_z_selector),
+    //     .block_color_out(block_color_selector),
+    //     .block_direction_out(block_direction_selector),
+    //     .block_ID_out(block_ID_selector),
+    //     .block_visible_out(block_visible_selector)
+    // );
 
     saber_history saber_history(
         .clk_in(clk_in),
@@ -335,7 +362,7 @@ module game_logic_and_renderer(
         .broken_blocks_height(broken_blocks_height)
     );
 
-    renderer renderer(
+    three_dim_renderer renderer(
         .clk_in(clk_in),
         .rst_in(rst_in),
         .curr_time(curr_time_selector),
@@ -378,6 +405,50 @@ module game_logic_and_renderer(
         .g_out(g_out),
         .b_out(b_out)
     );
+
+    // renderer renderer(
+    //     .clk_in(clk_in),
+    //     .rst_in(rst_in),
+    //     .curr_time(curr_time_selector),
+    //     .x_in(x_out_selector),
+    //     .y_in(y_out_selector),
+    //     .block_x(block_x_selector),
+    //     .block_y(block_y_selector),
+    //     .block_z(block_z_selector),
+    //     .block_color(block_color_selector),
+    //     .block_direction(block_direction_selector),
+    //     .block_visible(block_visible_selector),
+    //     .state(state),
+    //     .max_time(max_time),
+    //     .score_in(score),
+    //     .health_in(health),
+    //     .combo_in(combo),
+    //     .broken_blocks_x(broken_blocks_x),
+    //     .broken_blocks_y(broken_blocks_y),
+    //     .broken_blocks_z(broken_blocks_z),
+    //     .broken_blocks_color(broken_blocks_color),
+    //     .broken_blocks_width(broken_blocks_width),
+    //     .broken_blocks_height(broken_blocks_height),
+    //     .hand_x_left_bottom(hand_x_left_bottom),
+    //     .hand_y_left_bottom(hand_y_left_bottom),
+    //     .hand_z_left_bottom(hand_z_left_bottom),
+    //     .hand_x_left_top(hand_x_left_top),
+    //     .hand_y_left_top(hand_y_left_top),
+    //     .hand_z_left_top(hand_z_left_top),
+    //     .hand_x_right_bottom(hand_x_right_bottom),
+    //     .hand_y_right_bottom(hand_y_right_bottom),
+    //     .hand_z_right_bottom(hand_z_right_bottom),
+    //     .hand_x_right_top(hand_x_right_top),
+    //     .hand_y_right_top(hand_y_right_top),
+    //     .hand_z_right_top(hand_z_right_top),
+    //     .head_x(head_x),
+    //     .head_y(head_y),
+    //     .head_z(head_z),
+
+    //     .r_out(r_out),
+    //     .g_out(g_out),
+    //     .b_out(b_out)
+    // );
 endmodule
 
 `default_nettype wire

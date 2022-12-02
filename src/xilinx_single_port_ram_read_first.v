@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+`default_nettype wire
 
 //  Xilinx Single Port Read First RAM
 //  This code implements a parameterizable single-port read-first memory where when data
@@ -100,3 +102,4 @@ endmodule
 */
 						
 						
+`default_nettype wire

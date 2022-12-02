@@ -1,0 +1,7 @@
+set_property SRC_FILE_INFO {cfile:/media/koops/VIVADO/huah_cubed/xdc/top_level.xdc rfile:../../../xdc/top_level.xdc id:1} [current_design]
+set_property src_info {type:XDC file:1 line:16 export:INPUT save:INPUT read:READ} [current_design]
+create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} -add [get_ports clk_100mhz]
+set_property src_info {type:PI file:{} line:-1 export:INPUT save:INPUT read:READ} [current_design]
+create_generated_clock -name clkfbout_clk_wiz_0 -source [get_pins clk_gen/mmcm_adv_inst/CLKIN1] -edges {1 2 3} -edge_shift {0.000 20.000 40.000} -add -master_clock [get_clocks sys_clk_pin] [get_pins clk_gen/mmcm_adv_inst/CLKFBOUT]
+set_property src_info {type:PI file:{} line:-1 export:INPUT save:INPUT read:READ} [current_design]
+create_generated_clock -name clk_out1_clk_wiz_0 -source [get_pins clk_gen/mmcm_adv_inst/CLKIN1] -edges {1 2 3} -edge_shift {0.000 2.692 5.385} -add -master_clock [get_clocks sys_clk_pin] [get_pins clk_gen/mmcm_adv_inst/CLKOUT0]

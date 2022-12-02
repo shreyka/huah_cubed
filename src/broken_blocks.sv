@@ -97,7 +97,7 @@ module broken_blocks(
                                 DOWN: begin
                                     broken_blocks_y[i] <= broken_blocks_y[i] + 8 >= 3600 ? 3599 : broken_blocks_y[i] + 8;
                                 end
-                                LEFT: begin
+                                default: begin
                                     broken_blocks_x[i] <= $signed(broken_blocks_x[i]) - $signed(8) < 0 ? 0 : broken_blocks_x[i] - 8;
                                 end
                             endcase
