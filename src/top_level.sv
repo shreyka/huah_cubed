@@ -9,6 +9,8 @@ module top_level(
   input wire btnu,
   input wire btnd,
 
+  input wire [15:0] sw,
+
   //TEMP for score printer
   output logic [15:0] led,
 
@@ -78,7 +80,8 @@ module top_level(
 
   //TEMP to show score
   logic [11:0] score;
-  assign led = score;
+  //TODO: TEMP DISABLE
+  // assign led = score;
 
   ////////////////////////////////////////////////////
   // MODULES
@@ -110,7 +113,9 @@ module top_level(
     // retrieve from VGA
     .x_in(hcount),
     .y_in(vcount),
-    
+    .enable_three_dim_sw1(sw[1]),
+    .enable_three_dim(sw[0]),
+
     // retrieve from camera data
     .hand_x_left_bottom(hand_x_left_bottom),
     .hand_y_left_bottom(hand_y_left_bottom),
@@ -132,6 +137,7 @@ module top_level(
     .r_out(r_out),
     .g_out(g_out),  
     .b_out(b_out),
+    .TEST_LED(led),
     .score_out(score)
   );
 

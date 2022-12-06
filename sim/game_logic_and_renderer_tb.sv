@@ -34,6 +34,8 @@ module game_logic_and_renderer_tb;
         // retrieve from VGA
         .x_in(hcount),
         .y_in(vcount),
+        .enable_three_dim_sw1(1'b0),
+        .enable_three_dim(1'b1),
         
         // retrieve from camera data
         .hand_x_left_bottom(hand_x_left_bottom),
@@ -129,24 +131,24 @@ module game_logic_and_renderer_tb;
             #10;
         end
 
-        // for(int j = 0; j < 3; j = j + 1) begin
-        //     $display("CURRENT TIME IS %d", uut.curr_time);
-        //     // $display("\tBLOCK POS i=%d is (%d, %d, %d) TIME_HIT=%d visible=%d", uut.curr_block_index_positions_out, uut.block_x, uut.block_y, uut.block_z, uut.block_time, uut.block_visible);
-        //     // $display("\tXY: (%d, %d)", uut.x_in, uut.y_in);
-        //     // $display("\tRGB: (%d, %d, %d)", uut.r_out, uut.g_out, uut.b_out);
+        for(int j = 0; j < 3; j = j + 1) begin
+            $display("CURRENT TIME IS %d", uut.curr_time);
+            // $display("\tBLOCK is (%d, %d, %d) TIME_HIT=%d visible=%d", uut.block_x_selector, uut.block_y_selector, uut.block_z_selector, uut.block_time, uut.block_visible);
+            $display("\tXY: (%d, %d)", uut.x_in, uut.y_in);
+            $display("\tRGB: (%d, %d, %d)", uut.r_out, uut.g_out, uut.b_out);
 
-        //     if(j == 0) begin
-        //         hcount = 100;
-        //         vcount = 200;
-        //     end else if(j == 1) begin
-        //         hcount = 400;
-        //         vcount = 200;
-        //     end else begin
-        //         hcount = 200;
-        //         vcount = 400;
-        //     end
-        //     #120;
-        // end
+            if(j == 0) begin
+                hcount = 100;
+                vcount = 200;
+            end else if(j == 1) begin
+                hcount = 400;
+                vcount = 200;
+            end else begin
+                hcount = 200;
+                vcount = 400;
+            end
+            #1000;
+        end
 
         // for(int j = 0; j < 5; j = j + 1) begin
         //     $display("CURRENT TIME IS %d", uut.curr_time);

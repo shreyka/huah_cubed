@@ -31,7 +31,18 @@ read_verilog -sv [ glob ./src/*.{sv,v,svh,vh} ]
 read_xdc ./xdc/top_level.xdc
 
 set_part $partNum
-
+read_ip ./ip/floating_point_add.xci
+read_ip ./ip/floating_point_divide.xci
+read_ip ./ip/floating_point_equal.xci
+read_ip ./ip/floating_point_float_to_sint32.xci
+read_ip ./ip/floating_point_lt.xci
+read_ip ./ip/floating_point_lte.xci
+read_ip ./ip/floating_point_multiply.xci
+read_ip ./ip/floating_point_re_sqrt.xci
+read_ip ./ip/floating_point_sint32_to_float.xci
+read_ip ./ip/floating_point_sub.xci
+generate_target all [get_ips]
+synth_ip [get_ips]
 # synth
 synth_design -top top_level -part $partNum -verbose
 report_utilization -file $outputDir/post_synth_util.rpt
@@ -69,4 +80,3 @@ if { $verbose } {
 }
 
 exec sh -c "rm -rf *.jou *.log"
-

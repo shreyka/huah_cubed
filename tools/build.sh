@@ -7,16 +7,18 @@ command=$1
 
 function compile_for_test () {
     # run personal compiler
-    sed -i 's/curr_time_counter == 650000/curr_time_counter == 10/g' src/game_state.sv
-    sed -i 's|.INIT_FILE("out.mem")|.INIT_FILE("data/out.mem")|g' src/block_loader.sv
+    # sed -i 's/curr_time_counter == 650000/curr_time_counter == 10/g' src/game_state.sv
+    # sed -i 's|.INIT_FILE("out.mem")|.INIT_FILE("data/out.mem")|g' src/block_loader.sv
     # end run personal compiler
+    echo "skipped"
 }
 
 function compile_for_build () {
     # run personal compiler
-    sed -i 's/curr_time_counter == 10/curr_time_counter == 650000/g' src/game_state.sv
+    # sed -i 's/curr_time_counter == 10/curr_time_counter == 650000/g' src/game_state.sv
     # sed -i 's|.INIT_FILE("data/out.mem")|.INIT_FILE("out.mem")|g' src/block_loader.sv
     # end run personal compiler
+    echo "skipped"
 }
 
 if [[ $command == "test" ]]
@@ -25,7 +27,7 @@ then
     then
         compile_for_test
 
-        iverilog -g2012 -o sim/game_logic_and_renderer_tb.out -Isrc sim/game_logic_and_renderer_tb.sv src/game_logic_and_renderer.sv src/game_state.sv src/block_positions.sv src/block_selector.sv src/state_processor.sv src/renderer.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v src/saber_history.sv src/broken_blocks.sv && vvp sim/game_logic_and_renderer_tb.out
+        iverilog -g2012 -o sim/game_logic_and_renderer_tb.out -Isrc sim/game_logic_and_renderer_tb.sv src/game_logic_and_renderer.sv src/game_state.sv src/block_positions.sv src/block_selector.sv src/state_processor.sv src/renderer.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v src/saber_history.sv src/broken_blocks.sv src/three_dim_renderer.sv src/three_dim_block_selector.sv src/float_functions.sv src/xilinx_true_dual_port_read_first_1_clock_ram.v src/get_intersecting_block.sv src/eye_to_pixel.sv src/does_ray_block_intersect.sv stubs/*.v && vvp sim/game_logic_and_renderer_tb.out
     elif [[ $2 == "loader" ]]
     then
         compile_for_test
@@ -58,6 +60,9 @@ then
 elif [[ $command == "fpga" ]]
 then
     openFPGALoader -b arty_a7_100t output_files/final.bit
+elif [[ $command == "fpga-tl" ]]
+then
+    openFPGALoader -b arty_a7_100t /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/top_level.bit
 else
     echo "unknown command."
 fi

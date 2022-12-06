@@ -137,6 +137,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(valid_in),
         .s_axis_a_tdata(exminusw),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(ex_minus_w_data)
     );
 
@@ -146,6 +147,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(valid_in),
         .s_axis_a_tdata(eyminush),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(ey_minus_h_data)
     );
 
@@ -155,6 +157,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(100),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(float_100_data)
     );
 
@@ -164,6 +167,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(1800.00001),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(e_x_data)
     );
 
@@ -173,6 +177,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(1800.00001),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(e_y_data)
     );
 
@@ -182,6 +187,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(-300.00001),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(e_z_data)
     );
 

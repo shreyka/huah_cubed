@@ -44,7 +44,8 @@ module does_ray_block_intersect(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tdata(e_x_data)
+        .m_axis_result_tdata(e_x_data),
+        .m_axis_result_tvalid()
     );
 
     // constant, try to make never 0
@@ -53,7 +54,8 @@ module does_ray_block_intersect(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tdata(e_y_data)
+        .m_axis_result_tdata(e_y_data),
+        .m_axis_result_tvalid()
     );
 
     // constant, try to make never 0
@@ -62,7 +64,8 @@ module does_ray_block_intersect(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(-300.00001),
-        .m_axis_result_tdata(e_z_data)
+        .m_axis_result_tdata(e_z_data),
+        .m_axis_result_tvalid()
     );
 
     ////////////////////////////////////////////////////
@@ -138,7 +141,8 @@ module does_ray_block_intersect(
 
         .res_data_x(block_max_x),
         .res_data_y(block_max_y),
-        .res_data_z(block_max_z)
+        .res_data_z(block_max_z),
+        .res_valid()
     );
 
     // stage 1
@@ -173,7 +177,8 @@ module does_ray_block_intersect(
 
         .res_data_x(max_e_x),
         .res_data_y(max_e_y),
-        .res_data_z(max_e_z)
+        .res_data_z(max_e_z),
+        .res_valid()
     );
 
     // stage 2, verified
@@ -233,7 +238,8 @@ module does_ray_block_intersect(
 
         .res_data_x(tx2_x),
         .res_data_y(tx2_y),
-        .res_data_z(tx2_z)
+        .res_data_z(tx2_z),
+        .res_valid()
     );
 
     // stage 3, verified
@@ -272,7 +278,8 @@ module does_ray_block_intersect(
 
         .res_data_x(max_tx12_lt_x),
         .res_data_y(max_tx12_lt_y),
-        .res_data_z(max_tx12_lt_z)
+        .res_data_z(max_tx12_lt_z),
+        .res_valid()
     );
 
     // stage 4
@@ -352,7 +359,8 @@ module does_ray_block_intersect(
 
         .res_data_x(tx12_max_select_x),
         .res_data_y(tx12_max_select_y),
-        .res_data_z(tx12_max_select_z)
+        .res_data_z(tx12_max_select_z),
+        .res_valid()
     );
 
     //stage 5
@@ -379,7 +387,8 @@ module does_ray_block_intersect(
         .v_z(tx12_max_select_z),
         .v_valid(tx12_min_select_valid),
 
-        .res_data(tmax)
+        .res_data(tmax),
+        .res_valid()
     );
 
     //stage 6

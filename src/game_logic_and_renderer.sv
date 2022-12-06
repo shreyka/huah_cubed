@@ -26,6 +26,8 @@ module game_logic_and_renderer(
     
     input wire [10:0] x_in,
     input wire [9:0] y_in,
+    input wire enable_three_dim_sw1,
+    input wire enable_three_dim,
 
     input wire [11:0] hand_x_left_bottom,
     input wire [11:0] hand_y_left_bottom,
@@ -46,6 +48,7 @@ module game_logic_and_renderer(
     output logic [3:0] r_out,
     output logic [3:0] g_out,
     output logic [3:0] b_out,
+    output logic [15:0] TEST_LED,
 
     //this is temporary so that we can see score without a screen
     output logic [11:0] score_out
@@ -88,7 +91,7 @@ module game_logic_and_renderer(
     logic [11:0] [7:0] block_ID_blockpositions;
     logic [11:0] block_visible_blockpositions;
 
-    // OUTPUTS FROM BLOCK SELECTOR
+    // BLOCK SELECTOR GENERIC OUTPUT
     logic [17:0] curr_time_selector;
     logic [10:0] x_out_selector;
     logic [9:0] y_out_selector;
@@ -99,6 +102,30 @@ module game_logic_and_renderer(
     logic [2:0] block_direction_selector;
     logic [7:0] block_ID_selector;
     logic block_visible_selector;
+
+    // OUTPUT FROM BLOCK SELECTOR 2D
+    logic [17:0] curr_time_selector_two_dim;
+    logic [10:0] x_out_selector_two_dim;
+    logic [9:0] y_out_selector_two_dim;
+    logic [11:0] block_x_selector_two_dim;
+    logic [11:0] block_y_selector_two_dim;
+    logic [13:0] block_z_selector_two_dim;
+    logic block_color_selector_two_dim;
+    logic [2:0] block_direction_selector_two_dim;
+    logic [7:0] block_ID_selector_two_dim;
+    logic block_visible_selector_two_dim;
+
+    // OUTPUT FROM BLOCK SELECTOR 3D
+    logic [17:0] curr_time_selector_three_dim;
+    logic [10:0] x_out_selector_three_dim;
+    logic [9:0] y_out_selector_three_dim;
+    logic [11:0] block_x_selector_three_dim;
+    logic [11:0] block_y_selector_three_dim;
+    logic [13:0] block_z_selector_three_dim;
+    logic block_color_selector_three_dim;
+    logic [2:0] block_direction_selector_three_dim;
+    logic [7:0] block_ID_selector_three_dim;
+    logic block_visible_selector_three_dim;
 
     // OUTPUT FROM SABER HISTORY
     logic [11:0] prev_hand_x_left_bottom;
@@ -135,6 +162,12 @@ module game_logic_and_renderer(
     logic [9:0] broken_blocks_color;
     logic [9:0] [11:0] broken_blocks_width;
     logic [9:0] [11:0] broken_blocks_height;
+
+    // OUTPUT FROM 2D RENDERER
+    logic [3:0] r_out_two_dim, g_out_two_dim, b_out_two_dim;
+
+    // OUTPUT FROM 3D RENDERER
+    logic [3:0] r_out_three_dim, g_out_three_dim, b_out_three_dim;
 
     ////////////////////////////////////////////////////
     // MODULES
@@ -221,44 +254,84 @@ module game_logic_and_renderer(
         .block_ID_in(block_ID_blockpositions),
         .block_visible_in(block_visible_blockpositions),
 
-        .curr_time_out(curr_time_selector),
-        .x_out(x_out_selector),
-        .y_out(y_out_selector),
-        .block_x_out(block_x_selector),
-        .block_y_out(block_y_selector),
-        .block_z_out(block_z_selector),
-        .block_color_out(block_color_selector),
-        .block_direction_out(block_direction_selector),
-        .block_ID_out(block_ID_selector),
-        .block_visible_out(block_visible_selector)
+        .curr_time_out(curr_time_selector_three_dim),
+        .x_out(x_out_selector_three_dim),
+        .y_out(y_out_selector_three_dim),
+        .block_x_out(block_x_selector_three_dim),
+        .block_y_out(block_y_selector_three_dim),
+        .block_z_out(block_z_selector_three_dim),
+        .block_color_out(block_color_selector_three_dim),
+        .block_direction_out(block_direction_selector_three_dim),
+        .block_ID_out(block_ID_selector_three_dim),
+        .block_visible_out(block_visible_selector_three_dim)
     );
 
-    // block_selector block_selector(
-    //     .clk_in(clk_in),
-    //     .rst_in(rst_in),
-    //     .curr_time_in(curr_time_blockpositions),
-    //     .x_in(x_in),
-    //     .y_in(y_in),
-    //     .sliced_blocks(sliced_blocks),
-    //     .block_x_in(block_x_blockpositions),
-    //     .block_y_in(block_y_blockpositions),
-    //     .block_z_in(block_z_blockpositions),
-    //     .block_color_in(block_color_blockpositions),
-    //     .block_direction_in(block_direction_blockpositions),
-    //     .block_ID_in(block_ID_blockpositions),
-    //     .block_visible_in(block_visible_blockpositions),
+    logic [22:0] curr_time_counter;
 
-    //     .curr_time_out(curr_time_selector),
-    //     .x_out(x_out_selector),
-    //     .y_out(y_out_selector),
-    //     .block_x_out(block_x_selector),
-    //     .block_y_out(block_y_selector),
-    //     .block_z_out(block_z_selector),
-    //     .block_color_out(block_color_selector),
-    //     .block_direction_out(block_direction_selector),
-    //     .block_ID_out(block_ID_selector),
-    //     .block_visible_out(block_visible_selector)
-    // );
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            curr_time_counter <= 0;
+            TEST_LED <= 0;
+        end else begin
+            if(curr_time_counter >= 6500000 && x_out_selector_three_dim == 200 && y_out_selector_three_dim == 200) begin //100 ms
+                TEST_LED <= {7'b1111111, block_visible_selector_three_dim == 0 ? 8'b0 : block_ID_selector_three_dim, block_visible_selector_three_dim};
+                curr_time_counter <= 0;
+            end else begin
+                if(curr_time_counter < 6500000) begin
+                    curr_time_counter <= curr_time_counter + 1;
+                end
+            end
+        end
+    end
+
+    block_selector block_selector(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+        .curr_time_in(curr_time_blockpositions),
+        .x_in(x_in),
+        .y_in(y_in),
+        .sliced_blocks(sliced_blocks),
+        .block_x_in(block_x_blockpositions),
+        .block_y_in(block_y_blockpositions),
+        .block_z_in(block_z_blockpositions),
+        .block_color_in(block_color_blockpositions),
+        .block_direction_in(block_direction_blockpositions),
+        .block_ID_in(block_ID_blockpositions),
+        .block_visible_in(block_visible_blockpositions),
+
+        .curr_time_out(curr_time_selector_two_dim),
+        .x_out(x_out_selector_two_dim),
+        .y_out(y_out_selector_two_dim),
+        .block_x_out(block_x_selector_two_dim),
+        .block_y_out(block_y_selector_two_dim),
+        .block_z_out(block_z_selector_two_dim),
+        .block_color_out(block_color_selector_two_dim),
+        .block_direction_out(block_direction_selector_two_dim),
+        .block_ID_out(block_ID_selector_two_dim),
+        .block_visible_out(block_visible_selector_two_dim)
+    );
+
+    assign curr_time_selector = enable_three_dim_sw1 ? curr_time_selector_three_dim : curr_time_selector_two_dim;
+    assign x_out_selector = enable_three_dim_sw1 ? x_out_selector_three_dim : x_out_selector_two_dim;
+    assign y_out_selector = enable_three_dim_sw1 ? y_out_selector_three_dim : y_out_selector_two_dim;
+    assign block_x_selector = enable_three_dim_sw1 ? block_x_selector_three_dim : block_x_selector_two_dim;
+    assign block_y_selector = enable_three_dim_sw1 ? block_y_selector_three_dim : block_y_selector_two_dim;
+    assign block_z_selector = enable_three_dim_sw1 ? block_z_selector_three_dim : block_z_selector_two_dim;
+    assign block_color_selector = enable_three_dim_sw1 ? block_color_selector_three_dim : block_color_selector_two_dim;
+    assign block_direction_selector = enable_three_dim_sw1 ? block_direction_selector_three_dim : block_direction_selector_two_dim;
+    assign block_ID_selector = enable_three_dim_sw1 ? block_ID_selector_three_dim: block_ID_selector_two_dim;
+    assign block_visible_selector = enable_three_dim_sw1 ? block_visible_selector_three_dim: block_visible_selector_two_dim;
+
+    // assign curr_time_selector = curr_time_selector_three_dim;
+    // assign x_out_selector = x_out_selector_three_dim;
+    // assign y_out_selector = y_out_selector_three_dim;
+    // assign block_x_selector = block_x_selector_three_dim;
+    // assign block_y_selector = block_y_selector_three_dim;
+    // assign block_z_selector = block_z_selector_three_dim;
+    // assign block_color_selector = block_color_selector_three_dim;
+    // assign block_direction_selector = block_direction_selector_three_dim;
+    // assign block_ID_selector = block_ID_selector_three_dim;
+    // assign block_visible_selector = block_visible_selector_three_dim;
 
     saber_history saber_history(
         .clk_in(clk_in),
@@ -362,12 +435,14 @@ module game_logic_and_renderer(
         .broken_blocks_height(broken_blocks_height)
     );
 
-    three_dim_renderer renderer(
+    three_dim_renderer three_dim_renderer(
         .clk_in(clk_in),
         .rst_in(rst_in),
         .curr_time(curr_time_selector),
-        .x_in(x_out_selector),
-        .y_in(y_out_selector),
+        .x_in_block(x_out_selector),
+        .y_in_block(y_out_selector),
+        .x_in_rgb(x_in),
+        .y_in_rgb(y_in),
         .block_x(block_x_selector),
         .block_y(block_y_selector),
         .block_z(block_z_selector),
@@ -401,17 +476,17 @@ module game_logic_and_renderer(
         .head_y(head_y),
         .head_z(head_z),
 
-        .r_out(r_out),
-        .g_out(g_out),
-        .b_out(b_out)
+        .r_out(r_out_three_dim),
+        .g_out(g_out_three_dim),
+        .b_out(b_out_three_dim)
     );
 
     // renderer renderer(
     //     .clk_in(clk_in),
     //     .rst_in(rst_in),
     //     .curr_time(curr_time_selector),
-    //     .x_in(x_out_selector),
-    //     .y_in(y_out_selector),
+    //     .x_in(x_in),
+    //     .y_in(y_in),
     //     .block_x(block_x_selector),
     //     .block_y(block_y_selector),
     //     .block_z(block_z_selector),
@@ -445,10 +520,17 @@ module game_logic_and_renderer(
     //     .head_y(head_y),
     //     .head_z(head_z),
 
-    //     .r_out(r_out),
-    //     .g_out(g_out),
-    //     .b_out(b_out)
+    //     .r_out(r_out_two_dim),
+    //     .g_out(g_out_two_dim),
+    //     .b_out(b_out_two_dim)
     // );
+
+    // assign r_out = enable_three_dim ? r_out_three_dim : r_out_two_dim;
+    // assign g_out = enable_three_dim ? g_out_three_dim : g_out_two_dim;
+    // assign b_out = enable_three_dim ? b_out_three_dim : b_out_two_dim;
+    assign r_out = r_out_three_dim;
+    assign g_out = g_out_three_dim;
+    assign b_out = b_out_three_dim;
 endmodule
 
 `default_nettype wire

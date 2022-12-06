@@ -43,9 +43,11 @@ module three_dim_block_selector(
     );
 
     logic [31:0] ray_out_x, ray_out_y, ray_out_z;
-    logic [11:0] select_index;
+    logic [3:0] select_index;
     logic [31:0] best_t;
     logic res_valid;
+    logic [10:0] x_out_inter;
+    logic [9:0] y_out_inter;
     get_intersecting_block get_intersecting_block(
         .clk_in(clk_in),
         .rst_in(rst_in),
@@ -53,29 +55,31 @@ module three_dim_block_selector(
         .y_in(y_in),
         .valid_in(1'b1),
 
-        .block_x_in(block_x_in),
-        .block_y_in(block_y_in),
-        .block_z_in(block_z_in),
+        .block_x_notfloat_in(block_x_in),
+        .block_y_notfloat_in(block_y_in),
+        .block_z_notfloat_in(block_z_in),
 
         .ray_out_x(ray_out_x),
         .ray_out_y(ray_out_y),
         .ray_out_z(ray_out_z),
+        .x_out(x_out_inter),
+        .y_out(y_out_inter),
         .best_block(select_index),
         .best_t(best_t),
         .valid_out(res_valid)
     );
-
-    localparam MAX_BLOCK_INDEX = 256;
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
         end else begin
             //passthrough
             curr_time_out <= curr_time_in;
-            x_out <= x_in;
-            y_out <= y_in;
 
-            if(res_valid && select_index != MAX_BLOCK_INDEX) begin
+            x_out <= x_out_inter;
+            y_out <= y_out_inter;
+
+            // assume the 12 block positions cannot update faster than we can compute
+            if(res_valid && select_index < 12) begin
                 block_x_out <= block_x_in[select_index];
                 block_y_out <= block_y_in[select_index];
                 block_z_out <= block_z_in[select_index];
@@ -84,12 +88,6 @@ module three_dim_block_selector(
                 block_ID_out <= block_ID_in[select_index];
                 block_visible_out <= 1;
             end else begin
-                block_x_out <= 0;
-                block_y_out <= 0;
-                block_z_out <= 0;
-                block_color_out <= 0;
-                block_direction_out <= 0;
-                block_ID_out <= 0;
                 block_visible_out <= 0;
             end
         end

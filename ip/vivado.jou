@@ -1,0 +1,45 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:47:01 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Sat Dec  3 13:25:13 2022
+# Process ID: 6640
+# Current directory: /media/koops/VIVADO/huah_cubed/ip
+# Command line: vivado
+# Log file: /media/koops/VIVADO/huah_cubed/ip/vivado.log
+# Journal file: /media/koops/VIVADO/huah_cubed/ip/vivado.jou
+# Running On: koops, OS: Linux, CPU Frequency: 1900.248 MHz, CPU Physical cores: 4, Host memory: 16698 MB
+#-----------------------------------------------------------
+start_gui
+open_project /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.xpr
+update_compile_order -fileset sources_1
+remove_files  -fileset constrs_1 /media/koops/VIVADO/huah_cubed/build.tcl
+add_files -fileset constrs_1 -norecurse /media/koops/VIVADO/huah_cubed/xdc/top_level.xdc
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+reset_run impl_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+open_run impl_1
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+close_design
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+open_run impl_1
+close_design
