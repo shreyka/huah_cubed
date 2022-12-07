@@ -131,6 +131,8 @@ module top_level(
   logic [2:0] count; 
 
   logic [1:0] serial_state;
+  parameter IDLE = 0;
+  parameter TRANSMIT = 1; 
  
   always_ff @(posedge clk_65mhz) begin
     if (sys_rst) begin
@@ -139,77 +141,75 @@ module top_level(
         count <= 0;
         TEST <= 0;
     end else begin
-        if (TxD_busy == 0) begin
+      // send 3 FFs
+      // send 3 bytes for hand left bottom
+      // TO DO send 3 bytes for hand left top
+      if (TxD_busy == 0) begin
             start_byte <= 1;
 
-            if (count <= 6) begin 
+            if (count <= 4) begin 
               count <= count + 1;
             end else begin
               count <= 0;
-            end
-
-            if (count == 0) begin
-              RxD_data <= data1; // 38
-            end else if (count == 1) begin
-              RxD_data <= data2; // BA
-            end else if (count == 2) begin
-              RxD_data <= data3; //15
-            end else if (count == 3) begin
-              RxD_data <= data4; //FF
-            end else if (count == 4) begin
-              RxD_data <= 8'b10000000; // 80
-            end else if (count == 5) begin
-              RxD_data <= 10; // A
-            end else if (count == 6) begin
-              RxD_data <= 6; // 6
-            end else if (count == 7) begin
-              RxD_data <= 7; // 7
-            end else begin
-              RxD_data <= 0;
             end 
 
-
-            // if (RxD_data == data1) begin
-            //   RxD_data <= data2;
-            // end else if (RxD_data == data2) begin
-            //   RxD_data <= data3;
-            // end else if (RxD_data == data3) begin
-            //   RxD_data <= data4;
-            // end else begin
-            //   RxD_data <= data1;
+            if (count <= 2) begin
+              RxD_data <= 8'b11111111; 
+            end else if (count == 3) begin 
+              RxD_data <=  hand_x_left_bottom[11:4]; 
+            end else if (count == 4) begin
+              RxD_data <= {hand_x_left_bottom[3:0],hand_y_left_bottom[11:8]};
+            end else if (count == 5) begin
+              RxD_data <= hand_y_left_bottom[7:0];
+            end else begin
+              RxD_data <= 0; //FF
+              // count <= 0; 
+            end 
             // end 
         end else begin
             start_byte <= 0; 
         end
+      // case(serial_state)
+      //   IDLE: begin 
+      //     if (start_transmit) begin 
+      //       serial_state <= TRANSMIT;
+      //       count <= 0; 
+      //     end 
+      //   end 
+
+      //   TRANSMIT: begin
+      //     if (TxD_busy == 0) begin
+      //       start_byte <= 1;
+
+      //       count <= count + 1;
+
+      //       if (count == 0) begin
+      //         RxD_data <=  hand_x_left_bottom[11:4]; 
+      //       end else if (count == 1) begin
+      //         RxD_data <= hand_x_left_bottom[3:0] + hand_y_left_bottom[11:8];
+      //       end else if (count == 2) begin
+      //         RxD_data <= hand_y_left_bottom[7:0];
+      //       end else if (count == 3) begin
+      //         RxD_data <= count; //FF
+      //       end else begin
+      //         serial_state <= IDLE;
+      //         count <= 0; 
+      //       end 
+      //       // end 
+      //   end else begin
+      //       start_byte <= 0; 
+      //   end
+      //   end 
+      // endcase 
+
         
-        // if (start_byte == 1) begin
-        //     start_byte <= 0; 
-        // end
-        TEST <= ~TEST;
+        
+        
 
     end
   end 
 
-
-  // assign start_byte = 1;
   // assign RxD_data = hand_x_left_bottom[11:4];
-
-  // always_ff @(posedge clk_65mhz) begin
-  //   if (sys_rst) begin
-  //       start_byte <= 0;
-  //   end else begin
-  //       if (TxD_busy == 0) begin
-  //           start_byte <= 1;
-  //       end else begin
-  //           start_byte <= 0; 
-  //       end
-        
-  //       if (start_byte == 1) begin
-  //           start_byte <= 0; 
-  //       end
-
-  //   end
-  // end 
 
  // need to transmit x, y coordinate, 10 bits, 11 bits [10:0] [9:0]
   transmitter t1 (.clk(clk_65mhz), 
@@ -235,7 +235,7 @@ module top_level(
         .clk_in(clk_65mhz),
         .rst_in(sys_rst),
         // .val_in({DATA_RECEIVED, 8'b00000000, RxD_data}),
-        .val_in({DATA_RECEIVED, 8'b00000000, display_byte}),
+        .val_in({hand_x_left_bottom, 8'b00000000, hand_y_left_bottom}),
         .cat_out({cag, caf, cae, cad, cac, cab, caa}),
         .an_out(an));
   
