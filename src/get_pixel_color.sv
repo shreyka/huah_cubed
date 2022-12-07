@@ -53,23 +53,23 @@ module get_pixel_color(
     logic [31:0] lights_intense_z [2:0];
 
     assign lights_pos_x[0] = 32'b01000100101011110000000000000000; //1400
-    assign lights_pos_x[1] = 32'b01000100111000010000000000000000; //1800
-    assign lights_pos_x[2] = 32'b01000010110010000000000000000000; //100
     assign lights_pos_y[0] = 32'b01000100111000010000000000000000; //1800
+    assign lights_pos_z[0] = 32'b01000010110010000000000000000000; //100
+    assign lights_pos_x[1] = 32'b01000100111000010000000000000000; //1800
     assign lights_pos_y[1] = 32'b01000100111000010000000000000000; //1800
-    assign lights_pos_y[2] = 32'b01000010110010000000000000000000; //100
-    assign lights_pos_z[0] = 32'b01000101000010011000000000000000; //2200
-    assign lights_pos_z[1] = 32'b01000100111000010000000000000000; //1800
+    assign lights_pos_z[1] = 32'b01000010110010000000000000000000; //100
+    assign lights_pos_x[2] = 32'b01000101000010011000000000000000; //2200
+    assign lights_pos_y[2] = 32'b01000100111000010000000000000000; //1800
     assign lights_pos_z[2] = 32'b01000010110010000000000000000000; //100
 
     assign lights_intense_x[0] = 32'b00111110100000000000000000000000; //0.25
-    assign lights_intense_x[1] = 32'b00111111000000000000000000000000; //0.5
-    assign lights_intense_x[2] = 32'b00111110100000000000000000000000; //0.25
-    assign lights_intense_y[0] = 32'b00111111010000000000000000000000; //0.75
-    assign lights_intense_y[1] = 32'b00111111000000000000000000000000; //0.5
-    assign lights_intense_y[2] = 32'b00111111010000000000000000000000; //0.75
+    assign lights_intense_y[0] = 32'b00111111000000000000000000000000; //0.5
     assign lights_intense_z[0] = 32'b00111110100000000000000000000000; //0.25
-    assign lights_intense_z[1] = 32'b00111111000000000000000000000000; //0.5
+    assign lights_intense_x[1] = 32'b00111111010000000000000000000000; //0.75
+    assign lights_intense_y[1] = 32'b00111111000000000000000000000000; //0.5
+    assign lights_intense_z[1] = 32'b00111111010000000000000000000000; //0.75
+    assign lights_intense_x[2] = 32'b00111110100000000000000000000000; //0.25
+    assign lights_intense_y[2] = 32'b00111111000000000000000000000000; //0.5
     assign lights_intense_z[2] = 32'b00111110100000000000000000000000; //0.25
 
     ////////////////////////////////////////////////////
@@ -221,11 +221,11 @@ module get_pixel_color(
         .should_render_arrow_valid(should_render_arrow_valid)
     );
 
-    always_ff @(posedge clk_in) begin
-        if(should_render_arrow_valid) begin
-            $display("SHOULD_RENDER? %d", should_render_arrow);
-        end
-    end
+    // always_ff @(posedge clk_in) begin
+    //     if(should_render_arrow_valid) begin
+    //         $display("SHOULD_RENDER? %d", should_render_arrow);
+    //     end
+    // end
 
     vec_add new_origin_add( //verified up to here
         .clk_in(clk_in),
@@ -272,7 +272,7 @@ module get_pixel_color(
     // stage 3: SKIPPED
     // stage 4
 
-    vec_normalize normalize_normal(
+    vec_normalize normalize_normal( //verified up to here
         .clk_in(clk_in),
         .rst_in(rst_in),
         .v_x(normal_sub_x),
@@ -286,13 +286,9 @@ module get_pixel_color(
         .res_valid(normal_valid)
     );
 
-    always_ff @(posedge clk_in) begin
-        if(normal_valid) begin
-            $display("NORMAL %h %h %h", normal_x, normal_y, normal_z);
-        end
-    end
-
     // stage 5
+
+    //TEST STARTING HERE
 
     // pipeline new_origin: 92
     localparam NEW_ORIGIN_DELAY = 81;
@@ -352,7 +348,7 @@ module get_pixel_color(
         end
     end
 
-    // pipeline block_mat: 208
+    // pipeline block_mat (scale, add, sub, normalize, sub, normalize, dot, multiply): 208
     localparam BLOCK_MAT_DELAY = 208;
     logic [31:0] block_mat_x_pipe [BLOCK_MAT_DELAY-1:0];
     logic [31:0] block_mat_y_pipe [BLOCK_MAT_DELAY-1:0];
@@ -444,9 +440,21 @@ module get_pixel_color(
                 .res_data_y(light_intense_mat_mult_y[i]),
                 .res_data_z(light_intense_mat_mult_z[i]),
                 .res_valid(light_intense_mat_mult_valid[i])
-            );
+            ); //verified up to here
 
-            // stage 5-4
+            // always_ff @(posedge clk_in) begin
+            //     if(i == 0 && light_intense_mat_mult_valid[0]) begin
+            //         $display("LIGHT_INTENSE %b %b %b", light_intense_mat_mult_x[0], light_intense_mat_mult_y[0], light_intense_mat_mult_z[0]);
+            //     end
+            // end
+
+            // always_ff @(posedge clk_in) begin
+            //     if(i == 0 && light_intense_mat_mult_valid[0]) begin
+            //         $display("LIGHT_INTENSE %b %b %b", light_intense_mat_mult_x[0], light_intense_mat_mult_y[0], light_intense_mat_mult_z[0]);
+            //     end
+            // end
+
+            // stage 5-5
             vec_multiply lambert_scale_multiply(
                 .clk_in(clk_in),
                 .rst_in(rst_in),
@@ -497,11 +505,11 @@ module get_pixel_color(
         end
     end
 
-    always_ff @(posedge clk_in) begin
-        if(r_total_valid) begin
-            $display("ORI-RGB-0 SCALE0 %h %h %h", lambert_scale_x[0], lambert_scale_x[1], lambert_scale_x[2]);
-        end
-    end
+    // always_ff @(posedge clk_in) begin
+    //     if(lambert_scale_valid[0]) begin
+    //         $display("ORI-RGB-0 SCALE0 %h %h %h", lambert_scale_x[0], lambert_scale_x[1], lambert_scale_x[2]);
+    //     end
+    // end // i think this is verified
 
     vec_add r_total_0_add(
                 .clk_in(clk_in),
@@ -510,8 +518,8 @@ module get_pixel_color(
                 .v1_y(lambert_scale_y[0]),
                 .v1_z(lambert_scale_z[0]),
                 .v2_x(lambert_scale_x[1]),
-                .v2_y(lambert_scale_x[1]),
-                .v2_z(lambert_scale_x[1]),
+                .v2_y(lambert_scale_y[1]),
+                .v2_z(lambert_scale_z[1]),
                 .v_valid(lambert_scale_valid[0]),
 
                 .res_data_x(r_total_0),
@@ -520,11 +528,11 @@ module get_pixel_color(
                 .res_valid(r_total_0_valid)
             );
     
-    always_ff @(posedge clk_in) begin
-        if(r_total_valid) begin
-            $display("ORI-RGB-1 %h %h %h", r_total_0,g_total_0,b_total_0);
-        end
-    end
+    // always_ff @(posedge clk_in) begin
+    //     if(r_total_0_valid) begin
+    //         $display("ORI-RGB-1 %h %h %h", r_total_0,g_total_0,b_total_0);
+    //     end
+    // end
 
     // stage 6-1
     vec_add r_total_add(
@@ -544,12 +552,11 @@ module get_pixel_color(
                 .res_valid(r_total_valid)
             );
 
-    // NOT RIGHT
-    always_ff @(posedge clk_in) begin
-        if(r_total_valid) begin
-            $display("ORI-RGB-2 %h %h %h", r_total,g_total,b_total);
-        end
-    end
+    // always_ff @(posedge clk_in) begin
+    //     if(r_total_valid) begin
+    //         $display("ORI-RGB-2 %h %h %h", r_total,g_total,b_total);
+    //     end
+    // end // i think verified up to here
 
     // stage 7
 
@@ -569,7 +576,7 @@ module get_pixel_color(
     // stage 8
 
     // pipeline should_render_arrow: 194, verified
-    localparam SHOULD_RENDER_ARROW_DELAY = 194;
+    localparam SHOULD_RENDER_ARROW_DELAY = 194 + 1;
     logic should_render_arrow_pipe [SHOULD_RENDER_ARROW_DELAY-1:0];
     logic should_render_arrow_valid_pipe [SHOULD_RENDER_ARROW_DELAY-1:0];
 
@@ -620,11 +627,11 @@ module get_pixel_color(
         end
     end
 
-    always_ff @(posedge clk_in) begin
-        if(min_rgb_valid) begin
-            $display("RGB %b %b %b", r_total_pipe[RGB_TOTAL_DELAY-1],g_total_pipe[RGB_TOTAL_DELAY-1],b_total_pipe[RGB_TOTAL_DELAY-1]);
-        end
-    end
+    // always_ff @(posedge clk_in) begin
+    //     if(min_rgb_valid) begin
+    //         $display("RGB %b %b %b", r_total_pipe[RGB_TOTAL_DELAY-1],g_total_pipe[RGB_TOTAL_DELAY-1],b_total_pipe[RGB_TOTAL_DELAY-1]);
+    //     end
+    // end
 
     always_ff @(posedge clk_in) begin
         if(~rst_in) begin
