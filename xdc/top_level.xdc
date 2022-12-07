@@ -125,14 +125,14 @@ set_property -dict { PACKAGE_PIN E16   IOSTANDARD LVCMOS33 } [get_ports { jblock
 
 ##Pmod Header JC
 
-#set_property -dict { PACKAGE_PIN K1    IOSTANDARD LVCMOS33 } [get_ports { jc[0] }]; #IO_L23N_T3_35 Sch=jc[1]
-#set_property -dict { PACKAGE_PIN F6    IOSTANDARD LVCMOS33 } [get_ports { jc[1] }]; #IO_L19N_T3_VREF_35 Sch=jc[2]
-#set_property -dict { PACKAGE_PIN J2    IOSTANDARD LVCMOS33 } [get_ports { jc[2] }]; #IO_L22N_T3_35 Sch=jc[3]
-#set_property -dict { PACKAGE_PIN G6    IOSTANDARD LVCMOS33 } [get_ports { jc[3] }]; #IO_L19P_T3_35 Sch=jc[4]
-#set_property -dict { PACKAGE_PIN E7    IOSTANDARD LVCMOS33 } [get_ports { jc[4] }]; #IO_L6P_T0_35 Sch=jc[7]
-#set_property -dict { PACKAGE_PIN J3    IOSTANDARD LVCMOS33 } [get_ports { jc[5] }]; #IO_L22P_T3_35 Sch=jc[8]
-#set_property -dict { PACKAGE_PIN J4    IOSTANDARD LVCMOS33 } [get_ports { jc[6] }]; #IO_L21P_T3_DQS_35 Sch=jc[9]
-#set_property -dict { PACKAGE_PIN E6    IOSTANDARD LVCMOS33 } [get_ports { jc[7] }]; #IO_L5P_T0_AD13P_35 Sch=jc[10]
+ set_property -dict { PACKAGE_PIN K1    IOSTANDARD LVCMOS33 } [get_ports { jc[0] }]; #IO_L23N_T3_35 Sch=jc[1]
+ set_property -dict { PACKAGE_PIN F6    IOSTANDARD LVCMOS33 } [get_ports { jc[1] }]; #IO_L19N_T3_VREF_35 Sch=jc[2]
+ set_property -dict { PACKAGE_PIN J2    IOSTANDARD LVCMOS33 } [get_ports { jc[2] }]; #IO_L22N_T3_35 Sch=jc[3]
+ set_property -dict { PACKAGE_PIN G6    IOSTANDARD LVCMOS33 } [get_ports { jc[3] }]; #IO_L19P_T3_35 Sch=jc[4]
+ set_property -dict { PACKAGE_PIN E7    IOSTANDARD LVCMOS33 } [get_ports { jc[4] }]; #IO_L6P_T0_35 Sch=jc[7]
+ set_property -dict { PACKAGE_PIN J3    IOSTANDARD LVCMOS33 } [get_ports { jc[5] }]; #IO_L22P_T3_35 Sch=jc[8]
+ set_property -dict { PACKAGE_PIN J4    IOSTANDARD LVCMOS33 } [get_ports { jc[6] }]; #IO_L21P_T3_DQS_35 Sch=jc[9]
+ set_property -dict { PACKAGE_PIN E6    IOSTANDARD LVCMOS33 } [get_ports { jc[7] }]; #IO_L5P_T0_AD13P_35 Sch=jc[10]
 
 
 ##Pmod Header JD
@@ -180,7 +180,6 @@ set_property -dict { PACKAGE_PIN B11   IOSTANDARD LVCMOS33 } [get_ports { vga_hs
 set_property -dict { PACKAGE_PIN B12   IOSTANDARD LVCMOS33 } [get_ports { vga_vs }]; #IO_L3N_T0_DQS_AD1N_15 Sch=vga_vs
 
 ##Micro SD Connector
-
 #set_property -dict { PACKAGE_PIN E2    IOSTANDARD LVCMOS33 } [get_ports { sd_reset }]; #IO_L14P_T2_SRCC_35 Sch=sd_reset
 #set_property -dict { PACKAGE_PIN A1    IOSTANDARD LVCMOS33 } [get_ports { sd_cd }]; #IO_L9N_T1_DQS_AD7N_35 Sch=sd_cd
 #set_property -dict { PACKAGE_PIN B1    IOSTANDARD LVCMOS33 } [get_ports { sd_sck }]; #IO_L9P_T1_DQS_AD7P_35 Sch=sd_sck
@@ -223,8 +222,8 @@ set_property -dict { PACKAGE_PIN B12   IOSTANDARD LVCMOS33 } [get_ports { vga_vs
 
 ##USB-RS232 Interface
 
-#set_property -dict { PACKAGE_PIN C4    IOSTANDARD LVCMOS33 } [get_ports { uart_txd_in }]; #IO_L7P_T1_AD6P_35 Sch=uart_txd_in
-#set_property -dict { PACKAGE_PIN D4    IOSTANDARD LVCMOS33 } [get_ports { uart_rxd_out }]; #IO_L11N_T1_SRCC_35 Sch=uart_rxd_out
+# set_property -dict { PACKAGE_PIN C4    IOSTANDARD LVCMOS33 } [get_ports { uart_txd_in }]; #IO_L7P_T1_AD6P_35 Sch=uart_txd_in
+# set_property -dict { PACKAGE_PIN D4    IOSTANDARD LVCMOS33 } [get_ports { uart_rxd_out }]; #IO_L11N_T1_SRCC_35 Sch=uart_rxd_out
 #set_property -dict { PACKAGE_PIN D3    IOSTANDARD LVCMOS33 } [get_ports { uart_cts }]; #IO_L12N_T1_MRCC_35 Sch=uart_cts
 #set_property -dict { PACKAGE_PIN E5    IOSTANDARD LVCMOS33 } [get_ports { uart_rts }]; #IO_L5N_T0_AD13N_35 Sch=uart_rts
 

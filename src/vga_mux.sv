@@ -9,8 +9,8 @@ module vga_mux (
   input wire [11:0] com_sprite_pixel_in,
   input wire crosshair_in,
   input wire crosshair_in_cr,
-  input wire lin_reg_line_in,
-  input wire lin_reg_line_2_in,
+  // input wire lin_reg_line_in,
+  // input wire lin_reg_line_2_in,
   output logic [11:0] pixel_out
 );
 

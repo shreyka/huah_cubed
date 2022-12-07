@@ -1,0 +1,86 @@
+/*
+
+Xilinx Vivado v2022.1 (64-bit) [Major: 2022, Minor: 1]
+SW Build: 3526262 on Mon Apr 18 15:47:01 MDT 2022
+IP Build: 3524634 on Mon Apr 18 20:55:01 MDT 2022
+
+Process ID (PID): 611553
+License: Customer
+Mode: GUI Mode
+
+Current time: 	Fri Dec 02 16:21:43 EST 2022
+Time zone: 	Eastern Standard Time (America/New_York)
+
+OS: Ubuntu
+OS Version: 5.4.0-132-generic
+OS Architecture: amd64
+Available processors (cores): 8
+
+Display: 0
+Screen size: 1920x1080
+Screen resolution (DPI): 100
+Available screens: 1
+Default font: family=Dialog,name=Dialog,style=plain,size=12
+Scale size: 12
+
+Java version: 	11.0.11 64-bit
+Java home: 	/opt/Xilinx/Vivado/2022.1/tps/lnx64/jre11.0.11_9
+Java executable: 	/opt/Xilinx/Vivado/2022.1/tps/lnx64/jre11.0.11_9/bin/java
+Java arguments: 	[-Dsun.java2d.pmoffscreen=false, -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2, -Dsun.java2d.xrender=false, -Djdk.gtk.version=2, -Dsun.java2d.uiScale.enabled=false, -Xverify:none, -Dswing.aatext=true, -XX:-UsePerfData, -Djdk.map.althashing.threshold=512, -XX:StringTableSize=4072, --add-opens=java.desktop/com.sun.awt=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.desktop/sun.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/java.awt.event=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.base/java.nio=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.table=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.desktop/sun.awt.shell=ALL-UNNAMED, --add-exports=java.base/sun.security.action=ALL-UNNAMED, --add-exports=java.desktop/sun.font=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, -XX:NewSize=60m, -XX:MaxNewSize=60m, -Xms256m, -Xmx3072m, -Xss5m, -Xrs]
+Java initial memory (-Xms): 	256 MB
+Java maximum memory (-Xmx):	 3 GB
+
+
+User name: 	builder
+User home directory: /home/builder
+User working directory: /media/builder/0000-0001/huah_cubed
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /opt/Xilinx/Vivado
+HDI_APPROOT: /opt/Xilinx/Vivado/2022.1
+RDI_DATADIR: /opt/Xilinx/Vivado/2022.1/data
+RDI_BINDIR: /opt/Xilinx/Vivado/2022.1/bin
+
+Vivado preferences file: /home/builder/.Xilinx/Vivado/2022.1/vivado.xml
+Vivado preferences directory: /home/builder/.Xilinx/Vivado/2022.1/
+Vivado layouts directory: /home/builder/.Xilinx/Vivado/2022.1/data/layouts
+PlanAhead jar file: 	/opt/Xilinx/Vivado/2022.1/lib/classes/planAhead.jar
+Vivado log file: 	/media/builder/0000-0001/huah_cubed/vivado.log
+Vivado journal file: 	/media/builder/0000-0001/huah_cubed/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-611553-EECS-DIGITAL-07
+
+Xilinx Environment Variables
+----------------------------
+XILINX: /opt/Xilinx/Vivado/2022.1/ids_lite/ISE
+XILINX_DSP: /opt/Xilinx/Vivado/2022.1/ids_lite/ISE
+XILINX_HLS: /opt/Xilinx/Vitis_HLS/2022.1
+XILINX_PLANAHEAD: /opt/Xilinx/Vivado/2022.1
+XILINX_VITIS: 
+XILINX_VIVADO: /opt/Xilinx/Vivado/2022.1
+XILINX_VIVADO_HLS: /opt/Xilinx/Vivado/2022.1
+
+
+GUI allocated memory:	256 MB
+GUI max memory:		3,072 MB
+Engine allocated memory: 1,799 MB
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// HMemoryUtils.trashcanNow. Engine heap size: 1,799 MB. GUI used memory: 54 MB. Current time: 12/2/22, 4:21:44 PM EST
+// WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
+selectButton(PAResourceEtoH.GettingStartedView_CREATE_NEW_PROJECT, "Create Project"); // y
+// Run Command: PAResourceCommand.PACommandNames_NEW_PROJECT
+selectButton("NEXT", "Next >"); // JButton
+selectCheckBox(PAResourceOtoP.ProjectNameChooser_CREATE_PROJECT_SUBDIRECTORY, "Create project subdirectory", false); // g: FALSE
+setText(PAResourceOtoP.ProjectNameChooser_CHOOSE_PROJECT_LOCATION, "/home/builder/Desktop"); // ap
+setText(PAResourceOtoP.ProjectNameChooser_PROJECT_NAME, "serial_sucks"); // aa
+selectButton("NEXT", "Next >"); // JButton
+selectButton("NEXT", "Next >"); // JButton
+selectButton(PAResourceQtoS.SrcChooserPanel_ADD_DIRECTORIES, "Add Directories"); // a
