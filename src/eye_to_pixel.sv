@@ -7,7 +7,7 @@ Given an XY position, calculate a
 ray that goes from the eye position
 to this position
 
-Latency is possibly a long time lol
+Takes 117 (?) cycles to finish
 
 */
 module eye_to_pixel(
@@ -16,6 +16,7 @@ module eye_to_pixel(
 
     input wire [10:0] x_in,
     input wire [9:0] y_in,
+    input wire valid_in,
 
     output wire [31:0] dir_x,
     output wire [31:0] dir_y,
@@ -115,7 +116,7 @@ module eye_to_pixel(
     floating_point_sint32_to_float x_to_float(
         .aclk(clk_in),
         .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
+        .s_axis_a_tvalid(valid_in),
         .s_axis_a_tdata({21'b0, x_in}),
         .m_axis_result_tvalid(x_float_valid),
         .m_axis_result_tdata(x_float_data)
@@ -124,7 +125,7 @@ module eye_to_pixel(
     floating_point_sint32_to_float y_to_float(
         .aclk(clk_in),
         .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
+        .s_axis_a_tvalid(valid_in),
         .s_axis_a_tdata({22'b0, y_in}),
         .m_axis_result_tvalid(y_float_valid),
         .m_axis_result_tdata(y_float_data)
@@ -134,8 +135,9 @@ module eye_to_pixel(
     floating_point_sint32_to_float exminusw_to_float(
         .aclk(clk_in),
         .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
+        .s_axis_a_tvalid(valid_in),
         .s_axis_a_tdata(exminusw),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(ex_minus_w_data)
     );
 
@@ -143,8 +145,9 @@ module eye_to_pixel(
     floating_point_sint32_to_float eyminusw_to_float(
         .aclk(clk_in),
         .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
+        .s_axis_a_tvalid(valid_in),
         .s_axis_a_tdata(eyminush),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(ey_minus_h_data)
     );
 
@@ -154,6 +157,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(100),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(float_100_data)
     );
 
@@ -163,6 +167,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(1800.00001),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(e_x_data)
     );
 
@@ -172,6 +177,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(1800.00001),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(e_y_data)
     );
 
@@ -181,6 +187,7 @@ module eye_to_pixel(
         .aresetn(~rst_in),
         .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(-300.00001),
+        .m_axis_result_tvalid(),
         .m_axis_result_tdata(e_z_data)
     );
 
@@ -286,14 +293,14 @@ module eye_to_pixel(
         .res_valid(dir_norm_valid)
     );
     
-    always_comb begin
-        if (dir_sub_valid) begin
-            $display("VALID DIR SUB %b", dir_sub_x);
-        end
-        if (dir_norm_valid) begin
-            $display("VALID DIR NORM %b", dir_norm_x);
-        end
-    end
+    // always_comb begin
+    //     if (dir_sub_valid) begin
+    //         $display("VALID DIR SUB %b", dir_sub_x);
+    //     end
+    //     if (dir_norm_valid) begin
+    //         $display("VALID DIR NORM %b", dir_norm_x);
+    //     end
+    // end
 
     assign dir_valid = dir_norm_valid;
     assign dir_x = dir_norm_x;

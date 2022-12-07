@@ -33,7 +33,9 @@ then
     # iverilog -g2012 -o sim/eye_to_pixel_tb.out sim/eye_to_pixel_tb.sv src/eye_to_pixel.sv src/float_functions.sv src/floating_point_*.v && vvp sim/eye_to_pixel_tb.out
 
     # below test the float functions norm
-    iverilog -g2012 -o sim/float_functions_norm_tb.out sim/float_functions_norm_tb.sv src/float_functions.sv src/floating_point_*.v && vvp sim/float_functions_norm_tb.out
+    # iverilog -g2012 -o sim/float_functions_norm_tb.out sim/float_functions_norm_tb.sv src/float_functions.sv src/floating_point_*.v && vvp sim/float_functions_norm_tb.out
+
+    iverilog -g2012 -o sim/get_intersecting_block_tb.out sim/get_intersecting_block_tb.sv src/does_ray_block_intersect.sv src/eye_to_pixel.sv src/get_intersecting_block.sv src/float_functions.sv src/floating_point_*.v && vvp sim/get_intersecting_block_tb.out
 elif [[ $command == "test_vivado" ]]
 then
     echo "hii"

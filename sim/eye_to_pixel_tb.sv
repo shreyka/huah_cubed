@@ -39,8 +39,9 @@ module eye_to_pixel_tb;
     eye_to_pixel mod(
         .clk_in(clk),
         .rst_in(rst),
-        .x_in(11'd5),
-        .y_in(10'd50),
+        .x_in(11'd100),
+        .y_in(10'd100),
+        .valid_in(1'b1),
 
         .dir_x(res_x),
         .dir_y(res_y),
@@ -94,12 +95,9 @@ module eye_to_pixel_tb;
         rst = 0;
         #10;
         rst = 1;
-        #10;
-        #10;
+        #100;
         rst = 0;
-        #10;
-
-        #200;
+        #100;
 
         for(int i = 0; i < 1000; i = i + 1) begin
             if(res_valid) begin

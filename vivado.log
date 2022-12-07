@@ -10825,3 +10825,5 @@ TIME:          0
 relaunch_sim: Time (s): cpu = 00:00:56 ; elapsed = 00:00:24 . Memory (MB): peak = 9416.516 ; gain = 0.000 ; free physical = 1202 ; free virtual = 8604
 close_sim
 INFO: [Simtcl 6-16] Simulation closed
+exit
+INFO: [Common 17-206] Exiting Vivado at Thu Dec  1 18:14:14 2022...

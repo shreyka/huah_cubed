@@ -5,8 +5,11 @@ module three_dim_renderer(
     input wire clk_in,
     input wire rst_in,
 
-    input wire [10:0] x_in,
-    input wire [9:0] y_in,
+    input wire [10:0] x_in_block,
+    input wire [9:0] y_in_block,
+
+    input wire [10:0] x_in_rgb,
+    input wire [9:0] y_in_rgb,
 
     input wire [11:0] block_x,
     input wire [11:0] block_y,
@@ -57,6 +60,10 @@ module three_dim_renderer(
     // localparam WIDTH = 4;
     // localparam HEIGHT = 2;
 
+    typedef enum {
+        BLUE, RED
+    } block_color_enum;
+
     logic [$clog2(WIDTH*HEIGHT)-1:0] input_loc_read;
     logic [11:0] output_pixel_read;
 
@@ -87,8 +94,8 @@ module three_dim_renderer(
     endfunction
 
     always_comb begin
-        $display("WE ARE AT (%d, %d)", x_in, y_in);
-        input_loc_read = get_offset_x(x_in) + get_offset_y(x_in, y_in);
+        $display("WE ARE AT (%d, %d)", x_in_rgb, y_in_rgb);
+        input_loc_read = get_offset_x(x_in_rgb) + get_offset_y(x_in_rgb, y_in_rgb);
         $display("READ FOR LATER %d", input_loc_read);
     end 
 
@@ -112,31 +119,38 @@ module three_dim_renderer(
         .web(input_write_enable),       // Port B write enable
         .enb(1'b1),       // Port B RAM Enable, for additional power savings, disable port when not in use
         .rstb(rst_in),     // Port B output reset (does not affect memory contents)
+        .doutb(),
         .regceb(1'b1) // Port B output register enable
     );
-
-    logic [11:0] index_test;
-    assign index_test = x_in + (y_in * WIDTH);
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
             input_pixel_write <= 12'b0;
         end else begin
-            //TODO: based on the input variables, write the correct RGB value to the buffer
-            if(1) begin
-                $display("WRITE TO  \t%d -> (%d, %d, %d)", input_loc_write, input_pixel_write[11:8], input_pixel_write[7:4], input_pixel_write[3:0]);
-                input_loc_write <= x_in + (y_in * WIDTH);
-                input_write_enable <= 1;
+            if (x_in_rgb >= WIDTH || y_in_rgb >= HEIGHT) begin
+                r_out <= 4'h0;
+                g_out <= 4'h1;
+                b_out <= 4'h0;
+            end else begin
+                // send out the buffer info always
+                r_out <= output_pixel_read[11:8];
+                g_out <= output_pixel_read[7:4];
+                b_out <= output_pixel_read[3:0];
+            end
 
-                input_pixel_write <= index_test;
+            if (x_in_block < WIDTH && y_in_block < HEIGHT) begin
+                // only write when in the range
+                input_loc_write <= x_in_block + (y_in_block * WIDTH);
+                input_write_enable <= 1;
+                if(block_visible) begin
+                    // draw white for now
+                    input_pixel_write <= block_color == RED ? 12'hF00 : 12'h00F;
+                end else begin
+                    input_pixel_write <= 12'h101;
+                end
             end else begin
                 input_write_enable <= 0;
             end
-
-            // send out the buffer info
-            r_out <= output_pixel_read[11:8];
-            g_out <= output_pixel_read[7:4];
-            b_out <= output_pixel_read[3:0];
         end
     end
 

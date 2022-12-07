@@ -86,7 +86,8 @@ module vec_scale(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_y)
+        .m_axis_result_tdata(res_data_y),
+        .m_axis_result_tvalid()
     );
 
     floating_point_multiply mult_z(
@@ -97,7 +98,8 @@ module vec_scale(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_z)
+        .m_axis_result_tdata(res_data_z),
+        .m_axis_result_tvalid()
     );
 
 endmodule
@@ -140,7 +142,8 @@ module vec_add(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_y)
+        .m_axis_result_tdata(res_data_y),
+        .m_axis_result_tvalid()
     );
 
     floating_point_add add_z(
@@ -151,7 +154,8 @@ module vec_add(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_z)
+        .m_axis_result_tdata(res_data_z),
+        .m_axis_result_tvalid()
     );
 
 endmodule
@@ -194,7 +198,8 @@ module vec_divide(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_y)
+        .m_axis_result_tdata(res_data_y),
+        .m_axis_result_tvalid()
     );
 
     floating_point_divide divide_z(
@@ -205,7 +210,8 @@ module vec_divide(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_z)
+        .m_axis_result_tdata(res_data_z),
+        .m_axis_result_tvalid()
     );
 
 endmodule
@@ -248,7 +254,8 @@ module vec_multiply(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_y)
+        .m_axis_result_tdata(res_data_y),
+        .m_axis_result_tvalid()
     );
 
     floating_point_multiply multiply_z(
@@ -259,7 +266,8 @@ module vec_multiply(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_z)
+        .m_axis_result_tdata(res_data_z),
+        .m_axis_result_tvalid()
     );
 
 endmodule
@@ -302,7 +310,8 @@ module vec_sub(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_y)
+        .m_axis_result_tdata(res_data_y),
+        .m_axis_result_tvalid()
     );
 
     floating_point_sub sub_z(
@@ -313,7 +322,8 @@ module vec_sub(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(res_data_z)
+        .m_axis_result_tdata(res_data_z),
+        .m_axis_result_tvalid()
     );
 
 endmodule
@@ -357,7 +367,8 @@ module vec_dot(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(mult_data_y)
+        .m_axis_result_tdata(mult_data_y),
+        .m_axis_result_tvalid()
     );
 
     floating_point_multiply mult_z(
@@ -368,7 +379,8 @@ module vec_dot(
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
         
-        .m_axis_result_tdata(mult_data_z)
+        .m_axis_result_tdata(mult_data_z),
+        .m_axis_result_tvalid()
     );
 
     // add vx vy
@@ -473,16 +485,16 @@ module vec_normalize(
             end
         end
 
-        if (v_valid) begin
-            $display("VEC_RECP VALID: %d", v_x);
-        end
+        // if (v_valid) begin
+        //     $display("VEC_RECP VALID: %d", v_x);
+        // end
 
-        if (resqrt_valid) begin
-            $display("RESULT IS %b", resqrt_data);
-            $display("VX IS %d", v_x_pipe[RESQRT_DELAY-1]);
-        end else begin
-            $display("NOT VALID, VX IS %d", v_x_pipe[RESQRT_DELAY - 1]);
-        end
+        // if (resqrt_valid) begin
+        //     $display("RESULT IS %b", resqrt_data);
+        //     $display("VX IS %d", v_x_pipe[RESQRT_DELAY-1]);
+        // end else begin
+        //     $display("NOT VALID, VX IS %d", v_x_pipe[RESQRT_DELAY - 1]);
+        // end
     end
 
     vec_scale mod2(
@@ -571,7 +583,8 @@ module vec_less_than(
         .s_axis_b_tdata(b_y),
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
-        .m_axis_result_tdata(comp_data_y)
+        .m_axis_result_tdata(comp_data_y),
+        .m_axis_result_tvalid()
     );
 
     floating_point_lt mod_z(
@@ -581,7 +594,8 @@ module vec_less_than(
         .s_axis_b_tdata(b_z),
         .s_axis_a_tvalid(v_valid),
         .s_axis_b_tvalid(v_valid),
-        .m_axis_result_tdata(comp_data_z)
+        .m_axis_result_tdata(comp_data_z),
+        .m_axis_result_tvalid()
     );
 
     assign res_data_x = comp_data_x[0];
