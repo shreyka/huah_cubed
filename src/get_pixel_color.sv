@@ -41,35 +41,9 @@ module get_pixel_color(
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
-    // constant, try to make never 0
-    floating_point_sint32_to_float ex_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tdata(e_x_data),
-        .m_axis_result_tvalid()
-    );
-
-    // constant, try to make never 0
-    floating_point_sint32_to_float ey_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tdata(e_y_data),
-        .m_axis_result_tvalid()
-    );
-
-    // constant, try to make never 0
-    floating_point_sint32_to_float ez_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(-300.00001),
-        .m_axis_result_tdata(e_z_data),
-        .m_axis_result_tvalid()
-    );
+    assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
+    assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
+    assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
 
     logic [31:0] lights_pos_x [2:0];
     logic [31:0] lights_pos_y [2:0];
@@ -182,7 +156,7 @@ module get_pixel_color(
 
     // stage 0
 
-    vec_scale ray_vec_scale(
+    vec_scale ray_vec_scale( //verified
         .clk_in(clk_in),
         .rst_in(rst_in),
         .v_x(ray_x),
@@ -253,10 +227,7 @@ module get_pixel_color(
         end
     end
 
-    // stage 1-1
-    // no need to pipeline scaled_ray because it happens at the same time as 1-0
-
-    vec_add new_origin_add(
+    vec_add new_origin_add( //verified up to here
         .clk_in(clk_in),
         .rst_in(rst_in),
         .v1_x(e_x_data),
@@ -275,15 +246,15 @@ module get_pixel_color(
 
     // stage 2
 
-    vec_sub normal_sub(
+    vec_sub normal_sub( //verified up to here
         .clk_in(clk_in),
         .rst_in(rst_in),
         .v1_x(new_origin_x),
         .v1_y(new_origin_y),
         .v1_z(new_origin_z),
-        .v2_x(block_pos_x),
-        .v2_y(block_pos_y),
-        .v2_z(block_pos_z),
+        .v2_x(block_pos_x_pipe[BLOCK_POS_DIR_DELAY-1]),
+        .v2_y(block_pos_y_pipe[BLOCK_POS_DIR_DELAY-1]),
+        .v2_z(block_pos_z_pipe[BLOCK_POS_DIR_DELAY-1]),
         .v_valid(new_origin_valid),
 
         .res_data_x(normal_sub_x),
@@ -291,6 +262,12 @@ module get_pixel_color(
         .res_data_z(normal_sub_z),
         .res_valid(normal_sub_valid)
     );
+
+    // always_ff @(posedge clk_in) begin
+    //     if(normal_sub_valid) begin
+    //         $display("NORMAL_SUB %b %b %b", normal_sub_x, normal_sub_y, normal_sub_z);
+    //     end
+    // end
 
     // stage 3: SKIPPED
     // stage 4
@@ -309,10 +286,16 @@ module get_pixel_color(
         .res_valid(normal_valid)
     );
 
+    always_ff @(posedge clk_in) begin
+        if(normal_valid) begin
+            $display("NORMAL %h %h %h", normal_x, normal_y, normal_z);
+        end
+    end
+
     // stage 5
 
     // pipeline new_origin: 92
-    localparam NEW_ORIGIN_DELAY = 92;
+    localparam NEW_ORIGIN_DELAY = 81;
     logic [31:0] new_origin_x_pipe [NEW_ORIGIN_DELAY-1:0];
     logic [31:0] new_origin_y_pipe [NEW_ORIGIN_DELAY-1:0];
     logic [31:0] new_origin_z_pipe [NEW_ORIGIN_DELAY-1:0];
@@ -369,8 +352,8 @@ module get_pixel_color(
         end
     end
 
-    // pipeline block_mat: 81
-    localparam BLOCK_MAT_DELAY = 81;
+    // pipeline block_mat: 208
+    localparam BLOCK_MAT_DELAY = 208;
     logic [31:0] block_mat_x_pipe [BLOCK_MAT_DELAY-1:0];
     logic [31:0] block_mat_y_pipe [BLOCK_MAT_DELAY-1:0];
     logic [31:0] block_mat_z_pipe [BLOCK_MAT_DELAY-1:0];
@@ -395,7 +378,7 @@ module get_pixel_color(
     end
 
     generate
-        for (genvar i = 0; i < 3; i++) begin
+        for (genvar i = 0; i < 3; i = i + 1) begin
             // stage 5-1
             vec_sub dist_sub(
                 .clk_in(clk_in),
@@ -486,7 +469,7 @@ module get_pixel_color(
     // stage 6
 
     // pipeline lambert_scale: 11
-    localparam LAMBERT_SCALE_DELAY = 92;
+    localparam LAMBERT_SCALE_DELAY = 11;
     logic [31:0] lambert_scale_x_pipe [LAMBERT_SCALE_DELAY-1:0];
     logic [31:0] lambert_scale_y_pipe [LAMBERT_SCALE_DELAY-1:0];
     logic [31:0] lambert_scale_z_pipe [LAMBERT_SCALE_DELAY-1:0];
@@ -514,6 +497,12 @@ module get_pixel_color(
         end
     end
 
+    always_ff @(posedge clk_in) begin
+        if(r_total_valid) begin
+            $display("ORI-RGB-0 SCALE0 %h %h %h", lambert_scale_x[0], lambert_scale_x[1], lambert_scale_x[2]);
+        end
+    end
+
     vec_add r_total_0_add(
                 .clk_in(clk_in),
                 .rst_in(rst_in),
@@ -530,7 +519,14 @@ module get_pixel_color(
                 .res_data_z(b_total_0),
                 .res_valid(r_total_0_valid)
             );
+    
+    always_ff @(posedge clk_in) begin
+        if(r_total_valid) begin
+            $display("ORI-RGB-1 %h %h %h", r_total_0,g_total_0,b_total_0);
+        end
+    end
 
+    // stage 6-1
     vec_add r_total_add(
                 .clk_in(clk_in),
                 .rst_in(rst_in),
@@ -540,13 +536,20 @@ module get_pixel_color(
                 .v2_x(lambert_scale_x_pipe[LAMBERT_SCALE_DELAY-1]),
                 .v2_y(lambert_scale_y_pipe[LAMBERT_SCALE_DELAY-1]),
                 .v2_z(lambert_scale_z_pipe[LAMBERT_SCALE_DELAY-1]),
-                .v_valid(lambert_scale_valid_pipe[LAMBERT_SCALE_DELAY-1]),
+                .v_valid(r_total_0_valid),
 
                 .res_data_x(r_total),
                 .res_data_y(g_total),
                 .res_data_z(b_total),
                 .res_valid(r_total_valid)
             );
+
+    // NOT RIGHT
+    always_ff @(posedge clk_in) begin
+        if(r_total_valid) begin
+            $display("ORI-RGB-2 %h %h %h", r_total,g_total,b_total);
+        end
+    end
 
     // stage 7
 
@@ -565,8 +568,8 @@ module get_pixel_color(
 
     // stage 8
 
-    // pipeline should_render_arrow: 195
-    localparam SHOULD_RENDER_ARROW_DELAY = 195;
+    // pipeline should_render_arrow: 194, verified
+    localparam SHOULD_RENDER_ARROW_DELAY = 194;
     logic should_render_arrow_pipe [SHOULD_RENDER_ARROW_DELAY-1:0];
     logic should_render_arrow_valid_pipe [SHOULD_RENDER_ARROW_DELAY-1:0];
 
@@ -586,11 +589,17 @@ module get_pixel_color(
         end
     end
 
+    // always_ff @(posedge clk_in) begin
+    //     if(should_render_arrow_valid_pipe[SHOULD_RENDER_ARROW_DELAY-1]) begin
+    //         $display("SHOULD_RENDER_DELAY? %d", should_render_arrow_pipe[SHOULD_RENDER_ARROW_DELAY-1]);
+    //     end
+    // end
+
     // pipeline r_total, g_total, b_total: 3
     localparam RGB_TOTAL_DELAY = 3;
-    logic r_total_pipe [RGB_TOTAL_DELAY-1:0];
-    logic g_total_pipe [RGB_TOTAL_DELAY-1:0];
-    logic b_total_pipe [RGB_TOTAL_DELAY-1:0];
+    logic [31:0] r_total_pipe [RGB_TOTAL_DELAY-1:0];
+    logic [31:0] g_total_pipe [RGB_TOTAL_DELAY-1:0];
+    logic [31:0] b_total_pipe [RGB_TOTAL_DELAY-1:0];
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
@@ -608,6 +617,12 @@ module get_pixel_color(
                 g_total_pipe[i] <= g_total_pipe[i-1];
                 b_total_pipe[i] <= b_total_pipe[i-1];
             end
+        end
+    end
+
+    always_ff @(posedge clk_in) begin
+        if(min_rgb_valid) begin
+            $display("RGB %b %b %b", r_total_pipe[RGB_TOTAL_DELAY-1],g_total_pipe[RGB_TOTAL_DELAY-1],b_total_pipe[RGB_TOTAL_DELAY-1]);
         end
     end
 

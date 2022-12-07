@@ -32,3 +32,17 @@ launch_simulation -simset [get_filesets float_test ]
 source get_pixel_color_tb.tcl
 relaunch_sim
 relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
+relaunch_sim
