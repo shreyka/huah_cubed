@@ -17,7 +17,7 @@ module get_pixel_rgb_formatted(
     input wire [31:0] block_mat_x,
     input wire [31:0] block_mat_y,
     input wire [31:0] block_mat_z,
-    input wire [2:0] block_direction,
+    input wire [2:0] block_dir,
 
     input wire [31:0] ray_x,
     input wire [31:0] ray_y,
@@ -25,6 +25,7 @@ module get_pixel_rgb_formatted(
 
     input wire [10:0] x_in,
     input wire [9:0] y_in,
+    input wire valid_in,
 
     input wire [31:0] t_in,
 
@@ -88,6 +89,20 @@ module get_pixel_rgb_formatted(
     // module logic chain
     //
 
+    // logic [31:0] count;
+    // always_ff @(posedge clk_in) begin
+    //     if (valid_in) begin
+    //         count <= 0;
+    //         $display("VALID_IN XY (%d, %d)", x_in, y_in);
+    //     end else begin
+    //         count <= count + 1;
+    //     end
+
+    //     if(rgb_valid) begin
+    //         $display("i:%d, RGB_VALID XY (%d, %d)", count, x_in, y_in);
+    //     end
+    // end
+
     // stage 0
     get_pixel_color get_pixel_color(
         .clk_in(clk_in),
@@ -100,6 +115,7 @@ module get_pixel_rgb_formatted(
         .block_mat_y(block_mat_y),
         .block_mat_z(block_mat_z),
         .block_dir(block_dir),
+        .valid_in(valid_in),
 
         .ray_x(ray_x),
         .ray_y(ray_y),
@@ -110,7 +126,7 @@ module get_pixel_rgb_formatted(
         .r_out(r_pixel),
         .g_out(g_pixel),
         .b_out(b_pixel),
-        .rgb_valid(rgb_valid)
+        .rgb_valid(rgb_pixel_valid)
     );
 
     // stage 1
@@ -125,7 +141,7 @@ module get_pixel_rgb_formatted(
         .b_x(one),
         .b_y(one),
         .b_z(one),
-        .v_valid(rgb_valid),
+        .v_valid(rgb_pixel_valid),
 
         .res_data_x(rgb_lt_x),
         .res_data_y(rgb_lt_y),
@@ -197,6 +213,12 @@ module get_pixel_rgb_formatted(
         .res_valid(rgb_scaled_valid)
     );
 
+    // always_ff @(posedge clk_in) begin
+    //     if (rgb_scaled_valid) begin
+    //         $display("RGB_SCALED %b %b %b", r_scaled, g_scaled, b_scaled);
+    //     end
+    // end
+
     // stage 4
 
     floating_point_float_to_sint32 rgb_out_x(
@@ -224,14 +246,43 @@ module get_pixel_rgb_formatted(
         .s_axis_a_tdata(b_scaled),
         .m_axis_result_tdata(b_int),
         .m_axis_result_tvalid()
-    );  
+    );
 
-    //TODO: PIPELINE XY (?)
-    assign x_out = x_in;
-    assign y_out = y_in;
-    assign r_out = r_int;
-    assign g_out = g_int;
-    assign b_out = b_int;
+    // pipeline XY (270, measured and verified)
+    localparam XY_DELAY = 270;
+    logic [10:0] x_in_pipe [XY_DELAY-1:0];
+    logic [9:0] y_in_pipe [XY_DELAY-1:0];
+
+    // always_ff @(posedge clk_in) begin
+    //     if (r_int_valid) begin
+    //         $display("XY %d %d", x_in_pipe[XY_DELAY-1], y_in_pipe[XY_DELAY-1]);
+    //         $display("RGB %b %b %b", r_int, g_int, b_int);
+    //     end else begin
+    //         $display("    INVALID XY %d %d", x_in_pipe[XY_DELAY-1], y_in_pipe[XY_DELAY-1]);
+    //     end
+    // end
+
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            for(int i=0; i<XY_DELAY; i = i+1) begin
+                x_in_pipe[i] <= 0;
+                y_in_pipe[i] <= 0;
+            end
+        end else begin
+            x_in_pipe[0] <= x_in;
+            y_in_pipe[0] <= y_in;
+            for (int i=1; i<XY_DELAY; i = i+1) begin
+                x_in_pipe[i] <= x_in_pipe[i-1];
+                y_in_pipe[i] <= y_in_pipe[i-1];
+            end
+        end
+    end
+
+    assign x_out = x_in_pipe[XY_DELAY-1];
+    assign y_out = y_in_pipe[XY_DELAY-1];
+    assign r_out = r_int[7:4];
+    assign g_out = g_int[7:4];
+    assign b_out = b_int[7:4];
     assign rgb_valid = r_int_valid;
 endmodule
 
