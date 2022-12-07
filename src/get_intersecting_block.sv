@@ -181,6 +181,31 @@ module get_intersecting_block(
 
     // stage 2
 
+    // pipeline ray by does_ray_block_intersect (add, add, divide, lt, comp, max, lt): 11 + 11 + 28 + 2 + 2 + 3 + 2 = 59
+    localparam RAY_DELAY = 58;
+    logic [31:0] ray_x_pipe [RAY_DELAY-1:0];
+    logic [31:0] ray_y_pipe [RAY_DELAY-1:0];
+    logic [31:0] ray_z_pipe [RAY_DELAY-1:0];
+
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            for(int i=0; i<RAY_DELAY; i = i+1) begin
+                ray_x_pipe[i] <= 0;
+                ray_y_pipe[i] <= 0;
+                ray_z_pipe[i] <= 0;
+            end
+        end else begin
+            ray_x_pipe[0] <= ray_x;
+            ray_y_pipe[0] <= ray_y;
+            ray_z_pipe[0] <= ray_z;
+            for (int i=1; i<RAY_DELAY; i = i+1) begin
+                ray_x_pipe[i] <= ray_x_pipe[i-1];
+                ray_y_pipe[i] <= ray_y_pipe[i-1];
+                ray_z_pipe[i] <= ray_z_pipe[i-1];
+            end
+        end
+    end
+
     localparam MAX_BLOCK_INDEX = 15;
 
     logic [3:0] best_block_comb;
@@ -212,10 +237,9 @@ module get_intersecting_block(
             best_block <= best_block_comb;
             best_t <= best_t_comb;
 
-            // TODO: pipeline ray
-            ray_out_x <= ray_x;
-            ray_out_y <= ray_y;
-            ray_out_z <= ray_z;
+            ray_out_x <= ray_x_pipe[RAY_DELAY-1];
+            ray_out_y <= ray_y_pipe[RAY_DELAY-1];
+            ray_out_z <= ray_z_pipe[RAY_DELAY-1];
         end
     end
 endmodule

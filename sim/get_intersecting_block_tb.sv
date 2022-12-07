@@ -84,8 +84,8 @@ module get_intersecting_block_tb;
         block_x_in[0] = 1800;
         block_y_in[0] = 1800;
         block_z_in[0] = 700;
-        block_x_in[1] = 2056;
-        block_y_in[1] = 1800;
+        block_x_in[1] = 2000;
+        block_y_in[1] = 2000;
         block_z_in[1] = 800;
 
         clk = 0;
@@ -125,6 +125,7 @@ module get_intersecting_block_tb;
             if(res_valid) begin
                 $display("OUTPUT %d: INTSERCT-BLOCK IS %d", i, best_block);
                 $display("OUTPUT XY: (%d, %d)", x_out, y_out);
+                $display("OUTPUT RAY: (%b %b %b)", ray_out_x, ray_out_y, ray_out_z);
             end
             #10;
         end

@@ -87,3 +87,15 @@ relaunch_sim
 relaunch_sim
 relaunch_sim
 relaunch_sim
+close_sim
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top get_intersecting_block_tb [get_filesets float_test]
+set_property top_lib xil_defaultlib [get_filesets float_test]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset float_test
+launch_simulation -simset [get_filesets float_test ]
+source get_intersecting_block_tb.tcl
+relaunch_sim
+relaunch_sim
