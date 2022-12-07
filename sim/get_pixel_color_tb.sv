@@ -37,6 +37,7 @@ module get_pixel_color_tb;
     logic [31:0] pos_z;
     logic [31:0] t_in;
     logic valid;
+    logic [2:0] block_dir;
 
     get_pixel_color mod(
         .clk_in(clk),
@@ -48,7 +49,7 @@ module get_pixel_color_tb;
         .block_mat_x(32'b00111111100000000000000000000000),
         .block_mat_y(32'b00000000000000000000000000000000),
         .block_mat_z(32'b00000000000000000000000000000000),
-        .block_dir(2'b0),
+        .block_dir(block_dir),
         .valid_in(valid),
 
         .ray_x(ray_x),
@@ -90,13 +91,15 @@ module get_pixel_color_tb;
         ray_z = 32'b00111111100000000000000001010100;
         t_in = 32'b01000100100101011111111110011110;
         pos_z = 32'b01000100011110100000000000000000; //1000
+        block_dir = 3'b1;
         #10;
         // second value
         ray_x = 32'b00110111001001111100010110101100;
         ray_y = 32'b10111100110011001010011101110100;
         ray_z = 32'b00111111011111111110110000101111;
         t_in = 32'b01000100100101100000101110011101;
-        pos_z = 32'b01000100011000010000000000000000;
+        pos_z = 32'b01000100011000010000000000000000; //900
+        block_dir = 3'b0;
         #10;
         valid = 0;
         #10;

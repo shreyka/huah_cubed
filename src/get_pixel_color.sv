@@ -662,8 +662,12 @@ module get_pixel_color_should_draw_arrow(
     logic [31:0] TWO_BLOCK_SIZE, MINUS_BLOCK_PLUS_EDGE_SIZE, PLUS_BLOCK_MINUS_EDGE_SIZE;
 
     assign TWO_BLOCK_SIZE = 32'b01000011010010000000000000000000; //200
-    assign MINUS_BLOCK_PLUS_EDGE_SIZE = 32'b01000010101000000000000000000000; //-80
-    assign PLUS_BLOCK_MINUS_EDGE_SIZE = 32'b11000010101000000000000000000000; //80
+    assign MINUS_BLOCK_PLUS_EDGE_SIZE = 32'b11000010101000000000000000000000; //-80
+    assign PLUS_BLOCK_MINUS_EDGE_SIZE = 32'b01000010101000000000000000000000; //80
+
+    logic [31:0] point_zero_one;
+
+    assign point_zero_one = 32'b00111100001000111101011100001010;
 
     ////////////////////////////////////////////////////
     // VARIABLE DEFINITIONS
@@ -705,6 +709,12 @@ module get_pixel_color_should_draw_arrow(
 
     // stage 0, 1, 2
 
+    // always_ff @(posedge clk_in) begin
+    //     if (valid_in) begin
+    //         $display("BLOCK POS IS %d %d %d", block_pos_x, block_pos_y, block_pos_z);
+    //     end
+    // end
+
     floating_point_sub scaled_sub_0_sub(
         .aclk(clk_in),
         .aresetn(~rst_in),
@@ -736,16 +746,22 @@ module get_pixel_color_should_draw_arrow(
         .rst_in(rst_in),
 
         .a(scaled_sub_1),
-        .b(0.01),
+        .b(point_zero_one),
         .v_valid(scaled_sub_1_valid),
 
         .res_data(scaled_sub_comp),
         .res_valid(scaled_sub_comp_valid)
     );
 
+    // always_ff @(posedge clk_in) begin
+    //     if (scaled_sub_comp_valid) begin
+    //         $display("SCALED_SUB_COMP %d", scaled_sub_comp);
+    //     end
+    // end
+
     // stage 1-0-0
 
-    // pipelining the block_pos: 24
+    // pipelining the block_pos: 24, verified
     localparam BLOCK_POS_DELAY = 24;
     logic [31:0] block_pos_x_pipe [BLOCK_POS_DELAY-1:0];
     logic [31:0] block_pos_y_pipe [BLOCK_POS_DELAY-1:0];
@@ -770,7 +786,7 @@ module get_pixel_color_should_draw_arrow(
         end
     end
 
-    vec_sub block_pos_normalized_sub(
+    vec_sub block_pos_normalized_sub( //output verified
         .clk_in(clk_in),
         .rst_in(rst_in),
 
@@ -913,7 +929,36 @@ module get_pixel_color_should_draw_arrow(
         .m_axis_result_tdata(lr_bounds_1_eq)
     );
 
+    // probably verified up to here
+
+    // always_ff @(posedge clk_in) begin
+    //     if (region_a_eq_ray_valid) begin
+    //         $display("UDLR %b %b %b %b", ud_bounds_0_eq, ud_bounds_1_eq, lr_bounds_0_eq, lr_bounds_1_eq);
+    //     end
+    // end
+
     // stage 1-0-2
+
+    // pipeline block_pos_normalized_x and block_pos_normalized_y: 11
+    localparam BLOCK_POS_NORM_DELAY = 11;
+    logic [31:0] block_pos_normalized_x_pipe [BLOCK_POS_NORM_DELAY-1:0];
+    logic [31:0] block_pos_normalized_y_pipe [BLOCK_POS_NORM_DELAY-1:0];
+
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            for(int i=0; i<BLOCK_POS_NORM_DELAY; i = i+1) begin
+                block_pos_normalized_x_pipe[i] <= 0;
+                block_pos_normalized_y_pipe[i] <= 0;
+            end
+        end else begin
+            block_pos_normalized_x_pipe[0] <= block_pos_normalized_x;
+            block_pos_normalized_y_pipe[0] <= block_pos_normalized_y;
+            for (int i=1; i<BLOCK_POS_NORM_DELAY; i = i+1) begin
+                block_pos_normalized_x_pipe[i] <= block_pos_normalized_x_pipe[i-1];
+                block_pos_normalized_y_pipe[i] <= block_pos_normalized_y_pipe[i-1];
+            end
+        end
+    end
 
     float_less_than lt_region_a(
         .clk_in(clk_in),
@@ -935,7 +980,8 @@ module get_pixel_color_should_draw_arrow(
         .b(region_c_eq_block),
         .v_valid(region_a_eq_ray_valid),
 
-        .res_data(in_region_c)
+        .res_data(in_region_c),
+        .res_valid()
     );
 
     float_less_than lt_ud_0(
@@ -946,7 +992,8 @@ module get_pixel_color_should_draw_arrow(
         .b(scaled_ray_y_pipe[SCALED_RAY_DELAY-1]),
         .v_valid(region_a_eq_ray_valid),
 
-        .res_data(is_in_ud_bounds_0)
+        .res_data(is_in_ud_bounds_0),
+        .res_valid()
     );
 
     float_less_than lt_ud_1(
@@ -957,7 +1004,8 @@ module get_pixel_color_should_draw_arrow(
         .b(ud_bounds_1_eq),
         .v_valid(region_a_eq_ray_valid),
 
-        .res_data(is_in_ud_bounds_1)
+        .res_data(is_in_ud_bounds_1),
+        .res_valid()
     );
 
     float_less_than lt_lr_0(
@@ -968,7 +1016,8 @@ module get_pixel_color_should_draw_arrow(
         .b(scaled_ray_x_pipe[SCALED_RAY_DELAY-1]),
         .v_valid(region_a_eq_ray_valid),
 
-        .res_data(is_in_lr_bounds_0)
+        .res_data(is_in_lr_bounds_0),
+        .res_valid()
     );
 
     float_less_than lt_lr_1(
@@ -979,13 +1028,46 @@ module get_pixel_color_should_draw_arrow(
         .b(lr_bounds_1_eq),
         .v_valid(region_a_eq_ray_valid),
 
-        .res_data(is_in_lr_bounds_1)
+        .res_data(is_in_lr_bounds_1),
+        .res_valid()
     );
+
+    float_less_than x_ray_block_less_than_lt(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+
+        .a(scaled_ray_x_pipe[SCALED_RAY_DELAY-1]),
+        .b(block_pos_normalized_x_pipe[BLOCK_POS_NORM_DELAY-1]),
+        .v_valid(region_a_eq_ray_valid),
+
+        .res_data(x_ray_block_less_than),
+        .res_valid()
+    );
+
+    float_less_than y_ray_block_less_than_lt(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+
+        .a(scaled_ray_y_pipe[SCALED_RAY_DELAY-1]),
+        .b(block_pos_normalized_y_pipe[BLOCK_POS_NORM_DELAY-1]),
+        .v_valid(region_a_eq_ray_valid),
+
+        .res_data(y_ray_block_less_than),
+        .res_valid()
+    );
+
+    // always_ff @(posedge clk_in) begin
+    //     if (in_region_a_valid) begin
+    //         $display("COMPS %d %d %d %d %d %d %d %d", in_region_a, in_region_c, is_in_ud_bounds_0, is_in_ud_bounds_1, is_in_lr_bounds_0, is_in_lr_bounds_1, x_ray_block_less_than, y_ray_block_less_than);
+    //     end
+    // end
+
+    // verified up to here
 
     // stage 1-0-3
 
-    // pipelining scaled_sub_comp: 22
-    localparam SCALED_SUB_COMP_DELAY = 22;
+    // pipelining scaled_sub_comp: 24 (or 25?)
+    localparam SCALED_SUB_COMP_DELAY = 25; // maybe it is 25 because there is a always_ff?
     logic scaled_sub_comp_pipe [SCALED_SUB_COMP_DELAY-1:0];
 
     always_ff @(posedge clk_in) begin
@@ -1000,6 +1082,23 @@ module get_pixel_color_should_draw_arrow(
             end
         end
     end
+
+    // pipelining block_dir: 48
+    localparam BLOCK_DIR_DELAY = 48;
+    logic block_dir_pipe [BLOCK_DIR_DELAY-1:0];
+
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            for(int i=0; i<BLOCK_DIR_DELAY; i = i+1) begin
+                block_dir_pipe[i] <= 0;
+            end
+        end else begin
+            block_dir_pipe[0] <= block_dir;
+            for (int i=1; i<BLOCK_DIR_DELAY; i = i+1) begin
+                block_dir_pipe[i] <= block_dir_pipe[i-1];
+            end
+        end
+    end
     
     always_comb begin
         is_in_udlr_bounds = is_in_ud_bounds_0 && is_in_ud_bounds_1 && is_in_lr_bounds_0 && is_in_lr_bounds_1;
@@ -1007,19 +1106,28 @@ module get_pixel_color_should_draw_arrow(
         in_region_d = ~in_region_c;
     end
 
+    // always_ff @(posedge clk_in) begin
+    //     if (in_region_a_valid) begin
+    //         $display("COMP0 %d %d %d", is_in_udlr_bounds, in_region_b, in_region_d);
+    //         $display("COMP1 %b %b", scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1], block_dir_pipe[BLOCK_DIR_DELAY-1]);
+    //     end else begin
+    //         $display("    INVALID, SUBSCALEDIS %d",scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1]);
+    //     end
+    // end
+
     always_ff @(posedge clk_in) begin
         if(~rst_in) begin
             should_render_arrow_valid <= in_region_a_valid;
 
-            case (block_dir)
-                UP: should_render_arrow <= scaled_sub_comp && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_d);
-                RIGHT: should_render_arrow <= scaled_sub_comp && x_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_d);
-                DOWN: should_render_arrow <= scaled_sub_comp && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_c);
-                default: should_render_arrow <= scaled_sub_comp && x_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_c);
+            case (block_dir_pipe[BLOCK_DIR_DELAY-1])
+                UP: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_d);
+                RIGHT: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && x_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_d);
+                DOWN: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_c);
+                default: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && x_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_c);
             endcase
         end
     end
-
+    // VERIFIED!!
 endmodule
 
 `default_nettype wire
