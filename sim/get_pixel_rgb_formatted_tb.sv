@@ -79,9 +79,7 @@ module get_pixel_rgb_formatted_tb;
         .block_pos_x(32'b01000100111000010000000000000000),
         .block_pos_y(32'b01000100111000010000000000000000),
         .block_pos_z(pos_z),
-        .block_mat_x(32'b00111111100000000000000000000000),
-        .block_mat_y(32'b00000000000000000000000000000000),
-        .block_mat_z(32'b00000000000000000000000000000000),
+        .block_color(3'b1),
         .block_dir(block_dir),
 
         .ray_x(ray_x),

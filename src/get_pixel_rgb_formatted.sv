@@ -14,9 +14,7 @@ module get_pixel_rgb_formatted(
     input wire [31:0] block_pos_x,
     input wire [31:0] block_pos_y,
     input wire [31:0] block_pos_z,
-    input wire [31:0] block_mat_x,
-    input wire [31:0] block_mat_y,
-    input wire [31:0] block_mat_z,
+    input wire [2:0] block_color,
     input wire [2:0] block_dir,
 
     input wire [31:0] ray_x,
@@ -43,11 +41,21 @@ module get_pixel_rgb_formatted(
     // precomputed constants go here
     //
 
+    typedef enum {
+        BLUE, RED
+    } block_color_enum;
+
     logic [31:0] one;
     logic [31:0] two_fifty_five;
 
     assign one = 32'b00111111100000000000000000000000;
     assign two_fifty_five = 32'b01000011011111110000000000000000;
+
+    logic [31:0] block_mat_x, block_mat_y, block_mat_z;
+
+    assign block_mat_x = block_color == BLUE ? 32'b00111111100000000000000000000000 : 32'b0;
+    assign block_mat_y = 32'b0;
+    assign block_mat_z = block_color == RED ? 32'b00111111100000000000000000000000 : 32'b0;
 
     ////////////////////////////////////////////////////
     // VARIABLE DEFINITIONS
