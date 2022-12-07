@@ -19,6 +19,7 @@ module get_pixel_color(
     input wire [31:0] block_mat_y,
     input wire [31:0] block_mat_z,
     input wire [2:0] block_dir,
+    input wire valid_in,
 
     input wire [31:0] ray_x,
     input wire [31:0] ray_y,
@@ -229,7 +230,7 @@ module get_pixel_color(
         end
     end
 
-    get_pixel_color_should_draw_arrow should_render_arrow(
+    get_pixel_color_should_draw_arrow should_render_arrow_mod(
         .clk_in(clk_in),
         .rst_in(rst_in),
 
@@ -244,7 +245,13 @@ module get_pixel_color(
 
         .should_render_arrow(should_render_arrow),
         .should_render_arrow_valid(should_render_arrow_valid)
-    )
+    );
+
+    always_ff @(posedge clk_in) begin
+        if(should_render_arrow_valid) begin
+            $display("SHOULD_RENDER? %d", should_render_arrow);
+        end
+    end
 
     // stage 1-1
     // no need to pipeline scaled_ray because it happens at the same time as 1-0
@@ -445,10 +452,10 @@ module get_pixel_color(
                 .v1_x(lights_intense_x[i]),
                 .v1_y(lights_intense_y[i]),
                 .v1_z(lights_intense_z[i]),
-                .v2_x(block_mat_x),
-                .v2_y(scale_v_y),
-                .v2_z(scale_v_z),
-                .v_valid(scale_u_valid), //ASSERTION: SCALE_U and SCALE_V must finish at the same time 
+                .v2_x(lambert[i]),
+                .v2_y(lambert[i]),
+                .v2_z(lambert[i]),
+                .v_valid(lambert_valid[i]), 
 
                 .res_data_x(light_intense_mat_mult_x[i]),
                 .res_data_y(light_intense_mat_mult_y[i]),

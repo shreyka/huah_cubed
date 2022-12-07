@@ -31,23 +31,31 @@ module get_pixel_color_tb;
     
     */
 
+    logic [31:0] ray_x;
+    logic [31:0] ray_y;
+    logic [31:0] ray_z;
+    logic [31:0] pos_z;
+    logic [31:0] t_in;
+    logic valid;
+
     get_pixel_color mod(
         .clk_in(clk),
         .rst_in(rst),
 
         .block_pos_x(32'b01000100111000010000000000000000),
         .block_pos_y(32'b01000100111000010000000000000000),
-        .block_pos_z(32'b01000100011110100000000000000000),
+        .block_pos_z(pos_z),
         .block_mat_x(32'b00111111100000000000000000000000),
         .block_mat_y(32'b00000000000000000000000000000000),
         .block_mat_z(32'b00000000000000000000000000000000),
         .block_dir(2'b0),
+        .valid_in(valid),
 
-        .ray_x(32'b00110111001001111100010110101100),
-        .ray_y(32'b00110111001001111100010110101100),
-        .ray_z(32'b00111111100000000000000001010100),
+        .ray_x(ray_x),
+        .ray_y(ray_y),
+        .ray_z(ray_z),
 
-        .t_in(32'b01000100100101011111111110011110),
+        .t_in(t_in),
 
         .r_out(r_pixel),
         .g_out(g_pixel),
@@ -74,10 +82,28 @@ module get_pixel_color_tb;
         #100;
         rst = 0;
         #10;
+    
+        valid = 1;
+        // first value
+        ray_x = 32'b00110111001001111100010110101100;
+        ray_y = 32'b00110111001001111100010110101100;
+        ray_z = 32'b00111111100000000000000001010100;
+        t_in = 32'b01000100100101011111111110011110;
+        pos_z = 32'b01000100011110100000000000000000; //1000
+        #10;
+        // second value
+        ray_x = 32'b00110111001001111100010110101100;
+        ray_y = 32'b10111100110011001010011101110100;
+        ray_z = 32'b00111111011111111110110000101111;
+        t_in = 32'b01000100100101100000101110011101;
+        pos_z = 32'b01000100011000010000000000000000;
+        #10;
+        valid = 0;
+        #10;
 
         for(int i = 0; i < 2000; i = i + 1) begin
             if(rgb_valid) begin
-                $display("OUTPUT %d: %b %b %b", r_pixel, g_pixel, b_pixel);
+                $display("OUTPUT %d: %b %b %b", i, r_pixel, g_pixel, b_pixel);
             end
             #10;
         end
