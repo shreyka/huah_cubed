@@ -2,9 +2,9 @@
 `default_nettype none
 
 module camera_top_level(
-  input wire clk_100mhz, //clock @ 100 mhz
+  input wire clk_65mhz, //clock @ 100 mhz
   input wire [15:0] sw, //switches
-  input wire btnc, //btnc (used for reset)
+  input wire sys_rst, //btnc (used for reset)
 
   input wire [7:0] ja, //lower 8 bits of data from camera
   input wire [2:0] jb, //upper three bits from camera (return clock, vsync, hsync)
@@ -19,23 +19,25 @@ module camera_top_level(
   output logic [13:0] hand_z_left_top,
 
   // outputs we can just ignore in final game
-  output logic [15:0] led, //just here for the funs
+  // output logic [15:0] led, //just here for the funs
 
   output logic [3:0] vga_r, vga_g, vga_b,
   output logic vga_hs, vga_vs,
-  output logic [7:0] an,
-  output logic caa,cab,cac,cad,cae,caf,cag
+  // output logic [7:0] an,
+  // output logic caa,cab,cac,cad,cae,caf,cag,
+
+  output logic transmit_xy_update
 
   );
 
 
-  //system reset switch linking
-  logic sys_rst; //global system reset
-  assign sys_rst = btnc; //just done to make sys_rst more obvious
-  assign led = sw; //switches drive LED (change if you want)
+  // //system reset switch linking
+  // logic sys_rst; //global system reset
+  // assign sys_rst = btnc; //just done to make sys_rst more obvious
+  // // assign led = sw; //switches drive LED (change if you want)
 
   /* Video Pipeline */
-  logic clk_65mhz; //65 MHz clock line
+  // logic clk_65mhz; //65 MHz clock line
 
   //vga module generation signals:
   logic [10:0] hcount;    // pixel on current line
@@ -79,13 +81,13 @@ module camera_top_level(
     end
   end
 
-  logic lin_reg_pipe [3:0];
-  always_ff @(posedge clk_65mhz)begin
-    lin_reg_pipe[0] <= lin_reg_line;
-    for (int i=1; i<4; i = i+1)begin
-      lin_reg_pipe[i] <= lin_reg_pipe[i-1];
-    end
-  end
+  // logic lin_reg_pipe [3:0];
+  // always_ff @(posedge clk_65mhz)begin
+  //   lin_reg_pipe[0] <= lin_reg_line;
+  //   for (int i=1; i<4; i = i+1)begin
+  //     lin_reg_pipe[i] <= lin_reg_pipe[i-1];
+  //   end
+  // end
 
   logic [15:0] pipe_pixel_ps5;
   
@@ -175,10 +177,10 @@ module camera_top_level(
   logic [11:0] mux_pixel; //final 12 bit information from vga multiplexer
   //goes right into RGB of output for video render
 
-  //Generate 65 MHz:
-  clk_wiz_lab3 clk_gen(
-    .clk_in1(clk_100mhz),
-    .clk_out1(clk_65mhz)); //after frame buffer everything on clk_65mhz
+  // //Generate 65 MHz:
+  // clk_wiz_lab3 clk_gen(
+  //   .clk_in1(clk_100mhz),
+  //   .clk_out1(clk_65mhz)); //after frame buffer everything on clk_65mhz
 
   //Generate VGA timing signals:
   vga vga_gen(
@@ -274,7 +276,8 @@ module camera_top_level(
   mirror mirror_m(
     .clk_in(clk_65mhz),
     .mirror_in(0),
-    .scale_in(sw[1:0]),
+    // .scale_in(sw[1:0]),
+    .scale_in(1),
     .hcount_in(hcount), //
     .vcount_in(vcount),
     .pixel_addr_out(pixel_addr_out)
@@ -284,7 +287,8 @@ module camera_top_level(
   //gate the release of frame buffer information
   //Latency: 0
   scale scale_m(
-    .scale_in(sw[1:0]),
+    .scale_in(1),
+    // .scale_in(sw[1:0]),
     .hcount_in(hcount_pipe[0]), //TODO: needs to use pipelined signal (PS2)
     .vcount_in(vcount_pipe[0]), //TODO: needs to use pipelined signal (PS2)
     .frame_buff_in(frame_buff),
@@ -315,24 +319,24 @@ module camera_top_level(
   logic [31:0] top_seven_seg; 
   logic [15:0] bottom_seven_seg;
 
-  always_ff @(posedge clk_65mhz)begin
-        if (btnc) begin
-            top_seven_seg <= 0; 
-            bottom_seven_seg <= 0;
-        end if (new_lin_reg)begin
-            top_seven_seg <= draw_a;
-            bottom_seven_seg <= draw_b;
-            // top_seven_seg <= x_com_cb;
-            // bottom_seven_seg <= y_com_cb;
-        end
-  end
+  // always_ff @(posedge clk_65mhz)begin
+  //       if (sys_rst) begin
+  //           top_seven_seg <= 0; 
+  //           bottom_seven_seg <= 0;
+  //       end if (new_lin_reg)begin
+  //           top_seven_seg <= draw_a;
+  //           bottom_seven_seg <= draw_b;
+  //           // top_seven_seg <= x_com_cb;
+  //           // bottom_seven_seg <= y_com_cb;
+  //       end
+  // end
 
-  seven_segment_controller ssc_uut(
-        .clk_in(clk_65mhz),
-        .rst_in(btnc),
-        .val_in({top_seven_seg, bottom_seven_seg}),
-        .cat_out({cag, caf, cae, cad, cac, cab, caa}),
-        .an_out(an));
+  // seven_segment_controller ssc_uut(
+  //       .clk_in(clk_65mhz),
+  //       .rst_in(sys_rst),
+  //       .val_in({top_seven_seg, bottom_seven_seg}),
+  //       .cat_out({cag, caf, cae, cad, cac, cab, caa}),
+  //       .an_out(an));
 
   //Thresholder: Takes in the full RGB and YCrCb information and
   //based on upper and lower bounds masks
@@ -380,54 +384,54 @@ module camera_top_level(
     .y_out(y_com_calc_cb),
     .valid_out(new_com_cb));
 
-  linear_regr lin_reg( // for Cb
-    .clk_in(clk_65mhz),
-    .rst_in(sys_rst),
-    .x_in(hcount_pipe[2]),  //TODO: needs to use pipelined signal! (PS3)
-    .y_in(vcount_pipe[2]), //TODO: needs to use pipelined signal! (PS3)
-    .valid_in(mask_cr),
-    .tabulate_in((hcount==0 && vcount==0)),
-    .a_out(a_out), // todo create this variable
-    .b_out(b_out),// todo create this variable
-    .a_out_2(a_out_2), // todo create this variable
-    .b_out_2(b_out_2),// todo create this variable
-    .valid_out(new_lin_reg)); // todo create this variable 
+  // linear_regr lin_reg( // for Cb
+  //   .clk_in(clk_65mhz),
+  //   .rst_in(sys_rst),
+  //   .x_in(hcount_pipe[2]),  //TODO: needs to use pipelined signal! (PS3)
+  //   .y_in(vcount_pipe[2]), //TODO: needs to use pipelined signal! (PS3)
+  //   .valid_in(mask_cr),
+  //   .tabulate_in((hcount==0 && vcount==0)),
+  //   .a_out(a_out), // todo create this variable
+  //   .b_out(b_out),// todo create this variable
+  //   .a_out_2(a_out_2), // todo create this variable
+  //   .b_out_2(b_out_2),// todo create this variable
+  //   .valid_out(new_lin_reg)); // todo create this variable 
 
-  logic signed [17:0] a_out;
-  logic signed [24:0] b_out;
-  logic signed [17:0] a_out_2;
-  logic signed [24:0] b_out_2;
-  logic new_lin_reg;
+  // logic signed [17:0] a_out;
+  // logic signed [24:0] b_out;
+  // logic signed [17:0] a_out_2;
+  // logic signed [24:0] b_out_2;
+  // logic new_lin_reg;
 
-  logic signed [17:0] draw_a;
-  logic signed [24:0] draw_b; 
-  logic signed [17:0] draw_a_2;
-  logic signed [24:0] draw_b_2; 
+  // logic signed [17:0] draw_a;
+  // logic signed [24:0] draw_b; 
+  // logic signed [17:0] draw_a_2;
+  // logic signed [24:0] draw_b_2; 
 
-  always_ff @(posedge clk_65mhz)begin
-    if (new_lin_reg) begin
-      draw_a <= a_out;
-      draw_b <= b_out; 
-      draw_a_2 <= a_out_2;
-      draw_b_2 <= b_out_2; 
-    end
+  // always_ff @(posedge clk_65mhz)begin
+  //   if (new_lin_reg) begin
+  //     draw_a <= a_out;
+  //     draw_b <= b_out; 
+  //     draw_a_2 <= a_out_2;
+  //     draw_b_2 <= b_out_2; 
+  //   end
 
-  end
+  // end
 
-  logic lin_reg_line; 
-  logic signed [16:0] mx_plus_b;
-  // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6) + (draw_a >>> 6); // unsure if decimal for A is needed. since offset must be int pixel 
-  // 1024 / 320 ~= 3.2
-  // 768 / 240 ~= 3.2
-  // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6)*3 + (draw_a >>> 3)*3;
-  assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 8) + (draw_a );
-  assign lin_reg_line = (vcount == mx_plus_b) ? 1 : 0;
+  // logic lin_reg_line; 
+  // logic signed [16:0] mx_plus_b;
+  // // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6) + (draw_a >>> 6); // unsure if decimal for A is needed. since offset must be int pixel 
+  // // 1024 / 320 ~= 3.2
+  // // 768 / 240 ~= 3.2
+  // // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 6)*3 + (draw_a >>> 3)*3;
+  // assign mx_plus_b = (($signed({1'b0 , hcount})*(draw_b ))>>> 8) + (draw_a );
+  // assign lin_reg_line = (vcount == mx_plus_b) ? 1 : 0;
 
 
-  logic lin_reg_line_2; 
-  logic signed [16:0] mx_plus_b_2;
-  assign mx_plus_b_2 = (($signed({1'b0 , hcount})*(draw_b_2 ))>>> 8) + (draw_a_2 );
-  assign lin_reg_line_2 = (vcount == mx_plus_b_2) ? 1 : 0;
+  // logic lin_reg_line_2; 
+  // logic signed [16:0] mx_plus_b_2;
+  // assign mx_plus_b_2 = (($signed({1'b0 , hcount})*(draw_b_2 ))>>> 8) + (draw_a_2 );
+  // assign lin_reg_line_2 = (vcount == mx_plus_b_2) ? 1 : 0;
   
 
   //update center of mass x_com, y_com based on new_com signal
@@ -437,14 +441,46 @@ module camera_top_level(
       y_com_cr <= 0;
       x_com_cb <= 0;
       y_com_cb <= 0;
-    end if(new_com_cr)begin
-      x_com_cr <= x_com_calc_cr;
-      y_com_cr <= y_com_calc_cr;
-    end if(new_com_cb)begin
-      x_com_cb <= x_com_calc_cb;
-      y_com_cb <= y_com_calc_cb;
+    end else begin 
+      if(new_com_cr)begin
+        x_com_cr <= x_com_calc_cr;
+        y_com_cr <= y_com_calc_cr;
+      end 
+      
+      if(new_com_cb)begin
+        x_com_cb <= x_com_calc_cb;
+        y_com_cb <= y_com_calc_cb;
+      end
     end
   end
+
+  logic [1:0] update_xys;
+  // keep track of when the two new center of masses have been calculated,
+  // once they have, we can transmit the update
+  always_ff @(posedge clk_65mhz)begin
+    if (sys_rst)begin
+      update_xys <= 0;
+    end else if(new_com_cr)begin
+      update_xys <= update_xys + 1;
+    end else if(new_com_cb)begin
+      update_xys <= update_xys + 1;
+    end else if (new_com_cr && new_com_cb) begin
+      update_xys <= 2;
+    end else if (update_xys == 1) begin 
+      update_xys <= 1;
+    end else begin
+      update_xys <= 0; 
+    end
+  end
+
+  always_comb begin 
+    if (update_xys == 2) begin 
+      transmit_xy_update = 1; 
+    end else begin 
+      transmit_xy_update = 0; 
+    end 
+  end
+
 
 
   //Create Crosshair patter on center of mass:
@@ -476,8 +512,8 @@ module camera_top_level(
   .thresholded_green_in(mask_green), // NEW 
   .crosshair_in(crosshair_pipe[3]), //TODO: needs to use pipelined signal (PS4)
   .crosshair_in_cr(crosshair_pipe_cr[3]),
-  .lin_reg_line_in(lin_reg_line),
-  .lin_reg_line_2_in(lin_reg_line_2),
+  // .lin_reg_line_in(lin_reg_line),
+  // .lin_reg_line_2_in(lin_reg_line_2),
   .com_sprite_pixel_in(com_sprite_pixel),
   .pixel_out(mux_pixel)
   );
