@@ -198,6 +198,10 @@ module get_intersecting_block(
                 end
             end
         end
+
+        valid_out = ray_block_intersect_valid[0];
+        best_block = best_block_comb;
+        best_t = best_t_comb;
     end
 
     assign x_out = x_in_pipe[XY_DELAY-1];
@@ -205,10 +209,6 @@ module get_intersecting_block(
 
     always_ff @(posedge clk_in) begin
         if(~rst_in) begin
-            valid_out <= ray_block_intersect_valid[0];
-            best_block <= best_block_comb;
-            best_t <= best_t_comb;
-
             // TODO: pipeline ray
             ray_out_x <= ray_x;
             ray_out_y <= ray_y;

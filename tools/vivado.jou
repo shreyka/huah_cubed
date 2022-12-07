@@ -2,22 +2,17 @@
 # Vivado v2022.1 (64-bit)
 # SW Build 3526262 on Mon Apr 18 15:47:01 MDT 2022
 # IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
-# Start of session at: Tue Dec  6 16:56:24 2022
-# Process ID: 362812
+# Start of session at: Wed Dec  7 00:18:27 2022
+# Process ID: 607864
 # Current directory: /media/koops/VIVADO/huah_cubed/tools
 # Command line: vivado
 # Log file: /media/koops/VIVADO/huah_cubed/tools/vivado.log
 # Journal file: /media/koops/VIVADO/huah_cubed/tools/vivado.jou
-# Running On: koops, OS: Linux, CPU Frequency: 4200.044 MHz, CPU Physical cores: 4, Host memory: 16698 MB
+# Running On: koops, OS: Linux, CPU Frequency: 3400.487 MHz, CPU Physical cores: 4, Host memory: 16698 MB
 #-----------------------------------------------------------
 start_gui
-open_project /media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr
+open_project /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.xpr
+reset_run synth_1
 update_compile_order -fileset sources_1
-launch_simulation -simset [get_filesets float_test ]
-launch_simulation -simset [get_filesets float_test ]
-launch_simulation -simset [get_filesets float_test ]
-launch_simulation -simset [get_filesets float_test ]
-launch_simulation -simset [get_filesets float_test ]
-source get_intersecting_block_tb.tcl
-relaunch_sim
-close_sim
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1

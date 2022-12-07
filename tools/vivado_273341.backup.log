@@ -7701,3 +7701,25 @@ Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_i
 Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log
 reset_run synth_1
 INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+[Tue Dec  6 18:32:46 2022] Launched synth_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
+[Tue Dec  6 18:32:46 2022] Launched impl_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+[Tue Dec  6 18:34:58 2022] Launched synth_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
+[Tue Dec  6 18:34:58 2022] Launched impl_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log
+reset_run synth_1
+INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+[Tue Dec  6 18:59:16 2022] Launched synth_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
+[Tue Dec  6 18:59:16 2022] Launched impl_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log
+close_sim
+INFO: [Simtcl 6-16] Simulation closed
+exit
+INFO: [Common 17-206] Exiting Vivado at Tue Dec  6 19:18:45 2022...

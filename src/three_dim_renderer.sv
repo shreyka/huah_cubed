@@ -60,6 +60,10 @@ module three_dim_renderer(
     // localparam WIDTH = 4;
     // localparam HEIGHT = 2;
 
+    typedef enum {
+        BLUE, RED
+    } block_color_enum;
+
     logic [$clog2(WIDTH*HEIGHT)-1:0] input_loc_read;
     logic [11:0] output_pixel_read;
 
@@ -127,27 +131,25 @@ module three_dim_renderer(
                 r_out <= 4'h0;
                 g_out <= 4'h1;
                 b_out <= 4'h0;
-
-                input_write_enable <= 0;
             end else begin
                 // send out the buffer info always
                 r_out <= output_pixel_read[11:8];
                 g_out <= output_pixel_read[7:4];
                 b_out <= output_pixel_read[3:0];
+            end
 
-                if (x_in_block < WIDTH && y_in_block < HEIGHT) begin
-                    // only write when in the range
-                    input_loc_write <= x_in_block + (y_in_block * WIDTH);
-                    input_write_enable <= 1;
-                    if(block_visible) begin
-                        // draw white for now
-                        input_pixel_write <= 12'hFFF;
-                    end else begin
-                        input_pixel_write <= 12'h100;
-                    end
+            if (x_in_block < WIDTH && y_in_block < HEIGHT) begin
+                // only write when in the range
+                input_loc_write <= x_in_block + (y_in_block * WIDTH);
+                input_write_enable <= 1;
+                if(block_visible) begin
+                    // draw white for now
+                    input_pixel_write <= block_color == RED ? 12'hF00 : 12'h00F;
                 end else begin
-                    input_write_enable <= 0;
+                    input_pixel_write <= 12'h101;
                 end
+            end else begin
+                input_write_enable <= 0;
             end
         end
     end

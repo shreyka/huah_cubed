@@ -284,54 +284,54 @@ module game_logic_and_renderer(
         end
     end
 
-    block_selector block_selector(
-        .clk_in(clk_in),
-        .rst_in(rst_in),
-        .curr_time_in(curr_time_blockpositions),
-        .x_in(x_in),
-        .y_in(y_in),
-        .sliced_blocks(sliced_blocks),
-        .block_x_in(block_x_blockpositions),
-        .block_y_in(block_y_blockpositions),
-        .block_z_in(block_z_blockpositions),
-        .block_color_in(block_color_blockpositions),
-        .block_direction_in(block_direction_blockpositions),
-        .block_ID_in(block_ID_blockpositions),
-        .block_visible_in(block_visible_blockpositions),
+    // block_selector block_selector(
+    //     .clk_in(clk_in),
+    //     .rst_in(rst_in),
+    //     .curr_time_in(curr_time_blockpositions),
+    //     .x_in(x_in),
+    //     .y_in(y_in),
+    //     .sliced_blocks(sliced_blocks),
+    //     .block_x_in(block_x_blockpositions),
+    //     .block_y_in(block_y_blockpositions),
+    //     .block_z_in(block_z_blockpositions),
+    //     .block_color_in(block_color_blockpositions),
+    //     .block_direction_in(block_direction_blockpositions),
+    //     .block_ID_in(block_ID_blockpositions),
+    //     .block_visible_in(block_visible_blockpositions),
 
-        .curr_time_out(curr_time_selector_two_dim),
-        .x_out(x_out_selector_two_dim),
-        .y_out(y_out_selector_two_dim),
-        .block_x_out(block_x_selector_two_dim),
-        .block_y_out(block_y_selector_two_dim),
-        .block_z_out(block_z_selector_two_dim),
-        .block_color_out(block_color_selector_two_dim),
-        .block_direction_out(block_direction_selector_two_dim),
-        .block_ID_out(block_ID_selector_two_dim),
-        .block_visible_out(block_visible_selector_two_dim)
-    );
+    //     .curr_time_out(curr_time_selector_two_dim),
+    //     .x_out(x_out_selector_two_dim),
+    //     .y_out(y_out_selector_two_dim),
+    //     .block_x_out(block_x_selector_two_dim),
+    //     .block_y_out(block_y_selector_two_dim),
+    //     .block_z_out(block_z_selector_two_dim),
+    //     .block_color_out(block_color_selector_two_dim),
+    //     .block_direction_out(block_direction_selector_two_dim),
+    //     .block_ID_out(block_ID_selector_two_dim),
+    //     .block_visible_out(block_visible_selector_two_dim)
+    // );
 
-    assign curr_time_selector = enable_three_dim_sw1 ? curr_time_selector_three_dim : curr_time_selector_two_dim;
-    assign x_out_selector = enable_three_dim_sw1 ? x_out_selector_three_dim : x_out_selector_two_dim;
-    assign y_out_selector = enable_three_dim_sw1 ? y_out_selector_three_dim : y_out_selector_two_dim;
-    assign block_x_selector = enable_three_dim_sw1 ? block_x_selector_three_dim : block_x_selector_two_dim;
-    assign block_y_selector = enable_three_dim_sw1 ? block_y_selector_three_dim : block_y_selector_two_dim;
-    assign block_z_selector = enable_three_dim_sw1 ? block_z_selector_three_dim : block_z_selector_two_dim;
-    assign block_color_selector = enable_three_dim_sw1 ? block_color_selector_three_dim : block_color_selector_two_dim;
-    assign block_direction_selector = enable_three_dim_sw1 ? block_direction_selector_three_dim : block_direction_selector_two_dim;
-    assign block_ID_selector = enable_three_dim_sw1 ? block_ID_selector_three_dim: block_ID_selector_two_dim;
-    assign block_visible_selector = enable_three_dim_sw1 ? block_visible_selector_three_dim: block_visible_selector_two_dim;
+    // assign curr_time_selector = enable_three_dim_sw1 ? curr_time_selector_three_dim : curr_time_selector_two_dim;
+    // assign x_out_selector = enable_three_dim_sw1 ? x_out_selector_three_dim : x_out_selector_two_dim;
+    // assign y_out_selector = enable_three_dim_sw1 ? y_out_selector_three_dim : y_out_selector_two_dim;
+    // assign block_x_selector = enable_three_dim_sw1 ? block_x_selector_three_dim : block_x_selector_two_dim;
+    // assign block_y_selector = enable_three_dim_sw1 ? block_y_selector_three_dim : block_y_selector_two_dim;
+    // assign block_z_selector = enable_three_dim_sw1 ? block_z_selector_three_dim : block_z_selector_two_dim;
+    // assign block_color_selector = enable_three_dim_sw1 ? block_color_selector_three_dim : block_color_selector_two_dim;
+    // assign block_direction_selector = enable_three_dim_sw1 ? block_direction_selector_three_dim : block_direction_selector_two_dim;
+    // assign block_ID_selector = enable_three_dim_sw1 ? block_ID_selector_three_dim: block_ID_selector_two_dim;
+    // assign block_visible_selector = enable_three_dim_sw1 ? block_visible_selector_three_dim: block_visible_selector_two_dim;
 
-    // assign curr_time_selector = curr_time_selector_three_dim;
-    // assign x_out_selector = x_out_selector_three_dim;
-    // assign y_out_selector = y_out_selector_three_dim;
-    // assign block_x_selector = block_x_selector_three_dim;
-    // assign block_y_selector = block_y_selector_three_dim;
-    // assign block_z_selector = block_z_selector_three_dim;
-    // assign block_color_selector = block_color_selector_three_dim;
-    // assign block_direction_selector = block_direction_selector_three_dim;
-    // assign block_ID_selector = block_ID_selector_three_dim;
-    // assign block_visible_selector = block_visible_selector_three_dim;
+    assign curr_time_selector = curr_time_selector_three_dim;
+    assign x_out_selector = x_out_selector_three_dim;
+    assign y_out_selector = y_out_selector_three_dim;
+    assign block_x_selector = block_x_selector_three_dim;
+    assign block_y_selector = block_y_selector_three_dim;
+    assign block_z_selector = block_z_selector_three_dim;
+    assign block_color_selector = block_color_selector_three_dim;
+    assign block_direction_selector = block_direction_selector_three_dim;
+    assign block_ID_selector = block_ID_selector_three_dim;
+    assign block_visible_selector = block_visible_selector_three_dim;
 
     saber_history saber_history(
         .clk_in(clk_in),

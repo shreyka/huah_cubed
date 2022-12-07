@@ -9,6 +9,8 @@ be rendered on this XY coordinate
 
 Essentially a MUX
 
+ThIS IS THE PROBLEM CHILD
+
 */
 module three_dim_block_selector(
     input wire clk_in,
