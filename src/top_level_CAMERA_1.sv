@@ -46,11 +46,13 @@ module top_level(
    ila_0 test(.clk(clk_65mhz), 
               .probe0(RxD_data_ready), 
               .probe1(jc[0]), 
-              .probe2(serial_counter), 
+              .probe2(valid_data), 
               .probe3(RxD_data), 
               .probe4(left_hand_x_bottom_from_camera_2), 
               .probe5(left_hand_y_bottom_from_camera_2),
-              .probe6(serial_buffer)); 
+              .probe6(serial_buffer),
+              .probe7(TEST2),
+              .probe8(TEST3)); 
 
   camera_top_level cam_uut(
     .clk_65mhz(clk_65mhz), //clock @ 100 mhz
@@ -109,26 +111,59 @@ module top_level(
               .counter(counter));
 
    // TODO change rxd data to be intermediate variable that updates on data_ready
-  logic [7:0] valid_data;
-  logic receive;
 
   logic [2:0] serial_counter;
 
   logic [47:0] serial_buffer; 
+  logic valid_data;
+  logic TEST2;
+  logic TEST3;
 
+  always_comb begin 
+    // valid_data = (serial_buffer[39:16] == 6'hFFFFFF);
 
+  end 
 
 
   always_ff @(posedge clk_65mhz) begin
     if (sys_rst) begin
-      valid_data <= 0; 
-      receive <= 1; 
       led <= 0;
       serial_counter <= 0; 
+      valid_data <= 0;
+      TEST2 <= 0;
     end else begin 
       led[0] <= RxD_data_ready;
       led[2] <= uart_txd_in;
       led[10:3] <= RxD_data;
+
+      if(serial_buffer[47:40] == 2'hFF) begin 
+      // if(serial_buffer[39:24] == 4'hFFFF) begin 
+      // if(serial_buffer[39:16] == 6'hFFFFFF) begin 
+      // if(serial_buffer[39:32] == 2'hFF &&
+        //  serial_buffer[31:24] == 2'hFF &&
+        //  serial_buffer[23:16] == 2'hFF) begin 
+
+        valid_data <= 1;
+        // left_hand_x_bottom_from_camera_2[11:3] <= serial_buffer[31:24];
+        // left_hand_x_bottom_from_camera_2[3:0] <= serial_buffer[23:20];
+        // left_hand_y_bottom_from_camera_2[11:8] <= serial_buffer[19:16];
+        // left_hand_y_bottom_from_camera_2[7:0] <= serial_buffer[15:8];
+
+      end else begin
+        valid_data <= 0; 
+      end 
+
+      if(serial_buffer[39:32] == 2'hFF) begin 
+        TEST2 <= 1;
+      end else begin
+        TEST2 <= 0; 
+      end 
+
+      if (serial_buffer[23:0] != 6'hFFFFFF && serial_buffer[23:0] != 6'hFFFFEF) begin
+        TEST3 <= 1;
+      end else begin
+        TEST3 <= 0; 
+      end
 
       if (RxD_data_ready) begin
         serial_buffer[7:0] <= RxD_data;
@@ -137,37 +172,9 @@ module top_level(
         serial_buffer[31:24] <= serial_buffer[23:16];
         serial_buffer[39:32] <= serial_buffer[31:24];
         serial_buffer[47:40] <= serial_buffer[39:32];
-        // if (RxD_data == 2'hFF && serial_counter <= 2) begin
+      end
+        
 
-        //     serial_counter <= serial_counter + 1; 
-
-        // end else if (RxD_data != 2'hFF && serial_counter <= 2) begin
-
-        //     serial_counter <= 0; 
-
-        // end else if (serial_counter == 3) begin // store first byte
-
-        //     left_hand_x_bottom_from_camera_2[11:3] <= RxD_data;
-
-        //     serial_counter <= serial_counter + 1; 
-
-        // end else if (serial_counter == 4) begin // store second byte
-
-        //     left_hand_x_bottom_from_camera_2[3:0] <= RxD_data[7:4];
-        //     left_hand_y_bottom_from_camera_2[11:8] <= RxD_data[3:0];
-        //     serial_counter <= serial_counter + 1; 
-
-        // end else if (serial_counter == 5) begin // store third byte 
-
-        //     left_hand_y_bottom_from_camera_2[7:0] <= RxD_data;
-
-        //     serial_counter <= 0; 
-
-        // end else begin 
-        //     serial_counter <= 0; 
-
-        // end 
-      end 
       
     end 
 
