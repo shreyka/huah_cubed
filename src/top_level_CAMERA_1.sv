@@ -52,7 +52,8 @@ module top_level(
               .probe5(left_hand_y_bottom_from_camera_2),
               .probe6(serial_buffer),
               .probe7(TEST2),
-              .probe8(TEST3)); 
+              .probe8(TEST3),
+              .probe9(TEST4)); 
 
   camera_top_level cam_uut(
     .clk_65mhz(clk_65mhz), //clock @ 100 mhz
@@ -118,6 +119,7 @@ module top_level(
   logic valid_data;
   logic TEST2;
   logic TEST3;
+  logic TEST4;
 
   always_comb begin 
     // valid_data = (serial_buffer[39:16] == 6'hFFFFFF);
@@ -136,7 +138,7 @@ module top_level(
       led[2] <= uart_txd_in;
       led[10:3] <= RxD_data;
 
-      if(serial_buffer[47:40] == 2'hFF) begin 
+      if(serial_buffer[47:40] == 8'hFF) begin 
       // if(serial_buffer[39:24] == 4'hFFFF) begin 
       // if(serial_buffer[39:16] == 6'hFFFFFF) begin 
       // if(serial_buffer[39:32] == 2'hFF &&
@@ -153,13 +155,13 @@ module top_level(
         valid_data <= 0; 
       end 
 
-      if(serial_buffer[39:32] == 2'hFF) begin 
+      if(serial_buffer[39:32] == 8'hFF) begin 
         TEST2 <= 1;
       end else begin
         TEST2 <= 0; 
       end 
 
-      if (serial_buffer[23:0] != 6'hFFFFFF && serial_buffer[23:0] != 6'hFFFFEF) begin
+      if (serial_buffer[23:0] != 24'hFFFFFF && serial_buffer[23:0] != 24'hFFFFEF) begin
         TEST3 <= 1;
       end else begin
         TEST3 <= 0; 
@@ -172,6 +174,17 @@ module top_level(
         serial_buffer[31:24] <= serial_buffer[23:16];
         serial_buffer[39:32] <= serial_buffer[31:24];
         serial_buffer[47:40] <= serial_buffer[39:32];
+
+
+        if(serial_buffer[47:24] == 24'hFFFFFF) begin 
+          TEST4 <= 1;
+          left_hand_x_bottom_from_camera_2[11:4] <= serial_buffer[23:16];
+          left_hand_x_bottom_from_camera_2[3:0] <= serial_buffer[7:4];
+          left_hand_y_bottom_from_camera_2[11:8] <= serial_buffer[3:0];
+          left_hand_y_bottom_from_camera_2[7:0] <= serial_buffer[15:8];
+        end else begin
+          TEST4 <= 0; 
+        end 
       end
         
 
