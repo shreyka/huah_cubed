@@ -25,9 +25,9 @@ if [[ $command == "test" ]]
 then
     if [[ $2 == "all" ]]
     then
-        compile_for_test
+        # compile_for_test
 
-        iverilog -g2012 -o sim/game_logic_and_renderer_tb.out -Isrc sim/game_logic_and_renderer_tb.sv src/game_logic_and_renderer.sv src/game_state.sv src/block_positions.sv src/block_selector.sv src/state_processor.sv src/renderer.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v src/saber_history.sv src/broken_blocks.sv src/three_dim_renderer.sv src/three_dim_block_selector.sv src/float_functions.sv src/xilinx_true_dual_port_read_first_1_clock_ram.v src/get_intersecting_block.sv src/eye_to_pixel.sv src/does_ray_block_intersect.sv stubs/*.v && vvp sim/game_logic_and_renderer_tb.out
+        iverilog -g2012 -o sim/game_logic_and_renderer_tb.out -Isrc sim/game_logic_and_renderer_tb.sv src/game_logic_and_renderer.sv src/game_state.sv src/block_positions.sv src/block_selector.sv src/state_processor.sv src/renderer.sv src/block_loader.sv src/xilinx_single_port_ram_read_first.v src/saber_history.sv src/broken_blocks.sv src/three_dim_renderer.sv src/three_dim_block_selector.sv src/float_functions.sv src/xilinx_true_dual_port_read_first_1_clock_ram.v src/get_intersecting_block.sv src/eye_to_pixel.sv src/does_ray_block_intersect.sv stubs/*.v src/get_pixel_rgb_formatted.sv src/get_pixel_color.sv && vvp sim/game_logic_and_renderer_tb.out
     elif [[ $2 == "loader" ]]
     then
         compile_for_test

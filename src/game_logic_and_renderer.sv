@@ -446,6 +446,7 @@ module game_logic_and_renderer(
     logic [9:0] y_out_rgb_formatted;
     logic [3:0] r_pixel_rgb_formatted, g_pixel_rgb_formatted, b_pixel_rgb_formatted;
     logic rgb_valid_rgb_formatted;
+    logic block_visible_formatted;
 
     get_pixel_rgb_formatted mod(
         .clk_in(clk_in),
@@ -456,6 +457,7 @@ module game_logic_and_renderer(
         .block_pos_z(block_z_selector),
         .block_color(block_color_selector),
         .block_dir(block_direction_selector),
+        .block_visible_in(block_visible_selector),
 
         .ray_x(ray_out_x_selector),
         .ray_y(ray_out_y_selector),
@@ -469,6 +471,7 @@ module game_logic_and_renderer(
 
         .x_out(x_out_rgb_formatted),
         .y_out(y_out_rgb_formatted),
+        .block_visible_out(block_visible_formatted),
         .r_out(r_pixel_rgb_formatted),
         .g_out(g_pixel_rgb_formatted),
         .b_out(b_pixel_rgb_formatted),
@@ -486,7 +489,7 @@ module game_logic_and_renderer(
         .b_in_formatted(b_pixel_rgb_formatted),
         .x_in_rgb(x_in),
         .y_in_rgb(y_in),
-        .block_visible(block_visible_selector),
+        .block_visible(block_visible_formatted),
         .state(state),
         .max_time(max_time),
         .score_in(score),

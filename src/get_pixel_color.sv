@@ -15,9 +15,7 @@ module get_pixel_color(
     input wire [31:0] block_pos_x,
     input wire [31:0] block_pos_y,
     input wire [31:0] block_pos_z,
-    input wire [31:0] block_mat_x,
-    input wire [31:0] block_mat_y,
-    input wire [31:0] block_mat_z,
+    input wire [2:0] block_color,
     input wire [2:0] block_dir,
     input wire valid_in,
 
@@ -38,6 +36,10 @@ module get_pixel_color(
     //
     // precomputed constants go here
     //
+
+    typedef enum {
+        BLUE, RED
+    } block_color_enum;
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
@@ -350,25 +352,22 @@ module get_pixel_color(
 
     // pipeline block_mat (scale, add, sub, normalize, sub, normalize, dot, multiply): 208
     localparam BLOCK_MAT_DELAY = 208;
-    logic [31:0] block_mat_x_pipe [BLOCK_MAT_DELAY-1:0];
-    logic [31:0] block_mat_y_pipe [BLOCK_MAT_DELAY-1:0];
-    logic [31:0] block_mat_z_pipe [BLOCK_MAT_DELAY-1:0];
+    logic [2:0] block_color_pipe [BLOCK_MAT_DELAY-1:0];
+
+    logic [31:0] block_mat_x, block_mat_y, block_mat_z;
+    assign block_mat_x = block_color_pipe[BLOCK_MAT_DELAY-1] == BLUE ? 32'b00111111100000000000000000000000 : 32'b0;
+    assign block_mat_y = 32'b0;
+    assign block_mat_z = block_color_pipe[BLOCK_MAT_DELAY-1] == RED ? 32'b00111111100000000000000000000000 : 32'b0;
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
             for(int i=0; i<BLOCK_MAT_DELAY; i = i+1) begin
-                block_mat_x_pipe[i] <= 0;
-                block_mat_y_pipe[i] <= 0;
-                block_mat_z_pipe[i] <= 0;
+                block_color_pipe[i] <= 0;
             end
         end else begin
-            block_mat_x_pipe[0] <= block_mat_x;
-            block_mat_y_pipe[0] <= block_mat_y;
-            block_mat_z_pipe[0] <= block_mat_z;
+            block_color_pipe[0] <= block_color;
             for (int i=1; i<BLOCK_MAT_DELAY; i = i+1) begin
-                block_mat_x_pipe[i] <= block_mat_x_pipe[i-1];
-                block_mat_y_pipe[i] <= block_mat_y_pipe[i-1];
-                block_mat_z_pipe[i] <= block_mat_z_pipe[i-1];
+                block_color_pipe[i] <= block_color_pipe[i-1];
             end
         end
     end
@@ -461,9 +460,9 @@ module get_pixel_color(
                 .v1_x(light_intense_mat_mult_x[i]),
                 .v1_y(light_intense_mat_mult_y[i]),
                 .v1_z(light_intense_mat_mult_z[i]),
-                .v2_x(block_mat_x_pipe[BLOCK_MAT_DELAY-1]),
-                .v2_y(block_mat_y_pipe[BLOCK_MAT_DELAY-1]),
-                .v2_z(block_mat_z_pipe[BLOCK_MAT_DELAY-1]),
+                .v2_x(block_mat_x),
+                .v2_y(block_mat_y),
+                .v2_z(block_mat_z   ),
                 .v_valid(light_intense_mat_mult_valid[i]), 
 
                 .res_data_x(lambert_scale_x[i]),

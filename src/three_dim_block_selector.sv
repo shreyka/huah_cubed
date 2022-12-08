@@ -64,9 +64,9 @@ module three_dim_block_selector(
         .block_y_notfloat_in(block_y_in),
         .block_z_notfloat_in(block_z_in),
 
-        .ray_out_x(ray_out_x),
-        .ray_out_y(ray_out_y),
-        .ray_out_z(ray_out_z),
+        .ray_out_x(ray_out_x_int),
+        .ray_out_y(ray_out_y_int),
+        .ray_out_z(ray_out_z_int),
         .x_out(x_out_inter),
         .y_out(y_out_inter),
         .best_block(select_index),

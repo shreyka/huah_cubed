@@ -151,45 +151,11 @@ module eye_to_pixel(
         .m_axis_result_tdata(ey_minus_h_data)
     );
 
-    // constant
-    floating_point_sint32_to_float float100_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(100),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(float_100_data)
-    );
+    assign float_100_data = 32'b01000010110010000000000000000000; //100
 
-    // constant, try to make never 0
-    floating_point_sint32_to_float ex_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(e_x_data)
-    );
-
-    // constant, try to make never 0
-    floating_point_sint32_to_float ey_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(e_y_data)
-    );
-
-    // constant, try to make never 0
-    floating_point_sint32_to_float ez_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(-300.00001),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(e_z_data)
-    );
+    assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
+    assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
+    assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
 
     //SECTION 2: OPERATIONS
 
