@@ -127,6 +127,8 @@ module game_logic_and_renderer(
     logic [7:0] block_ID_selector_three_dim;
     logic block_visible_selector_three_dim;
 
+    logic [31:0] ray_out_x_selector, ray_out_y_selector, ray_out_z_selector, t_out_selector;
+
     // OUTPUT FROM SABER HISTORY
     logic [11:0] prev_hand_x_left_bottom;
     logic [11:0] prev_hand_y_left_bottom;
@@ -253,6 +255,11 @@ module game_logic_and_renderer(
         .block_direction_in(block_direction_blockpositions),
         .block_ID_in(block_ID_blockpositions),
         .block_visible_in(block_visible_blockpositions),
+
+        .ray_out_x(ray_out_x_selector),
+        .ray_out_y(ray_out_y_selector),
+        .ray_out_z(ray_out_z_selector),
+        .t_out(t_out_selector),
 
         .curr_time_out(curr_time_selector_three_dim),
         .x_out(x_out_selector_three_dim),
@@ -435,19 +442,50 @@ module game_logic_and_renderer(
         .broken_blocks_height(broken_blocks_height)
     );
 
+    logic [10:0] x_out_rgb_formatted;
+    logic [9:0] y_out_rgb_formatted;
+    logic [3:0] r_pixel_rgb_formatted, g_pixel_rgb_formatted, b_pixel_rgb_formatted;
+    logic rgb_valid_rgb_formatted;
+
+    get_pixel_rgb_formatted mod(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+
+        .block_pos_x(block_x_selector),
+        .block_pos_y(block_y_selector),
+        .block_pos_z(block_z_selector),
+        .block_color(block_color_selector),
+        .block_dir(block_direction_selector),
+
+        .ray_x(ray_out_x_selector),
+        .ray_y(ray_out_y_selector),
+        .ray_z(ray_out_z_selector),
+
+        .x_in(x_out_selector),
+        .y_in(y_out_selector),
+        .valid_in(1'b1), //is it always valid?
+
+        .t_in(t_out_selector),
+
+        .x_out(x_out_rgb_formatted),
+        .y_out(y_out_rgb_formatted),
+        .r_out(r_pixel_rgb_formatted),
+        .g_out(g_pixel_rgb_formatted),
+        .b_out(b_pixel_rgb_formatted),
+        .rgb_valid(rgb_valid_rgb_formatted)
+    );
+
     three_dim_renderer three_dim_renderer(
         .clk_in(clk_in),
         .rst_in(rst_in),
         .curr_time(curr_time_selector),
-        .x_in_block(x_out_selector),
-        .y_in_block(y_out_selector),
+        .x_in_block(x_out_rgb_formatted),
+        .y_in_block(y_out_rgb_formatted),
+        .r_in_formatted(r_pixel_rgb_formatted),
+        .g_in_formatted(g_pixel_rgb_formatted),
+        .b_in_formatted(b_pixel_rgb_formatted),
         .x_in_rgb(x_in),
         .y_in_rgb(y_in),
-        .block_x(block_x_selector),
-        .block_y(block_y_selector),
-        .block_z(block_z_selector),
-        .block_color(block_color_selector),
-        .block_direction(block_direction_selector),
         .block_visible(block_visible_selector),
         .state(state),
         .max_time(max_time),

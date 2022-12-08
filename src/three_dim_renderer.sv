@@ -11,11 +11,9 @@ module three_dim_renderer(
     input wire [10:0] x_in_rgb,
     input wire [9:0] y_in_rgb,
 
-    input wire [11:0] block_x,
-    input wire [11:0] block_y,
-    input wire [13:0] block_z,
-    input wire block_color,
-    input wire [2:0] block_direction,
+    input wire [3:0] r_in_formatted,
+    input wire [3:0] g_in_formatted,
+    input wire [3:0] b_in_formatted,
     input wire block_visible,
 
     input wire [1:0] state,
@@ -144,9 +142,9 @@ module three_dim_renderer(
                 input_write_enable <= 1;
                 if(block_visible) begin
                     // draw white for now
-                    input_pixel_write <= block_color == RED ? 12'hF00 : 12'h00F;
+                    input_pixel_write <= {r_in_formatted, g_in_formatted, b_in_formatted};
                 end else begin
-                    input_pixel_write <= 12'h101;
+                    input_pixel_write <= 12'h000;
                 end
             end else begin
                 input_write_enable <= 0;

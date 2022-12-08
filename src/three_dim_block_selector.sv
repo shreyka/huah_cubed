@@ -9,8 +9,6 @@ be rendered on this XY coordinate
 
 Essentially a MUX
 
-ThIS IS THE PROBLEM CHILD
-
 */
 module three_dim_block_selector(
     input wire clk_in,
@@ -35,6 +33,11 @@ module three_dim_block_selector(
     output logic [10:0] x_out,
     output logic [9:0] y_out,
 
+    output logic [31:0] ray_out_x,
+    output logic [31:0] ray_out_y,
+    output logic [31:0] ray_out_z,
+    output logic [31:0] t_out,
+
     output logic [11:0] block_x_out,
     output logic [11:0] block_y_out,
     output logic [13:0] block_z_out,
@@ -44,7 +47,7 @@ module three_dim_block_selector(
     output logic block_visible_out
     );
 
-    logic [31:0] ray_out_x, ray_out_y, ray_out_z;
+    logic [31:0] ray_out_x_int, ray_out_y_int, ray_out_z_int;
     logic [3:0] select_index;
     logic [31:0] best_t;
     logic res_valid;
@@ -70,6 +73,11 @@ module three_dim_block_selector(
         .best_t(best_t),
         .valid_out(res_valid)
     );
+
+    assign ray_out_x = ray_out_x_int;
+    assign ray_out_y = ray_out_y_int;
+    assign ray_out_z = ray_out_z_int;
+    assign t_out = best_t;
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
