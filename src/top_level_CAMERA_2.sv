@@ -128,7 +128,7 @@ module top_level(
   // assign data5 = 8'b10000000; // 80
 
   // assign RxD_data = 8'b10111010; 
-  logic [2:0] count; 
+  logic [3:0] count; 
 
   logic [1:0] serial_state;
   parameter IDLE = 0;
@@ -147,7 +147,7 @@ module top_level(
       if (TxD_busy == 0) begin
             start_byte <= 1;
 
-            if (count <= 4) begin 
+            if (count <= 7) begin 
               count <= count + 1;
             end else begin
               count <= 0;
@@ -156,11 +156,17 @@ module top_level(
             if (count <= 2) begin
               RxD_data <= 8'b11111111; 
             end else if (count == 3) begin 
-              RxD_data <=  hand_x_left_bottom[11:4]; 
-            end else if (count == 4) begin
-              RxD_data <= {hand_x_left_bottom[3:0],hand_y_left_bottom[11:8]};
+              RxD_data <=  hand_x_left_top[11:4]; 
+            end else if (count == 4) begin /// SWITCHED ORDER so FF not possible
+              RxD_data <= hand_y_left_top[7:0];
             end else if (count == 5) begin
+              RxD_data <= {hand_x_left_top[3:0],hand_y_left_top[11:8]};
+            end else if (count == 6) begin 
+              RxD_data <=  hand_x_left_bottom[11:4]; 
+            end else if (count == 7) begin /// SWITCHED ORDER so FF not possible
               RxD_data <= hand_y_left_bottom[7:0];
+            end else if (count == 8) begin
+              RxD_data <= {hand_x_left_bottom[3:0],hand_y_left_bottom[11:8]};
             end else begin
               RxD_data <= 0; //FF
               // count <= 0; 
