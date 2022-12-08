@@ -99,3 +99,29 @@ launch_simulation -simset [get_filesets float_test ]
 source get_intersecting_block_tb.tcl
 relaunch_sim
 relaunch_sim
+close_sim
+close_project
+open_project /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.xpr
+update_compile_order -fileset sources_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+add_files -norecurse /media/koops/VIVADO/huah_cubed/src/get_pixel_rgb_formatted.sv
+update_compile_order -fileset sources_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+add_files -norecurse /media/koops/VIVADO/huah_cubed/src/get_pixel_color.sv
+update_compile_order -fileset sources_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
