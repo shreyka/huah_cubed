@@ -93,7 +93,7 @@ module three_dim_renderer(
 
     always_comb begin
         $display("WE ARE AT (%d, %d)", x_in_rgb, y_in_rgb);
-        input_loc_read = get_offset_x(x_in_rgb) + get_offset_y(x_in_rgb, y_in_rgb);
+        input_loc_read = get_offset_x(x_in_rgb >> 1) + get_offset_y(x_in_rgb >> 1, y_in_rgb >> 1);
         $display("READ FOR LATER %d", input_loc_read);
     end 
 
@@ -125,16 +125,16 @@ module three_dim_renderer(
         if(rst_in) begin
             input_pixel_write <= 12'b0;
         end else begin
-            if (x_in_rgb >= WIDTH || y_in_rgb >= HEIGHT) begin
-                r_out <= 4'h0;
-                g_out <= 4'h1;
-                b_out <= 4'h0;
-            end else begin
+            // if (x_in_rgb >= WIDTH || y_in_rgb >= HEIGHT) begin
+            //     r_out <= 4'h0;
+            //     g_out <= 4'h1;
+            //     b_out <= 4'h0;
+            // end else begin
                 // send out the buffer info always
                 r_out <= output_pixel_read[11:8];
                 g_out <= output_pixel_read[7:4];
                 b_out <= output_pixel_read[3:0];
-            end
+            // end
 
             if (x_in_block < WIDTH && y_in_block < HEIGHT) begin
                 // only write when in the range

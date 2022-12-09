@@ -875,7 +875,8 @@ module get_pixel_color_should_draw_arrow(
         .s_axis_a_tvalid(block_pos_normalized_valid),
         .s_axis_b_tvalid(block_pos_normalized_valid),
         
-        .m_axis_result_tdata(region_a_eq_block)
+        .m_axis_result_tdata(region_a_eq_block),
+        .m_axis_result_tvalid()
     );
 
     floating_point_sub sub_c_ray(
@@ -887,7 +888,8 @@ module get_pixel_color_should_draw_arrow(
         .s_axis_a_tvalid(block_pos_normalized_valid),
         .s_axis_b_tvalid(block_pos_normalized_valid),
         
-        .m_axis_result_tdata(region_c_eq_ray)
+        .m_axis_result_tdata(region_c_eq_ray),
+        .m_axis_result_tvalid()
     );
 
     floating_point_sub sub_a_block(
@@ -899,7 +901,8 @@ module get_pixel_color_should_draw_arrow(
         .s_axis_a_tvalid(block_pos_normalized_valid),
         .s_axis_b_tvalid(block_pos_normalized_valid),
         
-        .m_axis_result_tdata(region_c_eq_block)
+        .m_axis_result_tdata(region_c_eq_block),
+        .m_axis_result_tvalid()
     );
 
     floating_point_add add_ud_0(
@@ -911,7 +914,8 @@ module get_pixel_color_should_draw_arrow(
         .s_axis_a_tvalid(block_pos_normalized_valid),
         .s_axis_b_tvalid(block_pos_normalized_valid),
         
-        .m_axis_result_tdata(ud_bounds_0_eq)
+        .m_axis_result_tdata(ud_bounds_0_eq),
+        .m_axis_result_tvalid()
     );
 
     floating_point_add add_ud_1(
@@ -923,7 +927,8 @@ module get_pixel_color_should_draw_arrow(
         .s_axis_a_tvalid(block_pos_normalized_valid),
         .s_axis_b_tvalid(block_pos_normalized_valid),
         
-        .m_axis_result_tdata(ud_bounds_1_eq)
+        .m_axis_result_tdata(ud_bounds_1_eq),
+        .m_axis_result_tvalid()
     );
 
     floating_point_add add_lr_0(
@@ -935,7 +940,8 @@ module get_pixel_color_should_draw_arrow(
         .s_axis_a_tvalid(block_pos_normalized_valid),
         .s_axis_b_tvalid(block_pos_normalized_valid),
         
-        .m_axis_result_tdata(lr_bounds_0_eq)
+        .m_axis_result_tdata(lr_bounds_0_eq),
+        .m_axis_result_tvalid()
     );
 
     floating_point_add add_lr_1(
@@ -947,7 +953,8 @@ module get_pixel_color_should_draw_arrow(
         .s_axis_a_tvalid(block_pos_normalized_valid),
         .s_axis_b_tvalid(block_pos_normalized_valid),
         
-        .m_axis_result_tdata(lr_bounds_1_eq)
+        .m_axis_result_tdata(lr_bounds_1_eq),
+        .m_axis_result_tvalid()
     );
 
     // probably verified up to here
@@ -1106,7 +1113,7 @@ module get_pixel_color_should_draw_arrow(
 
     // pipelining block_dir: 48
     localparam BLOCK_DIR_DELAY = 48;
-    logic block_dir_pipe [BLOCK_DIR_DELAY-1:0];
+    logic [2:0] block_dir_pipe [BLOCK_DIR_DELAY-1:0];
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin

@@ -151,7 +151,7 @@ module game_logic_and_renderer_tb;
         end
 
         // for(int j = 0; j < 5; j = j + 1) begin
-        //     $display("CURRENT TIME IS %d", uut.curr_time);
+        //     $display("CURREN  TIME IS %d", uut.curr_time);
         //     $display("BLOCK POS (%d, %d, %d)", uut.block_x_selector, uut.block_y_selector, uut.block_z_selector);
 
         //     for(int i = 0; i < 1000; i = i+1) #10;

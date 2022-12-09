@@ -37,7 +37,7 @@ module get_intersecting_block(
     //
 
     //TODO: the full 12 is quite time intensive to build, think about possible pipelining tricks?
-    localparam NUM_OF_BLOCKS = 1;
+    localparam NUM_OF_BLOCKS = 2;
 
     // stage -1
 

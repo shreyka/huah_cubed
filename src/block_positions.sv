@@ -40,7 +40,7 @@ module block_positions(
 
     always_comb begin
         for (int i = 0; i < 12; i = i + 1) begin
-            block_visible_logic[i] = block_time_in[i] > curr_time_in && block_time_in[i] - curr_time_in <= 150;
+            block_visible_logic[i] = block_time_in[i] > curr_time_in && block_time_in[i] <= 150 + curr_time_in;
             // block_z_out_logic[i] = block_visible_logic 
             //             ? 3000 - (20 * (150 - (block_time_in[i] - curr_time_in))) 
             //             : 0;
