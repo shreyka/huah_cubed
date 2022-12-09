@@ -47,12 +47,21 @@ module three_dim_block_selector(
     output logic block_visible_out
     );
 
-    logic [31:0] ray_out_x_int, ray_out_y_int, ray_out_z_int;
-    logic [3:0] select_index;
-    logic [31:0] best_t;
+    // current block state
+    logic [3:0] current_block_index;
+
     logic res_valid;
+    logic [31:0] ray_out_x_int, ray_out_y_int, ray_out_z_int;
+    logic [3:0] block_index_out;
+    logic [31:0] t_out;
     logic [10:0] x_out_inter;
     logic [9:0] y_out_inter;
+
+    logic [3:0] best_block_index;
+    logic [31:0] best_ray_x, best_ray_y, best_ray_z;
+    logic [31:0] best_t;
+
+    logic ray_block_intersect_out;
     get_intersecting_block get_intersecting_block(
         .clk_in(clk_in),
         .rst_in(rst_in),
@@ -60,18 +69,20 @@ module three_dim_block_selector(
         .y_in(y_in),
         .valid_in(1'b1),
 
-        .block_x_notfloat_in(block_x_in),
-        .block_y_notfloat_in(block_y_in),
-        .block_z_notfloat_in(block_z_in),
-        .block_visible_in(block_visible_in),
+        .block_index_in(current_block_index),
+        .block_x_notfloat_in(block_x_in[current_block_index]),
+        .block_y_notfloat_in(block_y_in[current_block_index]),
+        .block_z_notfloat_in(block_z_in[current_block_index]),
+        .block_visible_in(block_visible_in[current_block_index]),
 
         .ray_out_x(ray_out_x_int),
         .ray_out_y(ray_out_y_int),
         .ray_out_z(ray_out_z_int),
         .x_out(x_out_inter),
         .y_out(y_out_inter),
-        .best_block(select_index),
-        .best_t(best_t),
+        .ray_block_intersect_out(ray_block_intersect_out),
+        .best_t(t_out),
+        .block_index_out(block_index_out),
         .valid_out(res_valid)
     );
 
@@ -82,25 +93,43 @@ module three_dim_block_selector(
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
+            current_block_index <= 0;
         end else begin
+            // state machine
+            if (res_valid) begin
+                if(block_index_out < best_block_index && ray_block_intersect_out) begin
+                    best_block_index <= block_index_out;
+                    best_ray_x <= ray_out_x_int;
+                    best_ray_y <= ray_out_y_int;
+                    best_ray_z <= ray_out_z_int;
+                    best_t <= t_out;
+                end
+            end
+            if (current_block_index == 11) begin
+                current_block_index <= 0;
+                best_block_index <= 15; //higher than any other blocks
+
+                // output best value so far
+                if(best_block_index < 12) begin
+                    block_x_out <= block_x_in[best_block_index];
+                    block_y_out <= block_y_in[best_block_index];
+                    block_z_out <= block_z_in[best_block_index];
+                    block_color_out <= block_color_in[best_block_index];
+                    block_direction_out <= block_direction_in[best_block_index];
+                    block_ID_out <= block_ID_in[best_block_index];
+                    block_visible_out <= 1;
+                end else begin
+                    block_visible_out <= 0;
+                end
+            end else begin
+                current_block_index <= current_block_index + 1;
+            end
+
             //passthrough
             curr_time_out <= curr_time_in;
 
             x_out <= x_out_inter;
             y_out <= y_out_inter;
-
-            // assume the 12 block positions cannot update faster than we can compute
-            if(res_valid && select_index < 12) begin
-                block_x_out <= block_x_in[select_index];
-                block_y_out <= block_y_in[select_index];
-                block_z_out <= block_z_in[select_index];
-                block_color_out <= block_color_in[select_index];
-                block_direction_out <= block_direction_in[select_index];
-                block_ID_out <= block_ID_in[select_index];
-                block_visible_out <= 1;
-            end else begin
-                block_visible_out <= 0;
-            end
         end
     end    
 

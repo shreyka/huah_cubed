@@ -241,12 +241,44 @@ module game_logic_and_renderer(
         .block_visible_out(block_visible_blockpositions)
     );
 
+    // slowly increment xy
+    localparam WIDTH = 512;
+    localparam HEIGHT = 384;
+    logic [10:0] x_in_sel;
+    logic [9:0] y_in_sel;
+    logic [3:0] xy_delay_counter;
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            x_in_sel <= 0;
+            y_in_sel <= 0;
+            xy_delay_counter <= 0;
+        end else begin
+            if(xy_delay_counter == 12) begin
+                xy_delay_counter <= 0;
+
+                if (x_in_sel + 1 == WIDTH) begin
+                    x_in_sel <= 0;
+                    
+                    if(y_in_sel + 1 == HEIGHT) begin
+                        y_in_sel <= 0;
+                    end else begin
+                        y_in_sel <= y_in_sel + 1;
+                    end
+                end else begin
+                    x_in_sel <= x_in_sel + 1;
+                end
+            end else begin
+                xy_delay_counter <= xy_delay_counter + 1;
+            end
+        end
+    end
+
     three_dim_block_selector three_dim_block_selector(
         .clk_in(clk_in),
         .rst_in(rst_in),
         .curr_time_in(curr_time_blockpositions),
-        .x_in(x_in),
-        .y_in(y_in),
+        .x_in(x_in_sel),
+        .y_in(y_in_sel),
         .sliced_blocks(sliced_blocks),
         .block_x_in(block_x_blockpositions),
         .block_y_in(block_y_blockpositions),
@@ -452,6 +484,10 @@ module game_logic_and_renderer(
         .clk_in(clk_in),
         .rst_in(rst_in),
 
+        .x_in(x_out_selector),
+        .y_in(y_out_selector),
+        .valid_in(1'b1), //is it always valid?
+
         .block_pos_x(block_x_selector),
         .block_pos_y(block_y_selector),
         .block_pos_z(block_z_selector),
@@ -462,10 +498,6 @@ module game_logic_and_renderer(
         .ray_x(ray_out_x_selector),
         .ray_y(ray_out_y_selector),
         .ray_z(ray_out_z_selector),
-
-        .x_in(x_out_selector),
-        .y_in(y_out_selector),
-        .valid_in(1'b1), //is it always valid?
 
         .t_in(t_out_selector),
 

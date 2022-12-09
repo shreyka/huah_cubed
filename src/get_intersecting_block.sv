@@ -15,10 +15,12 @@ module get_intersecting_block(
     input wire [10:0] x_in,
     input wire [9:0] y_in,
 
-    input wire [11:0] [11:0] block_x_notfloat_in,
-    input wire [11:0] [11:0] block_y_notfloat_in,
-    input wire [11:0] [13:0] block_z_notfloat_in,
-    input wire [11:0] block_visible_in,
+    input wire [3:0] block_index_in,
+    input wire [11:0] block_x_notfloat_in,
+    input wire [11:0] block_y_notfloat_in,
+    input wire [13:0] block_z_notfloat_in,
+    input wire block_visible_in,
+
     input wire valid_in,
 
     output logic [10:0] x_out,
@@ -26,7 +28,8 @@ module get_intersecting_block(
     output logic [31:0] ray_out_x,
     output logic [31:0] ray_out_y,
     output logic [31:0] ray_out_z,
-    output logic [3:0] best_block,
+    output logic [3:0] block_index_out,
+    output logic ray_block_intersect_out,
     output logic [31:0] best_t,
     output logic valid_out
     ); 
@@ -37,16 +40,12 @@ module get_intersecting_block(
     // logic variables go here
     //
 
-    //TODO: the full 12 is quite time intensive to build, think about possible pipelining tricks?
-    localparam NUM_OF_BLOCKS = 2;
-
     // stage -1
 
-    logic [NUM_OF_BLOCKS-1:0] [31:0] block_x_in;
-    logic [NUM_OF_BLOCKS-1:0] [31:0] block_y_in;
-    logic [NUM_OF_BLOCKS-1:0] [31:0] block_z_in;
-
-    logic [NUM_OF_BLOCKS-1:0] block_x_in_valid;
+    logic [31:0] block_x_in;
+    logic [31:0] block_y_in;
+    logic [31:0] block_z_in;
+    logic block_x_in_valid;
 
     // stage 0
 
@@ -57,9 +56,9 @@ module get_intersecting_block(
 
     // stage 1
 
-    logic [31:0] t [11:0];
-    logic ray_block_intersect [11:0];
-    logic ray_block_intersect_valid [11:0];
+    logic [31:0] t;
+    logic ray_block_intersect;
+    logic ray_block_intersect_valid;
 
     // stage 2
 
@@ -71,34 +70,30 @@ module get_intersecting_block(
 
     // stage -1: convert to float
 
-    generate
-        for(genvar i = 0; i < NUM_OF_BLOCKS; i = i + 1) begin
-            floating_point_sint32_to_float ex_to_float(
-                .aclk(clk_in),
-                .aresetn(~rst_in),
-                .s_axis_a_tvalid(valid_in),
-                .s_axis_a_tdata({20'b0, block_x_notfloat_in[i]}),
-                .m_axis_result_tdata(block_x_in[i]),
-                .m_axis_result_tvalid(block_x_in_valid[i])
-            );
-            floating_point_sint32_to_float ey_to_float(
-                .aclk(clk_in),
-                .aresetn(~rst_in),
-                .s_axis_a_tvalid(valid_in),
-                .s_axis_a_tdata({20'b0, block_y_notfloat_in[i]}),
-                .m_axis_result_tdata(block_y_in[i]),
-                .m_axis_result_tvalid()
-            );
-            floating_point_sint32_to_float ez_to_float(
-                .aclk(clk_in),
-                .aresetn(~rst_in),
-                .s_axis_a_tvalid(valid_in),
-                .s_axis_a_tdata({18'b0, block_z_notfloat_in[i]}),
-                .m_axis_result_tdata(block_z_in[i]),
-                .m_axis_result_tvalid()
-            );
-        end
-    endgenerate
+    floating_point_sint32_to_float ex_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tdata({20'b0, block_x_notfloat_in}),
+        .m_axis_result_tdata(block_x_in),
+        .m_axis_result_tvalid(block_x_in_valid)
+    );
+    floating_point_sint32_to_float ey_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tdata({20'b0, block_y_notfloat_in}),
+        .m_axis_result_tdata(block_y_in),
+        .m_axis_result_tvalid()
+    );
+    floating_point_sint32_to_float ez_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tdata({18'b0, block_z_notfloat_in}),
+        .m_axis_result_tdata(block_z_in),
+        .m_axis_result_tvalid()
+    );
 
     // stage 0
 
@@ -124,19 +119,33 @@ module get_intersecting_block(
         end
     end
 
-    eye_to_pixel eye_to_pixel(
+    eye_to_pixel eye_to_pixel( //117
         .clk_in(clk_in),
         .rst_in(rst_in),
 
         .x_in(x_in_pipe[XY_DELAY_0-1]),
         .y_in(y_in_pipe[XY_DELAY_0-1]),
-        .valid_in(block_x_in_valid[0]),
+        .valid_in(block_x_in_valid),
 
         .dir_x(ray_x),
         .dir_y(ray_y),
         .dir_z(ray_z),
         .dir_valid(ray_valid)
     );
+
+    // logic [31:0] i;
+    // always_ff @(posedge clk_in) begin
+    //     if(rst_in) begin
+    //         i <= 0;
+    //     end else begin
+    //         i <= i + 1;
+    //         if(block_x_in_valid) begin
+    //             $display("%d: go into eye", i);
+    //         end else if(ray_valid) begin
+    //             $display("%d: leave eye", i);
+    //         end
+    //     end
+    // end
 
     // always_ff @(posedge clk_in) begin
     //     if (block_x_in_valid[0]) begin
@@ -157,28 +166,60 @@ module get_intersecting_block(
 
     // stage 1
 
-    generate
-        for(genvar i = 0; i < NUM_OF_BLOCKS; i = i + 1) begin
-            // TODO: need to pipeline block_x_in, y, z
-            // maybe not for now bc we can assume it does not change much over time
-            does_ray_block_intersect does_ray_block_intersect(
-                .clk_in(clk_in),
-                .rst_in(rst_in),
-                
-                .ray_x(ray_x),
-                .ray_y(ray_y),
-                .ray_z(ray_z),
-                .block_pos_x(block_x_in[i]),
-                .block_pos_y(block_y_in[i]),
-                .block_pos_z(block_z_in[i]),
-                .valid_in(ray_valid),
+    localparam BLOCK_DELAY = 111 + 6;
+    logic [31:0] block_x_pipe [BLOCK_DELAY-1:0];
+    logic [31:0] block_y_pipe [BLOCK_DELAY-1:0];
+    logic [31:0] block_z_pipe [BLOCK_DELAY-1:0];
 
-                .intersects_data_out(ray_block_intersect[i]),
-                .t_out(t[i]),
-                .valid_out(ray_block_intersect_valid[i])
-            );
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            for(int i=0; i<BLOCK_DELAY; i = i+1) begin
+                block_x_pipe[i] <= 0;
+                block_y_pipe[i] <= 0;
+                block_z_pipe[i] <= 0;
+            end
+        end else begin
+            block_x_pipe[0] <= block_x_in;
+            block_y_pipe[0] <= block_y_in;
+            block_z_pipe[0] <= block_z_in;
+            for (int i=1; i<BLOCK_DELAY; i = i+1) begin
+                block_x_pipe[i] <= block_x_pipe[i-1];
+                block_y_pipe[i] <= block_y_pipe[i-1];
+                block_z_pipe[i] <= block_z_pipe[i-1];
+            end
         end
-    endgenerate
+    end
+
+    // logic [31:0] i;
+    // always_ff @(posedge clk_in) begin
+    //     if(rst_in) begin
+    //         i <= 0;
+    //     end else begin
+    //         i <= i + 1;
+    //         if(ray_valid) begin
+    //             $display("%d: block_x_pipe: %b", i, block_x_pipe[BLOCK_DELAY-1]);
+    //         end else begin
+    //             $display("%d: invalid block_x_pipe: %b", i, block_x_pipe[BLOCK_DELAY-1]);
+    //         end
+    //     end
+    // end
+
+    does_ray_block_intersect does_ray_block_intersect(
+        .clk_in(clk_in),
+        .rst_in(rst_in),
+        
+        .ray_x(ray_x),
+        .ray_y(ray_y),
+        .ray_z(ray_z),
+        .block_pos_x(block_x_pipe[BLOCK_DELAY-1]),
+        .block_pos_y(block_y_pipe[BLOCK_DELAY-1]),
+        .block_pos_z(block_z_pipe[BLOCK_DELAY-1]),
+        .valid_in(ray_valid),
+
+        .intersects_data_out(ray_block_intersect),
+        .t_out(t),
+        .valid_out(ray_block_intersect_valid)
+    );
 
     // stage 2
 
@@ -207,37 +248,48 @@ module get_intersecting_block(
         end
     end
 
-    localparam MAX_BLOCK_INDEX = 15;
-
-    logic [3:0] best_block_comb;
-    logic [31:0] best_t_comb;
-
-    always_comb begin
-        if(ray_block_intersect_valid[0]) begin
-            best_t_comb = 32'b10111111100000000000000000000000;
-            best_block_comb = MAX_BLOCK_INDEX; // above max value
-
-            for(int i = NUM_OF_BLOCKS - 1; i >= 0; i = i - 1) begin
-                // todo: probably should pipeline block_visible_in if problems
-                if(ray_block_intersect[i] && block_visible_in[i]) begin
-                    best_t_comb = t[i];
-                    best_block_comb = i;
-                end
-            end
-        end else begin
-            best_t_comb = 32'b0;
-            best_block_comb = MAX_BLOCK_INDEX;
-        end
-    end
-
     assign x_out = x_in_pipe[XY_DELAY-1];
     assign y_out = y_in_pipe[XY_DELAY-1];
 
+    // logic [31:0] j;
+    // always_ff @(posedge clk_in) begin
+    //     if(rst_in) begin
+    //         j <= 0;
+    //     end else begin
+    //         j <= j + 1;
+    //         if(ray_block_intersect_valid) begin
+    //             $display("%d: visible: %b", j, block_visible_pipe[BLOCK_VISIBLE_DELAY-1]);
+    //         end else begin
+    //             $display("%d: invalid visible: %b", j, block_visible_pipe[BLOCK_VISIBLE_DELAY-1]);
+    //         end
+    //     end
+    // end
+
+    localparam BLOCK_VISIBLE_DELAY = 181;
+    logic block_visible_pipe [BLOCK_VISIBLE_DELAY-1:0];
+    logic [3:0] block_index_pipe [BLOCK_VISIBLE_DELAY-1:0];
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            for(int i=0; i<BLOCK_VISIBLE_DELAY; i = i+1) begin
+                block_visible_pipe[i] <= 0;
+                block_index_pipe[i] <= 0;
+            end
+        end else begin
+            block_visible_pipe[0] <= block_visible_in;
+            block_index_pipe[0] <= block_index_in;
+            for (int i=1; i<BLOCK_VISIBLE_DELAY; i = i+1) begin
+                block_visible_pipe[i] <= block_visible_pipe[i-1];
+                block_index_pipe[i] <= block_index_pipe[i-1];
+            end
+        end
+    end
+
     always_ff @(posedge clk_in) begin
         if(~rst_in) begin
-            valid_out <= ray_block_intersect_valid[0];
-            best_block <= best_block_comb;
-            best_t <= best_t_comb;
+            valid_out <= ray_block_intersect_valid;
+            ray_block_intersect_out <= ray_block_intersect && block_visible_pipe[BLOCK_VISIBLE_DELAY-1];
+            best_t <= t;
+            block_index_out <= block_index_pipe[BLOCK_VISIBLE_DELAY-1];
 
             ray_out_x <= ray_x_pipe[RAY_DELAY-1];
             ray_out_y <= ray_y_pipe[RAY_DELAY-1];
