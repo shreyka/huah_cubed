@@ -132,24 +132,26 @@ module eye_to_pixel(
     );
 
     // constant
-    floating_point_sint32_to_float exminusw_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(valid_in),
-        .s_axis_a_tdata(exminusw),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(ex_minus_w_data)
-    );
+    // floating_point_sint32_to_float exminusw_to_float(
+    //     .aclk(clk_in),
+    //     .aresetn(~rst_in),
+    //     .s_axis_a_tvalid(valid_in),
+    //     .s_axis_a_tdata(exminusw),
+    //     .m_axis_result_tvalid(),
+    //     .m_axis_result_tdata(ex_minus_w_data)
+    // );
+    assign ex_minus_w_data = 32'b01000100110000010000000000000000;
 
     // constant
-    floating_point_sint32_to_float eyminusw_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(valid_in),
-        .s_axis_a_tdata(eyminush),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(ey_minus_h_data)
-    );
+    // floating_point_sint32_to_float eyminusw_to_float(
+    //     .aclk(clk_in),
+    //     .aresetn(~rst_in),
+    //     .s_axis_a_tvalid(valid_in),
+    //     .s_axis_a_tdata(eyminush),
+    //     .m_axis_result_tvalid(),
+    //     .m_axis_result_tdata(ey_minus_h_data)
+    // );
+    assign ey_minus_h_data = 32'b01000100110010010000000000000000;
 
     assign float_100_data = 32'b01000010110010000000000000000000; //100
 

@@ -18,6 +18,7 @@ module get_intersecting_block(
     input wire [11:0] [11:0] block_x_notfloat_in,
     input wire [11:0] [11:0] block_y_notfloat_in,
     input wire [11:0] [13:0] block_z_notfloat_in,
+    input wire [11:0] block_visible_in,
     input wire valid_in,
 
     output logic [10:0] x_out,
@@ -217,7 +218,8 @@ module get_intersecting_block(
             best_block_comb = MAX_BLOCK_INDEX; // above max value
 
             for(int i = NUM_OF_BLOCKS - 1; i >= 0; i = i - 1) begin
-                if(ray_block_intersect[i]) begin
+                // todo: probably should pipeline block_visible_in if problems
+                if(ray_block_intersect[i] && block_visible_in[i]) begin
                     best_t_comb = t[i];
                     best_block_comb = i;
                 end
