@@ -221,11 +221,11 @@ module get_pixel_color(
         .should_render_arrow_valid(should_render_arrow_valid)
     );
 
-    // always_ff @(posedge clk_in) begin
-    //     if(should_render_arrow_valid) begin
-    //         $display("SHOULD_RENDER? %d", should_render_arrow);
-    //     end
-    // end
+    always_ff @(posedge clk_in) begin
+        if(should_render_arrow_valid) begin
+            $display("SHOULD_RENDER? %d", should_render_arrow);
+        end
+    end
 
     vec_add new_origin_add( //verified up to here
         .clk_in(clk_in),
@@ -575,7 +575,7 @@ module get_pixel_color(
 
     // stage 8
 
-    // pipeline should_render_arrow: 194, verified
+    // pipeline should_render_arrow: 194 + 1, verified
     localparam SHOULD_RENDER_ARROW_DELAY = 194 + 1;
     logic should_render_arrow_pipe [SHOULD_RENDER_ARROW_DELAY-1:0];
     logic should_render_arrow_valid_pipe [SHOULD_RENDER_ARROW_DELAY-1:0];
@@ -637,11 +637,14 @@ module get_pixel_color(
         if(~rst_in) begin
             if(min_rgb_valid) begin
                 rgb_valid <= 1;
+                $display("SHOULD_RENDER_DELAY? %d", should_render_arrow_pipe[SHOULD_RENDER_ARROW_DELAY-1]);
                 if(should_render_arrow_pipe[SHOULD_RENDER_ARROW_DELAY-1]) begin
+                    $display("OUT RGB: %b %b %b", min_rgb, min_rgb, min_rgb);
                     r_out <= min_rgb;
                     g_out <= min_rgb;
                     b_out <= min_rgb;
                 end else begin
+                    $display("OUT RGB: %b %b %b", r_total_pipe[RGB_TOTAL_DELAY-1], g_total_pipe[RGB_TOTAL_DELAY-1], b_total_pipe[RGB_TOTAL_DELAY-1]);
                     r_out <= r_total_pipe[RGB_TOTAL_DELAY-1];
                     g_out <= g_total_pipe[RGB_TOTAL_DELAY-1];
                     b_out <= b_total_pipe[RGB_TOTAL_DELAY-1];

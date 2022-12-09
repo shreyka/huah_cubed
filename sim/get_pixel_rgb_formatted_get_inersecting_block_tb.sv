@@ -36,7 +36,7 @@ module get_pixel_rgb_formatted_tb;
     logic [31:0] ray_z;
     logic [31:0] pos_z;
     logic [31:0] t_in;
-    logic valid;
+    logic valid, res_valid;
     logic [2:0] block_dir;
 
     /*
@@ -69,16 +69,44 @@ module get_pixel_rgb_formatted_tb;
     output logic rgb_valid
     */
 
-    logic [10:0] x_in, x_out;
-    logic [9:0] y_in, y_out;
+    logic [10:0] x_in, x_out, x_out_int;
+    logic [9:0] y_in, y_out, y_out_int;
     logic [2:0] block_color;
+
+    logic [11:0] [11:0] block_x_in;
+    logic [11:0] [11:0] block_y_in;
+    logic [11:0] [13:0] block_z_in;
+
+    logic [3:0] best_block;
+    logic [31:0] best_t;
+
+    get_intersecting_block mod(
+        .clk_in(clk),
+        .rst_in(rst),
+        .x_in(x_in),
+        .y_in(y_in),
+        .valid_in(valid),
+
+        .block_x_notfloat_in(block_x_in),
+        .block_y_notfloat_in(block_y_in),
+        .block_z_notfloat_in(block_z_in),
+
+        .ray_out_x(ray_x),
+        .ray_out_y(ray_y),
+        .ray_out_z(ray_z),
+        .x_out(x_out_int),
+        .y_out(y_out_int),
+        .best_block(best_block),
+        .best_t(t_in),
+        .valid_out(res_valid)
+    );
 
     get_pixel_rgb_formatted mod(
         .clk_in(clk),
         .rst_in(rst),
 
-        .block_pos_x(1800),
-        .block_pos_y(1800),
+        .block_pos_x(32'b01000100111000010000000000000000),
+        .block_pos_y(32'b01000100111000010000000000000000),
         .block_pos_z(pos_z),
         .block_color(block_color),
         .block_dir(block_dir),
@@ -87,9 +115,9 @@ module get_pixel_rgb_formatted_tb;
         .ray_y(ray_y),
         .ray_z(ray_z),
 
-        .x_in(x_in),
-        .y_in(y_in),
-        .valid_in(valid),
+        .x_in(x_out_int),
+        .y_in(y_out_int),
+        .valid_in(res_valid),
 
         .t_in(t_in),
 
@@ -109,8 +137,8 @@ module get_pixel_rgb_formatted_tb;
     // we will increment time every 10 cycles
 
     initial begin
-        $dumpfile("get_pixel_rgb_formatted_tb.vcd");
-        $dumpvars(0, get_pixel_rgb_formatted_tb);
+        $dumpfile("get_pixel_rgb_formatted_get_inersecting_block_tb.vcd");
+        $dumpvars(0, get_pixel_rgb_formatted_get_inersecting_block_tb);
         $display("Starting Sim");
 
         clk = 0;
@@ -127,7 +155,7 @@ module get_pixel_rgb_formatted_tb;
         ray_y = 32'b00110111001001111100010110101100;
         ray_z = 32'b00111111100000000000000001010100; //1
         t_in = 32'b01000100100101011111111110011111;
-        pos_z = 1000; //1000
+        pos_z = 32'b01000100011110100000000000000000; //1000
         block_dir = 3'b1;
         block_color = 2'b0;
         x_in = 11'd100;
@@ -138,7 +166,7 @@ module get_pixel_rgb_formatted_tb;
         ray_y = 32'b10111100110011001010011101110100;
         ray_z = 32'b00111111011111111110110000101111;
         t_in = 32'b01000100100010011000101010100110;
-        pos_z = 900; //900
+        pos_z = 32'b01000100011000010000000000000000; //900
         block_dir = 3'b0;
         block_color = 2'b0;
         x_in = 11'd101;

@@ -347,6 +347,8 @@ module vec_dot(
     logic mult_valid;
     logic [31:0] mult_data_x, mult_data_y, mult_data_z;
 
+    // stage 0
+
     floating_point_multiply mult_x(
         .aclk(clk_in),
         .aresetn(~rst_in),
@@ -383,7 +385,7 @@ module vec_dot(
         .m_axis_result_tvalid()
     );
 
-    // add vx vy
+    // stage 1: add vx vy
 
     logic vxy_valid;
     logic [31:0] vxy_data;
@@ -415,7 +417,7 @@ module vec_dot(
         .m_axis_result_tdata(vz_data)
     );
 
-    // add vxy vz
+    // stage 2: add vxy vz
 
     floating_point_add add_xyz(
         .aclk(clk_in),

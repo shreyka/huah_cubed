@@ -11,9 +11,9 @@ module get_pixel_rgb_formatted(
     input wire clk_in,
     input wire rst_in,
 
-    input wire [31:0] block_pos_x,
-    input wire [31:0] block_pos_y,
-    input wire [31:0] block_pos_z,
+    input wire [11:0] block_pos_x,
+    input wire [11:0] block_pos_y,
+    input wire [13:0] block_pos_z,
     input wire [2:0] block_color,
     input wire [2:0] block_dir,
 
@@ -62,6 +62,10 @@ module get_pixel_rgb_formatted(
     //
     // logic variables go here
     //
+    
+    // stage -1
+    logic [31:0] block_float_x, block_float_y, block_float_z;
+    logic block_float_x_valid;
 
     // stage 0
     logic [31:0] r_pixel;
@@ -111,19 +115,46 @@ module get_pixel_rgb_formatted(
     //     end
     // end
 
+    // stage -1: convert to float, takes 6 cycles
+
+    floating_point_sint32_to_float ex_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tdata({20'b0, block_pos_x}),
+        .m_axis_result_tdata(block_float_x),
+        .m_axis_result_tvalid(block_float_x_valid)
+    );
+    floating_point_sint32_to_float ey_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tdata({20'b0, block_pos_y}),
+        .m_axis_result_tdata(block_float_y),
+        .m_axis_result_tvalid()
+    );
+    floating_point_sint32_to_float ez_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tdata({18'b0, block_pos_z}),
+        .m_axis_result_tdata(block_float_z),
+        .m_axis_result_tvalid()
+    );
+
     // stage 0
     get_pixel_color get_pixel_color(
         .clk_in(clk_in),
         .rst_in(rst_in),
 
-        .block_pos_x(block_pos_x),
-        .block_pos_y(block_pos_y),
-        .block_pos_z(block_pos_z),
+        .block_pos_x(block_float_x),
+        .block_pos_y(block_float_y),
+        .block_pos_z(block_float_z),
         .block_mat_x(block_mat_x),
         .block_mat_y(block_mat_y),
         .block_mat_z(block_mat_z),
         .block_dir(block_dir),
-        .valid_in(valid_in),
+        .valid_in(block_float_x_valid),
 
         .ray_x(ray_x),
         .ray_y(ray_y),
@@ -256,8 +287,8 @@ module get_pixel_rgb_formatted(
         .m_axis_result_tvalid()
     );
 
-    // pipeline XY (270, measured and verified)
-    localparam XY_DELAY = 270;
+    // pipeline XY (270 + 6, measured and verified)
+    localparam XY_DELAY = 270 + 6;
     logic [10:0] x_in_pipe [XY_DELAY-1:0];
     logic [9:0] y_in_pipe [XY_DELAY-1:0];
 
