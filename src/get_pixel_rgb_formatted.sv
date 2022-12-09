@@ -29,7 +29,7 @@ module get_pixel_rgb_formatted(
     input wire [31:0] t_in,
 
     output logic [10:0] x_out,
-    output logic [10:0] y_out,
+    output logic [9:0] y_out,
     output logic block_visible_out,
     output logic [3:0] r_out,
     output logic [3:0] g_out,
@@ -281,8 +281,8 @@ module get_pixel_rgb_formatted(
         .m_axis_result_tvalid()
     );
 
-    // pipeline XY (270, measured and verified)
-    localparam XY_DELAY = 270;
+    // pipeline XY (270 + 6, measured and verified)
+    localparam XY_DELAY = 270 + 6;
     logic [10:0] x_in_pipe [XY_DELAY-1:0];
     logic [9:0] y_in_pipe [XY_DELAY-1:0];
     logic block_visible_out_pipe [XY_DELAY-1:0];
