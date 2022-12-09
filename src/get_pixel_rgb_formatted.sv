@@ -16,6 +16,7 @@ module get_pixel_rgb_formatted(
     input wire [13:0] block_pos_z,
     input wire [2:0] block_color,
     input wire [2:0] block_dir,
+    input wire block_visible_in,
 
     input wire [31:0] ray_x,
     input wire [31:0] ray_y,
@@ -29,6 +30,7 @@ module get_pixel_rgb_formatted(
 
     output logic [10:0] x_out,
     output logic [10:0] y_out,
+    output logic block_visible_out,
     output logic [3:0] r_out,
     output logic [3:0] g_out,
     output logic [3:0] b_out,
@@ -51,18 +53,12 @@ module get_pixel_rgb_formatted(
     assign one = 32'b00111111100000000000000000000000;
     assign two_fifty_five = 32'b01000011011111110000000000000000;
 
-    logic [31:0] block_mat_x, block_mat_y, block_mat_z;
-
-    assign block_mat_x = block_color == BLUE ? 32'b00111111100000000000000000000000 : 32'b0;
-    assign block_mat_y = 32'b0;
-    assign block_mat_z = block_color == RED ? 32'b00111111100000000000000000000000 : 32'b0;
-
     ////////////////////////////////////////////////////
     // VARIABLE DEFINITIONS
     //
     // logic variables go here
     //
-    
+
     // stage -1
     logic [31:0] block_float_x, block_float_y, block_float_z;
     logic block_float_x_valid;
@@ -150,9 +146,7 @@ module get_pixel_rgb_formatted(
         .block_pos_x(block_float_x),
         .block_pos_y(block_float_y),
         .block_pos_z(block_float_z),
-        .block_mat_x(block_mat_x),
-        .block_mat_y(block_mat_y),
-        .block_mat_z(block_mat_z),
+        .block_color(block_color),
         .block_dir(block_dir),
         .valid_in(block_float_x_valid),
 
@@ -287,10 +281,11 @@ module get_pixel_rgb_formatted(
         .m_axis_result_tvalid()
     );
 
-    // pipeline XY (270 + 6, measured and verified)
-    localparam XY_DELAY = 270 + 6;
+    // pipeline XY (270, measured and verified)
+    localparam XY_DELAY = 270;
     logic [10:0] x_in_pipe [XY_DELAY-1:0];
     logic [9:0] y_in_pipe [XY_DELAY-1:0];
+    logic block_visible_out_pipe [XY_DELAY-1:0];
 
     // always_ff @(posedge clk_in) begin
     //     if (r_int_valid) begin
@@ -306,19 +301,23 @@ module get_pixel_rgb_formatted(
             for(int i=0; i<XY_DELAY; i = i+1) begin
                 x_in_pipe[i] <= 0;
                 y_in_pipe[i] <= 0;
+                block_visible_out_pipe[i] <= 0;
             end
         end else begin
             x_in_pipe[0] <= x_in;
             y_in_pipe[0] <= y_in;
+            block_visible_out_pipe[0] <= block_visible_in;
             for (int i=1; i<XY_DELAY; i = i+1) begin
                 x_in_pipe[i] <= x_in_pipe[i-1];
                 y_in_pipe[i] <= y_in_pipe[i-1];
+                block_visible_out_pipe[i] <= block_visible_out_pipe[i-1];
             end
         end
     end
 
     assign x_out = x_in_pipe[XY_DELAY-1];
     assign y_out = y_in_pipe[XY_DELAY-1];
+    assign block_visible_out = block_visible_out_pipe[XY_DELAY-1];
     assign r_out = r_int[7:4];
     assign g_out = g_int[7:4];
     assign b_out = b_int[7:4];
