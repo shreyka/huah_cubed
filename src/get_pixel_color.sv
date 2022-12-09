@@ -350,14 +350,19 @@ module get_pixel_color(
         end
     end
 
-    // pipeline block_mat (scale, add, sub, normalize, sub, normalize, dot, multiply): 208
-    localparam BLOCK_MAT_DELAY = 208;
+    // pipeline block_mat (scale, add, sub, normalize, sub, normalize, dot, multiply): 208 + 11 
+
+    // always_ff @(posedge clk_in) begin
+    //     $display("MAT IS %d", block_mat_x);
+    // end
+
+    localparam BLOCK_MAT_DELAY = 208 + 11;
     logic [2:0] block_color_pipe [BLOCK_MAT_DELAY-1:0];
 
     logic [31:0] block_mat_x, block_mat_y, block_mat_z;
-    assign block_mat_x = block_color_pipe[BLOCK_MAT_DELAY-1] == BLUE ? 32'b00111111100000000000000000000000 : 32'b0;
+    assign block_mat_x = block_color_pipe[BLOCK_MAT_DELAY-1] == RED ? 32'b00111111100000000000000000000000 : 32'b0;
     assign block_mat_y = 32'b0;
-    assign block_mat_z = block_color_pipe[BLOCK_MAT_DELAY-1] == RED ? 32'b00111111100000000000000000000000 : 32'b0;
+    assign block_mat_z = block_color_pipe[BLOCK_MAT_DELAY-1] == BLUE ? 32'b00111111100000000000000000000000 : 32'b0;
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
@@ -447,11 +452,12 @@ module get_pixel_color(
             //     end
             // end
 
-            // always_ff @(posedge clk_in) begin
-            //     if(i == 0 && light_intense_mat_mult_valid[0]) begin
-            //         $display("LIGHT_INTENSE %b %b %b", light_intense_mat_mult_x[0], light_intense_mat_mult_y[0], light_intense_mat_mult_z[0]);
-            //     end
-            // end
+            always_ff @(posedge clk_in) begin
+                if(i == 0 && light_intense_mat_mult_valid[0]) begin
+                    // $display("LIGHT_INTENSE %b %b %b", light_intense_mat_mult_x[0], light_intense_mat_mult_y[0], light_intense_mat_mult_z[0]);
+                    $display("MAT IS %d %d %d", block_mat_x, block_mat_y, block_mat_z);
+                end
+            end
 
             // stage 5-5
             vec_multiply lambert_scale_multiply(
@@ -462,7 +468,7 @@ module get_pixel_color(
                 .v1_z(light_intense_mat_mult_z[i]),
                 .v2_x(block_mat_x),
                 .v2_y(block_mat_y),
-                .v2_z(block_mat_z   ),
+                .v2_z(block_mat_z),
                 .v_valid(light_intense_mat_mult_valid[i]), 
 
                 .res_data_x(lambert_scale_x[i]),
@@ -1149,8 +1155,8 @@ module get_pixel_color_should_draw_arrow(
 
             case (block_dir_pipe[BLOCK_DIR_DELAY-1])
                 UP: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_d);
-                RIGHT: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && x_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_d);
-                DOWN: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_c);
+                RIGHT: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~x_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_d);
+                DOWN: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~y_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_c);
                 default: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && x_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_c);
             endcase
         end

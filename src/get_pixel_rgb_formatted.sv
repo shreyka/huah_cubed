@@ -139,6 +139,36 @@ module get_pixel_rgb_formatted(
     );
 
     // stage 0
+
+    // pipelining the ray: 6, verified
+    localparam RAY_DELAY = 6;
+    logic [31:0] ray_x_pipe [RAY_DELAY-1:0];
+    logic [31:0] ray_y_pipe [RAY_DELAY-1:0];
+    logic [31:0] ray_z_pipe [RAY_DELAY-1:0];
+    logic [31:0] t_in_pipe [RAY_DELAY-1:0];
+
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            for(int i=0; i<RAY_DELAY; i = i+1) begin
+                ray_x_pipe[i] <= 0;
+                ray_y_pipe[i] <= 0;
+                ray_z_pipe[i] <= 0;
+                t_in_pipe[i] <= 0;
+            end
+        end else begin
+            ray_x_pipe[0] <= ray_x;
+            ray_y_pipe[0] <= ray_y;
+            ray_z_pipe[0] <= ray_z;
+            t_in_pipe[0] <= t_in;
+            for (int i=1; i<RAY_DELAY; i = i+1) begin
+                ray_x_pipe[i] <= ray_x_pipe[i-1];
+                ray_y_pipe[i] <= ray_y_pipe[i-1];
+                ray_z_pipe[i] <= ray_z_pipe[i-1];
+                t_in_pipe[i] <= t_in_pipe[i-1];
+            end
+        end
+    end
+
     get_pixel_color get_pixel_color(
         .clk_in(clk_in),
         .rst_in(rst_in),
@@ -150,11 +180,11 @@ module get_pixel_rgb_formatted(
         .block_dir(block_dir),
         .valid_in(block_float_x_valid),
 
-        .ray_x(ray_x),
-        .ray_y(ray_y),
-        .ray_z(ray_z),
+        .ray_x(ray_x_pipe[RAY_DELAY-1]),
+        .ray_y(ray_y_pipe[RAY_DELAY-1]),
+        .ray_z(ray_z_pipe[RAY_DELAY-1]),
 
-        .t_in(t_in),
+        .t_in(t_in_pipe[RAY_DELAY-1]),
 
         .r_out(r_pixel),
         .g_out(g_pixel),
