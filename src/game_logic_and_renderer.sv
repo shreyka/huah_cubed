@@ -126,6 +126,7 @@ module game_logic_and_renderer(
     logic [2:0] block_direction_selector_three_dim;
     logic [7:0] block_ID_selector_three_dim;
     logic block_visible_selector_three_dim;
+    logic valid_out_selector_three_dim;
 
     logic [31:0] ray_out_x_selector, ray_out_y_selector, ray_out_z_selector, t_out_selector;
 
@@ -241,19 +242,19 @@ module game_logic_and_renderer(
         .block_visible_out(block_visible_blockpositions)
     );
 
-    // slowly increment xy
+    // slowly increment xy, every 24 (to ensure it updates on time)
     localparam WIDTH = 512;
     localparam HEIGHT = 384;
     logic [10:0] x_in_sel;
     logic [9:0] y_in_sel;
-    logic [3:0] xy_delay_counter;
+    logic [4:0] xy_delay_counter;
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
             x_in_sel <= 0;
             y_in_sel <= 0;
             xy_delay_counter <= 0;
         end else begin
-            if(xy_delay_counter == 12) begin
+            if(xy_delay_counter == 24) begin
                 xy_delay_counter <= 0;
 
                 if (x_in_sel + 1 == WIDTH) begin
@@ -302,7 +303,8 @@ module game_logic_and_renderer(
         .block_color_out(block_color_selector_three_dim),
         .block_direction_out(block_direction_selector_three_dim),
         .block_ID_out(block_ID_selector_three_dim),
-        .block_visible_out(block_visible_selector_three_dim)
+        .block_visible_out(block_visible_selector_three_dim),
+        .valid_out(valid_out_selector_three_dim)
     );
 
     logic [22:0] curr_time_counter;
@@ -486,7 +488,7 @@ module game_logic_and_renderer(
 
         .x_in(x_out_selector),
         .y_in(y_out_selector),
-        .valid_in(1'b1), //is it always valid?
+        .valid_in(valid_out_selector_three_dim),
 
         .block_pos_x(block_x_selector),
         .block_pos_y(block_y_selector),
@@ -519,6 +521,7 @@ module game_logic_and_renderer(
         .r_in_formatted(r_pixel_rgb_formatted),
         .g_in_formatted(g_pixel_rgb_formatted),
         .b_in_formatted(b_pixel_rgb_formatted),
+        .valid_in(rgb_valid_rgb_formatted),
         .x_in_rgb(x_in),
         .y_in_rgb(y_in),
         .block_visible(block_visible_formatted),

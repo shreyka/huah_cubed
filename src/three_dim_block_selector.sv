@@ -44,7 +44,8 @@ module three_dim_block_selector(
     output logic block_color_out,
     output logic [2:0] block_direction_out,
     output logic [7:0] block_ID_out,
-    output logic block_visible_out
+    output logic block_visible_out,
+    output logic valid_out
     );
 
     // current block state
@@ -53,13 +54,15 @@ module three_dim_block_selector(
     logic res_valid;
     logic [31:0] ray_out_x_int, ray_out_y_int, ray_out_z_int;
     logic [3:0] block_index_out;
-    logic [31:0] t_out;
+    logic [31:0] t_out_inter;
     logic [10:0] x_out_inter;
     logic [9:0] y_out_inter;
 
     logic [3:0] best_block_index;
     logic [31:0] best_ray_x, best_ray_y, best_ray_z;
     logic [31:0] best_t;
+    logic [10:0] x_in_begin;
+    logic [9:0] y_in_begin;
 
     logic ray_block_intersect_out;
     get_intersecting_block get_intersecting_block(
@@ -81,14 +84,14 @@ module three_dim_block_selector(
         .x_out(x_out_inter),
         .y_out(y_out_inter),
         .ray_block_intersect_out(ray_block_intersect_out),
-        .best_t(t_out),
+        .best_t(t_out_inter),
         .block_index_out(block_index_out),
         .valid_out(res_valid)
     );
 
-    assign ray_out_x = ray_out_x_int;
-    assign ray_out_y = ray_out_y_int;
-    assign ray_out_z = ray_out_z_int;
+    assign ray_out_x = best_ray_x;
+    assign ray_out_y = best_ray_y;
+    assign ray_out_z = best_ray_z;
     assign t_out = best_t;
 
     always_ff @(posedge clk_in) begin
@@ -102,26 +105,35 @@ module three_dim_block_selector(
                     best_ray_x <= ray_out_x_int;
                     best_ray_y <= ray_out_y_int;
                     best_ray_z <= ray_out_z_int;
-                    best_t <= t_out;
+                    best_t <= t_out_inter;
                 end
             end
             if (current_block_index == 11) begin
                 current_block_index <= 0;
                 best_block_index <= 15; //higher than any other blocks
 
-                // output best value so far
-                if(best_block_index < 12) begin
-                    block_x_out <= block_x_in[best_block_index];
-                    block_y_out <= block_y_in[best_block_index];
-                    block_z_out <= block_z_in[best_block_index];
-                    block_color_out <= block_color_in[best_block_index];
-                    block_direction_out <= block_direction_in[best_block_index];
-                    block_ID_out <= block_ID_in[best_block_index];
-                    block_visible_out <= 1;
+                if (x_in_begin == x_in && y_in_begin == y_in) begin
+                    valid_out <= 1;
+                    // output best value so far
+                    if(best_block_index < 12) begin
+                        block_x_out <= block_x_in[best_block_index];
+                        block_y_out <= block_y_in[best_block_index];
+                        block_z_out <= block_z_in[best_block_index];
+                        block_color_out <= block_color_in[best_block_index];
+                        block_direction_out <= block_direction_in[best_block_index];
+                        block_ID_out <= block_ID_in[best_block_index];
+                        block_visible_out <= 1;
+                    end else begin
+                        block_visible_out <= 0;
+                    end
                 end else begin
-                    block_visible_out <= 0;
+                    valid_out <= 0;
                 end
+
+                x_in_begin <= x_in;
+                y_in_begin <= y_in;
             end else begin
+                valid_out <= 0;
                 current_block_index <= current_block_index + 1;
             end
 

@@ -15,6 +15,7 @@ module three_dim_renderer(
     input wire [3:0] g_in_formatted,
     input wire [3:0] b_in_formatted,
     input wire block_visible,
+    input wire valid_in,
 
     input wire [1:0] state,
     input wire [17:0] curr_time,
@@ -136,7 +137,7 @@ module three_dim_renderer(
                 b_out <= output_pixel_read[3:0];
             // end
 
-            if (x_in_block < WIDTH && y_in_block < HEIGHT) begin
+            if (valid_in && x_in_block < WIDTH && y_in_block < HEIGHT) begin
                 // only write when in the range
                 input_loc_write <= x_in_block + (y_in_block * WIDTH);
                 input_write_enable <= 1;
