@@ -24,8 +24,8 @@ module hand_controller(
     output logic [13:0] hand_z_left_top
     );
 
-    localparam MAX_X = 1024;
-    localparam MAX_Y = 768;
+    localparam MAX_X = 3400;
+    localparam MAX_Y = 3400;
     localparam MAX_Z = 500;
     localparam HAND_MOVE_SPEED = 16;
 
@@ -59,11 +59,11 @@ module hand_controller(
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
-            hand_x_left_bottom <= 512;
-            hand_y_left_bottom <= 384;
+            hand_x_left_bottom <= 1800;
+            hand_y_left_bottom <= 1800;
             hand_z_left_bottom <= 0;
-            hand_x_left_top <= 512;
-            hand_y_left_top <= 384;
+            hand_x_left_top <= 1800;
+            hand_y_left_top <= 1800;
             hand_z_left_top <= 0;
 
             curr_time_counter <= 0;

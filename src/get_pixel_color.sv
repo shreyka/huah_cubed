@@ -15,7 +15,7 @@ module get_pixel_color(
     input wire [31:0] block_pos_x,
     input wire [31:0] block_pos_y,
     input wire [31:0] block_pos_z,
-    input wire [2:0] block_color,
+    input wire block_color,
     input wire [2:0] block_dir,
     input wire valid_in,
 

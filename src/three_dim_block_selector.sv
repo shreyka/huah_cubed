@@ -9,6 +9,8 @@ be rendered on this XY coordinate
 
 Essentially a MUX
 
+AUGMENTED: we also want to check if the saber intersects using the same logic
+
 */
 module three_dim_block_selector(
     input wire clk_in,
@@ -29,6 +31,10 @@ module three_dim_block_selector(
     input wire [11:0] [7:0] block_ID_in, 
     input wire [11:0] block_visible_in,
 
+    input wire [11:0] hand_x_left_top,
+    input wire [11:0] hand_y_left_top,
+    input wire [13:0] hand_z_left_top,
+
     output logic [17:0] curr_time_out,
     output logic [10:0] x_out,
     output logic [9:0] y_out,
@@ -45,6 +51,7 @@ module three_dim_block_selector(
     output logic [2:0] block_direction_out,
     output logic [7:0] block_ID_out,
     output logic block_visible_out,
+    output logic saber_visible_out,
     output logic valid_out
     );
 
@@ -63,6 +70,7 @@ module three_dim_block_selector(
     logic [31:0] best_t;
     logic [10:0] x_in_begin;
     logic [9:0] y_in_begin;
+    logic valid_in;
 
     logic ray_block_intersect_out;
     get_intersecting_block get_intersecting_block(
@@ -70,13 +78,13 @@ module three_dim_block_selector(
         .rst_in(rst_in),
         .x_in(x_in),
         .y_in(y_in),
-        .valid_in(1'b1),
+        .valid_in(valid_in),
 
         .block_index_in(current_block_index),
-        .block_x_notfloat_in(block_x_in[current_block_index]),
-        .block_y_notfloat_in(block_y_in[current_block_index]),
-        .block_z_notfloat_in(block_z_in[current_block_index]),
-        .block_visible_in(block_visible_in[current_block_index]),
+        .block_x_notfloat_in(current_block_index == 12 ? hand_x_left_top : block_x_in[current_block_index]),
+        .block_y_notfloat_in(current_block_index == 12 ? hand_y_left_top : block_y_in[current_block_index]),
+        .block_z_notfloat_in(current_block_index == 12 ? hand_z_left_top : block_z_in[current_block_index]),
+        .block_visible_in   (current_block_index == 12 ? 1'b1 : block_visible_in[current_block_index]),
 
         .ray_out_x(ray_out_x_int),
         .ray_out_y(ray_out_y_int),
@@ -97,51 +105,70 @@ module three_dim_block_selector(
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
             current_block_index <= 0;
+            x_in_begin <= 1024;
+            y_in_begin <= 768;
+            valid_in <= 0;
         end else begin
-            // state machine
+            // state machine, check in between
             if (res_valid) begin
-                if(block_index_out < best_block_index && ray_block_intersect_out) begin
-                    best_block_index <= block_index_out;
-                    best_ray_x <= ray_out_x_int;
-                    best_ray_y <= ray_out_y_int;
-                    best_ray_z <= ray_out_z_int;
-                    best_t <= t_out_inter;
+                if(ray_block_intersect_out) begin
+                    // check saber condition, trumps all others
+                    if(best_block_index == 12) begin
+                        best_block_index <= best_block_index;
+                    // other blocks
+                    end else if(block_index_out < best_block_index) begin
+                        best_block_index <= block_index_out;
+                        best_ray_x <= ray_out_x_int;
+                        best_ray_y <= ray_out_y_int;
+                        best_ray_z <= ray_out_z_int;
+                        best_t <= t_out_inter;
+                    end
                 end
             end
-            if (current_block_index == 11) begin
+
+            // last state, plus the saber
+            if (current_block_index == 12) begin
                 current_block_index <= 0;
                 best_block_index <= 15; //higher than any other blocks
 
-                if (x_in_begin == x_in && y_in_begin == y_in) begin
-                    valid_out <= 1;
-                    // output best value so far
-                    if(best_block_index < 12) begin
-                        block_x_out <= block_x_in[best_block_index];
-                        block_y_out <= block_y_in[best_block_index];
-                        block_z_out <= block_z_in[best_block_index];
-                        block_color_out <= block_color_in[best_block_index];
-                        block_direction_out <= block_direction_in[best_block_index];
-                        block_ID_out <= block_ID_in[best_block_index];
-                        block_visible_out <= 1;
-                    end else begin
-                        block_visible_out <= 0;
-                    end
-                end else begin
-                    valid_out <= 0;
-                end
+                // disable until next xy is sent in
+                valid_in <= 0;
+                valid_out <= 1;
+                // output best value for this pixel
+                if(best_block_index == 12) begin
+                    // saber edge condition
+                    saber_visible_out <= 1;
+                    block_visible_out <= 0;
+                end else if(best_block_index < 12) begin
+                    saber_visible_out <= 0;
 
-                x_in_begin <= x_in;
-                y_in_begin <= y_in;
-            end else begin
+                    block_x_out <= block_x_in[best_block_index];
+                    block_y_out <= block_y_in[best_block_index];
+                    block_z_out <= block_z_in[best_block_index];
+                    block_color_out <= block_color_in[best_block_index];
+                    block_direction_out <= block_direction_in[best_block_index];
+                    block_ID_out <= block_ID_in[best_block_index];
+                    block_visible_out <= 1;
+                end else begin
+                    saber_visible_out <= 0;
+                    block_visible_out <= 0;
+                end
+            end else if(valid_in) begin
+                // increment state
                 valid_out <= 0;
                 current_block_index <= current_block_index + 1;
+            end else if(x_in_begin != x_in || y_in_begin != y_in) begin
+                // reset state
+                current_block_index <= 0;
+                x_in_begin <= x_in;
+                y_in_begin <= y_in;
+                valid_in <= 1;
             end
 
             //passthrough
             curr_time_out <= curr_time_in;
-
-            x_out <= x_out_inter;
-            y_out <= y_out_inter;
+            x_out <= x_in_begin;
+            y_out <= y_in_begin;
         end
     end    
 

@@ -125,7 +125,7 @@ module game_logic_and_renderer(
     logic block_color_selector_three_dim;
     logic [2:0] block_direction_selector_three_dim;
     logic [7:0] block_ID_selector_three_dim;
-    logic block_visible_selector_three_dim;
+    logic block_visible_selector_three_dim, saber_visible_out_three_dim;
     logic valid_out_selector_three_dim;
 
     logic [31:0] ray_out_x_selector, ray_out_y_selector, ray_out_z_selector, t_out_selector;
@@ -254,7 +254,8 @@ module game_logic_and_renderer(
             y_in_sel <= 0;
             xy_delay_counter <= 0;
         end else begin
-            if(xy_delay_counter == 24) begin
+            // 12 has dithering issues
+            if(xy_delay_counter == 13) begin
                 xy_delay_counter <= 0;
 
                 if (x_in_sel + 1 == WIDTH) begin
@@ -289,6 +290,10 @@ module game_logic_and_renderer(
         .block_ID_in(block_ID_blockpositions),
         .block_visible_in(block_visible_blockpositions),
 
+        .hand_x_left_top(hand_x_left_top),
+        .hand_y_left_top(hand_y_left_top),
+        .hand_z_left_top(hand_z_left_top),
+
         .ray_out_x(ray_out_x_selector),
         .ray_out_y(ray_out_y_selector),
         .ray_out_z(ray_out_z_selector),
@@ -304,6 +309,7 @@ module game_logic_and_renderer(
         .block_direction_out(block_direction_selector_three_dim),
         .block_ID_out(block_ID_selector_three_dim),
         .block_visible_out(block_visible_selector_three_dim),
+        .saber_visible_out(saber_visible_out_three_dim),
         .valid_out(valid_out_selector_three_dim)
     );
 
@@ -496,6 +502,7 @@ module game_logic_and_renderer(
         .block_color(block_color_selector),
         .block_dir(block_direction_selector),
         .block_visible_in(block_visible_selector),
+        .saber_visible_in(saber_visible_out_three_dim),
 
         .ray_x(ray_out_x_selector),
         .ray_y(ray_out_y_selector),
@@ -536,12 +543,6 @@ module game_logic_and_renderer(
         .broken_blocks_color(broken_blocks_color),
         .broken_blocks_width(broken_blocks_width),
         .broken_blocks_height(broken_blocks_height),
-        .hand_x_left_bottom(hand_x_left_bottom),
-        .hand_y_left_bottom(hand_y_left_bottom),
-        .hand_z_left_bottom(hand_z_left_bottom),
-        .hand_x_left_top(hand_x_left_top),
-        .hand_y_left_top(hand_y_left_top),
-        .hand_z_left_top(hand_z_left_top),
         .hand_x_right_bottom(hand_x_right_bottom),
         .hand_y_right_bottom(hand_y_right_bottom),
         .hand_z_right_bottom(hand_z_right_bottom),

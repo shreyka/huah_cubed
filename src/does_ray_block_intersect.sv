@@ -19,6 +19,7 @@ module does_ray_block_intersect(
     input wire [31:0] block_pos_x,
     input wire [31:0] block_pos_y,
     input wire [31:0] block_pos_z,
+    input wire is_saber,
     input wire valid_in,
 
     output logic intersects_data_out,
@@ -35,6 +36,10 @@ module does_ray_block_intersect(
     logic [31:0] block_size;
     // 100
     assign block_size = 32'b01000010110010000000000000000000;
+
+    logic [31:0] saber_size, saber_length;
+    assign saber_size = 32'b01000000101000000000000000000000; //5
+    assign saber_length = 32'b01000001110010000000000000000000; //25
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
@@ -91,9 +96,9 @@ module does_ray_block_intersect(
         .v1_x(block_pos_x),
         .v1_y(block_pos_y),
         .v1_z(block_pos_z),
-        .v2_x(block_size),
-        .v2_y(block_size),
-        .v2_z(block_size),
+        .v2_x(is_saber ? saber_size : block_size),
+        .v2_y(is_saber ? saber_size : block_size),
+        .v2_z(is_saber ? saber_length : block_size),
         .v_valid(valid_in),
 
         .res_data_x(block_min_x),
@@ -108,9 +113,9 @@ module does_ray_block_intersect(
         .v1_x(block_pos_x),
         .v1_y(block_pos_y),
         .v1_z(block_pos_z),
-        .v2_x(block_size),
-        .v2_y(block_size),
-        .v2_z(block_size),
+        .v2_x(is_saber ? saber_size : block_size),
+        .v2_y(is_saber ? saber_size : block_size),
+        .v2_z(is_saber ? saber_length : block_size),
         .v_valid(valid_in),
 
         .res_data_x(block_max_x),
