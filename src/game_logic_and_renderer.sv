@@ -241,7 +241,7 @@ module game_logic_and_renderer(
             xy_delay_counter <= 0;
         end else begin
             // 12 has dithering issues
-            // possibly 14 is needed for the saber to render?
+            // possibly 14 is needed for the saber to render? -> YES
             if(xy_delay_counter == 14) begin
                 xy_delay_counter <= 0;
 
@@ -285,8 +285,6 @@ module game_logic_and_renderer(
         .ray_out_y(ray_out_y_selector),
         .ray_out_z(ray_out_z_selector),
         .t_out(t_out_selector),
-
-        .TEST_LED(TEST_LED),
 
         .curr_time_out(curr_time_selector),
         .x_out(x_out_selector),

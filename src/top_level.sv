@@ -78,10 +78,8 @@ module top_level(
   logic [3:0] g_out;
   logic [3:0] b_out;
 
-  //TEMP to show score
   logic [11:0] score;
-  //TODO: TEMP DISABLE
-  // assign led = score;
+  assign led = score;
 
   ////////////////////////////////////////////////////
   // MODULES
@@ -135,7 +133,7 @@ module top_level(
     .r_out(r_out),
     .g_out(g_out),  
     .b_out(b_out),
-    .TEST_LED(led),
+    .TEST_LED(),
     .score_out(score)
   );
 

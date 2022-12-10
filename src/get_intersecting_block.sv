@@ -234,7 +234,7 @@ module get_intersecting_block(
         .block_pos_x(block_x_pipe[BLOCK_DELAY-1]),
         .block_pos_y(block_y_pipe[BLOCK_DELAY-1]),
         .block_pos_z(block_z_pipe[BLOCK_DELAY-1]),
-        .is_saber(block_index_pipe[BLOCK_DELAY-1] == 12 ? 1'b1 : 1'b0),
+        .is_saber(block_index_pipe[BLOCK_DELAY-1+6] == 12 ? 1'b1 : 1'b0), //the +6 was empirically tested and verified, not sure why it is needed
         .valid_in(ray_valid),
 
         .intersects_data_out(ray_block_intersect),

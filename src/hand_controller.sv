@@ -27,7 +27,7 @@ module hand_controller(
     localparam MAX_X = 3400;
     localparam MAX_Y = 3400;
     localparam MAX_Z = 500;
-    localparam HAND_MOVE_SPEED = 16;
+    localparam HAND_MOVE_SPEED = 18;
 
     function logic [13:0] new_coord;
         input [13:0] pos;

@@ -44,8 +44,6 @@ module three_dim_block_selector(
     output logic [31:0] ray_out_z,
     output logic [31:0] t_out,
 
-    output logic [15:0] TEST_LED,
-
     output logic [11:0] block_x_out,
     output logic [11:0] block_y_out,
     output logic [13:0] block_z_out,
@@ -56,6 +54,9 @@ module three_dim_block_selector(
     output logic saber_visible_out,
     output logic valid_out
     );
+
+    // slice logic
+    logic block_has_been_sliced;
 
     // current block state
     logic [3:0] current_block_index;
@@ -82,7 +83,7 @@ module three_dim_block_selector(
         .y_in(y_in),
         .valid_in(valid_in),
 
-        .block_index_in(current_block_index),
+        .block_index_in     (current_block_index),
         .block_x_notfloat_in(current_block_index == 12 ? hand_x_left_top : block_x_in[current_block_index]),
         .block_y_notfloat_in(current_block_index == 12 ? hand_y_left_top : block_y_in[current_block_index]),
         .block_z_notfloat_in(current_block_index == 12 ? hand_z_left_top : block_z_in[current_block_index]),
@@ -104,10 +105,18 @@ module three_dim_block_selector(
     assign ray_out_z = best_ray_z;
     assign t_out = best_t;
 
+    // logic to check if a block has been sliced
+    always_comb begin
+        block_has_been_sliced = 0;
+        for(int j = 0; j < 12; j = j + 1) begin
+            if(sliced_blocks[j] == block_ID_in) begin
+                block_has_been_sliced = 1;
+            end
+        end
+    end
+
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
-            TEST_LED <= 0;
-
             current_block_index <= 0;
             x_in_begin <= 1024;
             y_in_begin <= 768;
@@ -120,7 +129,7 @@ module three_dim_block_selector(
                     if(best_block_index == 12) begin
                         best_block_index <= best_block_index;
                     // other blocks
-                    end else if(block_index_out < best_block_index) begin
+                    end else if(block_index_out < best_block_index && !block_has_been_sliced) begin
                         best_block_index <= block_index_out;
                         best_ray_x <= ray_out_x_int;
                         best_ray_y <= ray_out_y_int;
@@ -132,7 +141,6 @@ module three_dim_block_selector(
 
             // last state, plus the saber
             if (current_block_index == 12) begin
-                TEST_LED <= best_block_index;
                 current_block_index <= 0;
                 best_block_index <= 15; //higher than any other blocks
 

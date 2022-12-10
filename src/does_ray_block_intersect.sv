@@ -34,12 +34,11 @@ module does_ray_block_intersect(
     //
 
     logic [31:0] block_size;
-    // 100
-    assign block_size = 32'b01000010110010000000000000000000;
+    assign block_size = 32'b01000010110010000000000000000000; //100
 
     logic [31:0] saber_size, saber_length;
     assign saber_size = 32'b01000000101000000000000000000000; //5
-    assign saber_length = 32'b01000001110010000000000000000000; //25
+    assign saber_length = 32'b01000010100101100000000000000000; //75
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
