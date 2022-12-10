@@ -353,7 +353,7 @@ module get_pixel_rgb_formatted(
     // NEW! add saber rendering logic
     always_comb begin
         if (saber_visible_out_pipe[XY_DELAY-1]) begin
-            block_visible_out = 1'b1;
+            block_visible_out = 1'b1; //simulate a block being visible
             r_out = 4'b1111;
             g_out = 4'b1111;
             b_out = 4'b1111;

@@ -44,6 +44,8 @@ module three_dim_block_selector(
     output logic [31:0] ray_out_z,
     output logic [31:0] t_out,
 
+    output logic [15:0] TEST_LED,
+
     output logic [11:0] block_x_out,
     output logic [11:0] block_y_out,
     output logic [13:0] block_z_out,
@@ -104,6 +106,8 @@ module three_dim_block_selector(
 
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
+            TEST_LED <= 0;
+
             current_block_index <= 0;
             x_in_begin <= 1024;
             y_in_begin <= 768;
@@ -128,6 +132,7 @@ module three_dim_block_selector(
 
             // last state, plus the saber
             if (current_block_index == 12) begin
+                TEST_LED <= best_block_index;
                 current_block_index <= 0;
                 best_block_index <= 15; //higher than any other blocks
 

@@ -79,10 +79,10 @@ module three_dim_renderer(
             if (y + 1 == HEIGHT) begin
                 return 0;
             end else begin
-                return (y + 1) * WIDTH;
+                return (y + 1) << 9; //shift by 9 is *512
             end
         end else begin
-            return y * WIDTH;
+            return y << 9; //shift by 9 is *512
         end
     endfunction
 
@@ -121,7 +121,7 @@ module three_dim_renderer(
         if(rst_in) begin
             input_pixel_write <= 12'b0;
         end else begin
-            // send out the buffer info always
+            // send out the buffer to output VGA always
             r_out <= output_pixel_read[11:8];
             g_out <= output_pixel_read[7:4];
             b_out <= output_pixel_read[3:0];

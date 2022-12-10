@@ -3,7 +3,8 @@
 
 /*
 
-Given a block state and the hand/head states, output whether the block has been sliced, whether the player has been hit by an obstacle, and whether the block has been missed
+Given a block state and the hand/head states, output whether the block has been sliced,
+whether the player has been hit by an obstacle, and whether the block has been missed
 
 */
 module state_processor(

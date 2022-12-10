@@ -204,6 +204,26 @@ module get_intersecting_block(
     //     end
     // end
 
+    // this is for the output, but also used in does_ray_block_intersect
+    localparam BLOCK_VISIBLE_DELAY = 181;
+    logic block_visible_pipe [BLOCK_VISIBLE_DELAY-1:0];
+    logic [3:0] block_index_pipe [BLOCK_VISIBLE_DELAY-1:0];
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            for(int i=0; i<BLOCK_VISIBLE_DELAY; i = i+1) begin
+                block_visible_pipe[i] <= 0;
+                block_index_pipe[i] <= 0;
+            end
+        end else begin
+            block_visible_pipe[0] <= block_visible_in;
+            block_index_pipe[0] <= block_index_in;
+            for (int i=1; i<BLOCK_VISIBLE_DELAY; i = i+1) begin
+                block_visible_pipe[i] <= block_visible_pipe[i-1];
+                block_index_pipe[i] <= block_index_pipe[i-1];
+            end
+        end
+    end
+
     does_ray_block_intersect does_ray_block_intersect(
         .clk_in(clk_in),
         .rst_in(rst_in),
@@ -214,7 +234,7 @@ module get_intersecting_block(
         .block_pos_x(block_x_pipe[BLOCK_DELAY-1]),
         .block_pos_y(block_y_pipe[BLOCK_DELAY-1]),
         .block_pos_z(block_z_pipe[BLOCK_DELAY-1]),
-        .is_saber(block_index_pipe[BLOCK_DELAY-1] == 13 ? 1'b1 : 1'b0),
+        .is_saber(block_index_pipe[BLOCK_DELAY-1] == 12 ? 1'b1 : 1'b0),
         .valid_in(ray_valid),
 
         .intersects_data_out(ray_block_intersect),
@@ -265,25 +285,6 @@ module get_intersecting_block(
     //         end
     //     end
     // end
-
-    localparam BLOCK_VISIBLE_DELAY = 181;
-    logic block_visible_pipe [BLOCK_VISIBLE_DELAY-1:0];
-    logic [3:0] block_index_pipe [BLOCK_VISIBLE_DELAY-1:0];
-    always_ff @(posedge clk_in) begin
-        if(rst_in) begin
-            for(int i=0; i<BLOCK_VISIBLE_DELAY; i = i+1) begin
-                block_visible_pipe[i] <= 0;
-                block_index_pipe[i] <= 0;
-            end
-        end else begin
-            block_visible_pipe[0] <= block_visible_in;
-            block_index_pipe[0] <= block_index_in;
-            for (int i=1; i<BLOCK_VISIBLE_DELAY; i = i+1) begin
-                block_visible_pipe[i] <= block_visible_pipe[i-1];
-                block_index_pipe[i] <= block_index_pipe[i-1];
-            end
-        end
-    end
 
     always_ff @(posedge clk_in) begin
         if(~rst_in) begin

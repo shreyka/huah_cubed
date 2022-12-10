@@ -113,8 +113,6 @@ module top_level(
     // retrieve from VGA
     .x_in(hcount),
     .y_in(vcount),
-    .enable_three_dim_sw1(sw[1]),
-    .enable_three_dim(sw[0]),
 
     // retrieve from camera data
     .hand_x_left_bottom(hand_x_left_bottom),
