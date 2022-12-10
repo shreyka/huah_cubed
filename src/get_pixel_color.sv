@@ -15,8 +15,11 @@ module get_pixel_color(
     input wire [31:0] block_pos_x,
     input wire [31:0] block_pos_y,
     input wire [31:0] block_pos_z,
-    input wire [2:0] block_color,
+    input wire block_color,
     input wire [2:0] block_dir,
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
     input wire valid_in,
 
     input wire [31:0] ray_x,
@@ -43,9 +46,13 @@ module get_pixel_color(
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
-    assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
-    assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
-    assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
+    assign e_x_data = head_x_float;
+    assign e_y_data = head_y_float;
+    assign e_z_data = head_z_float;
+
+    // assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
+    // assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
+    // assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
 
     logic [31:0] lights_pos_x [2:0];
     logic [31:0] lights_pos_y [2:0];
@@ -292,7 +299,7 @@ module get_pixel_color(
 
     //TEST STARTING HERE
 
-    // pipeline new_origin: 92
+    // pipeline new_origin: 81
     localparam NEW_ORIGIN_DELAY = 81;
     logic [31:0] new_origin_x_pipe [NEW_ORIGIN_DELAY-1:0];
     logic [31:0] new_origin_y_pipe [NEW_ORIGIN_DELAY-1:0];
@@ -1154,9 +1161,9 @@ module get_pixel_color_should_draw_arrow(
             should_render_arrow_valid <= in_region_a_valid;
 
             case (block_dir_pipe[BLOCK_DIR_DELAY-1])
-                UP: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_d);
-                RIGHT: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~x_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_d);
-                DOWN: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~y_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_c);
+                DOWN: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_d);
+                LEFT: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~x_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_d);
+                UP: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~y_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_c);
                 default: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && x_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_c);
             endcase
         end

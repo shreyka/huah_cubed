@@ -9,7 +9,7 @@ if they intersect with each other.
 This module is separated into 7 stages.
 
 */
-module does_ray_block_intersect( // verified
+module does_ray_block_intersect(
     input wire clk_in,
     input wire rst_in,
     
@@ -19,7 +19,12 @@ module does_ray_block_intersect( // verified
     input wire [31:0] block_pos_x,
     input wire [31:0] block_pos_y,
     input wire [31:0] block_pos_z,
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
+    input wire is_saber,
     input wire valid_in,
+
 
     output logic intersects_data_out,
     output logic [31:0] t_out,
@@ -33,40 +38,21 @@ module does_ray_block_intersect( // verified
     //
 
     logic [31:0] block_size;
-    // 100
-    assign block_size = 32'b01000010110010000000000000000000;
+    assign block_size = 32'b01000010110010000000000000000000; //100
+
+    logic [31:0] saber_size, saber_length;
+    assign saber_size = 32'b01000000101000000000000000000000; //5
+    assign saber_length = 32'b01000011000101100000000000000000; //150
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
-    // constant, try to make never 0
-    floating_point_sint32_to_float ex_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tdata(e_x_data),
-        .m_axis_result_tvalid()
-    );
+    assign e_x_data = head_x_float;
+    assign e_y_data = head_y_float;
+    assign e_z_data = head_z_float;
 
-    // constant, try to make never 0
-    floating_point_sint32_to_float ey_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tdata(e_y_data),
-        .m_axis_result_tvalid()
-    );
-
-    // constant, try to make never 0
-    floating_point_sint32_to_float ez_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(-300.00001),
-        .m_axis_result_tdata(e_z_data),
-        .m_axis_result_tvalid()
-    );
+    // assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
+    // assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
+    // assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
 
     ////////////////////////////////////////////////////
     // REQUIRED VARIABLES
@@ -117,9 +103,9 @@ module does_ray_block_intersect( // verified
         .v1_x(block_pos_x),
         .v1_y(block_pos_y),
         .v1_z(block_pos_z),
-        .v2_x(block_size),
-        .v2_y(block_size),
-        .v2_z(block_size),
+        .v2_x(is_saber ? saber_size : block_size),
+        .v2_y(is_saber ? saber_size : block_size),
+        .v2_z(is_saber ? 32'b0 : block_size),
         .v_valid(valid_in),
 
         .res_data_x(block_min_x),
@@ -134,9 +120,9 @@ module does_ray_block_intersect( // verified
         .v1_x(block_pos_x),
         .v1_y(block_pos_y),
         .v1_z(block_pos_z),
-        .v2_x(block_size),
-        .v2_y(block_size),
-        .v2_z(block_size),
+        .v2_x(is_saber ? saber_size : block_size),
+        .v2_y(is_saber ? saber_size : block_size),
+        .v2_z(is_saber ? saber_length : block_size),
         .v_valid(valid_in),
 
         .res_data_x(block_max_x),

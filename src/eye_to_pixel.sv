@@ -16,6 +16,9 @@ module eye_to_pixel(
 
     input wire [10:0] x_in,
     input wire [9:0] y_in,
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
     input wire valid_in,
 
     output wire [31:0] dir_x,
@@ -30,15 +33,15 @@ module eye_to_pixel(
     // constants, precomputed, put here
     //
 
-    localparam EYE_X = 1800;
-    localparam EYE_Y = 1800;
-    localparam WIDTH_HALF = 256;
-    localparam HEIGHT_HALF = 192;
+    // localparam EYE_X = 1800;
+    // localparam EYE_Y = 1800;
+    // localparam WIDTH_HALF = 256;
+    // localparam HEIGHT_HALF = 192;
 
-    logic [31:0] exminusw;
-    assign exminusw = EYE_X - WIDTH_HALF;
-    logic [31:0] eyminush;
-    assign eyminush = EYE_Y - HEIGHT_HALF;
+    // logic [31:0] exminusw;
+    // assign exminusw = EYE_X - WIDTH_HALF;
+    // logic [31:0] eyminush;
+    // assign eyminush = EYE_Y - HEIGHT_HALF;
 
     logic [31:0] u_x, u_y, u_z;
     logic [31:0] v_x, v_y, v_z;
@@ -67,6 +70,7 @@ module eye_to_pixel(
 
     logic [31:0] ex_minus_w_data;
     logic [31:0] ey_minus_h_data;
+    logic ex_minus_w_valid;
     logic [31:0] float_100_data;
 
     logic [31:0] e_x_data;
@@ -113,11 +117,36 @@ module eye_to_pixel(
 
     // SECTION 1: DEFINITIONS
 
+    // pipeline x, y, and valid_in to finish at the same time as the sub
+    localparam XY_DELAY = 5;
+    logic [10:0] x_in_pipe [XY_DELAY-1:0];
+    logic [9:0] y_in_pipe [XY_DELAY-1:0];
+    logic valid_in_pipe [XY_DELAY-1:0];
+
+    always_ff @(posedge clk_in) begin
+        if(rst_in) begin
+            for(int i=0; i<XY_DELAY; i = i+1) begin
+                x_in_pipe[i] <= 0;
+                y_in_pipe[i] <= 0;
+                valid_in_pipe[i] <= 0;
+            end
+        end else begin
+            x_in_pipe[0] <= x_in;
+            y_in_pipe[0] <= y_in;
+            valid_in_pipe[0] <= valid_in;
+            for (int i=1; i<XY_DELAY; i = i+1) begin
+                x_in_pipe[i] <= x_in_pipe[i-1];
+                y_in_pipe[i] <= y_in_pipe[i-1];
+                valid_in_pipe[i] <= valid_in_pipe[i-1];
+            end
+        end
+    end
+
     floating_point_sint32_to_float x_to_float(
         .aclk(clk_in),
         .aresetn(~rst_in),
-        .s_axis_a_tvalid(valid_in),
-        .s_axis_a_tdata({21'b0, x_in}),
+        .s_axis_a_tvalid(valid_in_pipe[XY_DELAY-1]),
+        .s_axis_a_tdata({21'b0, x_in_pipe[XY_DELAY-1]}),
         .m_axis_result_tvalid(x_float_valid),
         .m_axis_result_tdata(x_float_data)
     );
@@ -125,71 +154,52 @@ module eye_to_pixel(
     floating_point_sint32_to_float y_to_float(
         .aclk(clk_in),
         .aresetn(~rst_in),
-        .s_axis_a_tvalid(valid_in),
-        .s_axis_a_tdata({22'b0, y_in}),
+        .s_axis_a_tvalid(valid_in_pipe[XY_DELAY-1]),
+        .s_axis_a_tdata({22'b0, y_in_pipe[XY_DELAY-1]}),
         .m_axis_result_tvalid(y_float_valid),
         .m_axis_result_tdata(y_float_data)
     );
 
-    // constant
-    floating_point_sint32_to_float exminusw_to_float(
+    floating_point_sub sub_head_x(
         .aclk(clk_in),
         .aresetn(~rst_in),
+        .s_axis_a_tdata(head_x_float),
+        .s_axis_b_tdata(32'b01000011100000000000000000000000), //256
         .s_axis_a_tvalid(valid_in),
-        .s_axis_a_tdata(exminusw),
-        .m_axis_result_tvalid(),
+        .s_axis_b_tvalid(valid_in),
+        
+        .m_axis_result_tvalid(ex_minus_w_valid),
         .m_axis_result_tdata(ex_minus_w_data)
     );
-
-    // constant
-    floating_point_sint32_to_float eyminusw_to_float(
+    floating_point_sub sub_head_y(
         .aclk(clk_in),
         .aresetn(~rst_in),
+        .s_axis_a_tdata(head_y_float),
+        .s_axis_b_tdata(32'b01000011010000000000000000000000), //192
         .s_axis_a_tvalid(valid_in),
-        .s_axis_a_tdata(eyminush),
+        .s_axis_b_tvalid(valid_in),
+        
         .m_axis_result_tvalid(),
         .m_axis_result_tdata(ey_minus_h_data)
     );
 
-    // constant
-    floating_point_sint32_to_float float100_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(100),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(float_100_data)
-    );
+    // always_ff @(posedge clk_in) begin
+    //     if(ex_minus_w_valid) begin
+    //         $display("IT IS %d", x_float_valid);
+    //     end else begin
+    //         $display("INVALID IT IS %d", x_float_valid);
+    //     end
+    // end
 
-    // constant, try to make never 0
-    floating_point_sint32_to_float ex_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(e_x_data)
-    );
+    assign float_100_data = 32'b01000010110010000000000000000000; //100
 
-    // constant, try to make never 0
-    floating_point_sint32_to_float ey_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(1800.00001),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(e_y_data)
-    );
+    assign e_x_data = head_x_float;
+    assign e_y_data = head_y_float;
+    assign e_z_data = head_z_float;
 
-    // constant, try to make never 0
-    floating_point_sint32_to_float ez_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata(-300.00001),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(e_z_data)
-    );
+    // assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
+    // assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
+    // assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
 
     //SECTION 2: OPERATIONS
 

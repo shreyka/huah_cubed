@@ -83,6 +83,12 @@ module get_pixel_rgb_formatted_tb;
         .block_color(block_color),
         .block_dir(block_dir),
 
+        .head_x_float(32'b01000100111000010000000000000001), //1800
+        .head_y_float(32'b01000100111000010000000000000001), //1800
+        .head_z_float(32'b11000011100101100000000000000011), //-300
+        .block_visible_in(1'b1),
+        .saber_visible_in(1'b0),
+
         .ray_x(ray_x),
         .ray_y(ray_y),
         .ray_z(ray_z),

@@ -36,12 +36,17 @@ module eye_to_pixel_tb;
     //     .m_axis_result_tdata(b_data)
     // );  
 
+    logic valid_in;
+
     eye_to_pixel mod(
         .clk_in(clk),
         .rst_in(rst),
         .x_in(11'd100),
         .y_in(10'd100),
-        .valid_in(1'b1),
+        .head_x_float(32'b01000100111000010000000000000001), //1800
+        .head_y_float(32'b01000100111000010000000000000001), //1800
+        .head_z_float(32'b11000011100101100000000000000011), //-300
+        .valid_in(valid_in),
 
         .dir_x(res_x),
         .dir_y(res_y),
@@ -97,6 +102,10 @@ module eye_to_pixel_tb;
         rst = 1;
         #100;
         rst = 0;
+        #10;
+        valid_in = 1'b1;
+        #10;
+        valid_in = 1'b0;
         #100;
 
         for(int i = 0; i < 1000; i = i + 1) begin

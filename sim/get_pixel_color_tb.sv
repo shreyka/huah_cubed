@@ -48,6 +48,9 @@ module get_pixel_color_tb;
         .block_pos_z(pos_z),
         .block_color(block_color),
         .block_dir(block_dir),
+        .head_x_float(32'b01000100111000010000000000000001), //1800
+        .head_y_float(32'b01000100111000010000000000000001), //1800
+        .head_z_float(32'b11000011100101100000000000000011), //-300
         .valid_in(valid),
 
         .ray_x(ray_x),

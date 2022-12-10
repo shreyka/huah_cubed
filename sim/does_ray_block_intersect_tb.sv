@@ -46,6 +46,10 @@ module does_ray_block_intersect_tb;
         .block_pos_x(block_x),
         .block_pos_y(block_y),
         .block_pos_z(32'b01000011100101100000000000000000), //300
+        .head_x_float(32'b01000100111000010000000000000001), //1800
+        .head_y_float(32'b01000100111000010000000000000001), //1800
+        .head_z_float(32'b11000011100101100000000000000011), //-300
+        .is_saber(1'b0),
         .valid_in(valid_in),
 
         .intersects_data_out(intersects_data_out),

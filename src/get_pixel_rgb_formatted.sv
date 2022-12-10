@@ -14,9 +14,13 @@ module get_pixel_rgb_formatted(
     input wire [11:0] block_pos_x,
     input wire [11:0] block_pos_y,
     input wire [13:0] block_pos_z,
-    input wire [2:0] block_color,
+    input wire block_color,
     input wire [2:0] block_dir,
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
     input wire block_visible_in,
+    input wire saber_visible_in,
 
     input wire [31:0] ray_x,
     input wire [31:0] ray_y,
@@ -178,6 +182,9 @@ module get_pixel_rgb_formatted(
         .block_pos_z(block_float_z),
         .block_color(block_color),
         .block_dir(block_dir),
+        .head_x_float(head_x_float),
+        .head_y_float(head_y_float),
+        .head_z_float(head_z_float),
         .valid_in(block_float_x_valid),
 
         .ray_x(ray_x_pipe[RAY_DELAY-1]),
@@ -316,6 +323,7 @@ module get_pixel_rgb_formatted(
     logic [10:0] x_in_pipe [XY_DELAY-1:0];
     logic [9:0] y_in_pipe [XY_DELAY-1:0];
     logic block_visible_out_pipe [XY_DELAY-1:0];
+    logic saber_visible_out_pipe [XY_DELAY-1:0];
 
     // always_ff @(posedge clk_in) begin
     //     if (r_int_valid) begin
@@ -332,25 +340,39 @@ module get_pixel_rgb_formatted(
                 x_in_pipe[i] <= 0;
                 y_in_pipe[i] <= 0;
                 block_visible_out_pipe[i] <= 0;
+                saber_visible_out_pipe[i] <= 0;
             end
         end else begin
             x_in_pipe[0] <= x_in;
             y_in_pipe[0] <= y_in;
             block_visible_out_pipe[0] <= block_visible_in;
+            saber_visible_out_pipe[0] <= saber_visible_in;
             for (int i=1; i<XY_DELAY; i = i+1) begin
                 x_in_pipe[i] <= x_in_pipe[i-1];
                 y_in_pipe[i] <= y_in_pipe[i-1];
                 block_visible_out_pipe[i] <= block_visible_out_pipe[i-1];
+                saber_visible_out_pipe[i] <= saber_visible_out_pipe[i-1];
             end
+        end
+    end
+
+    // NEW! add saber rendering logic
+    always_comb begin
+        if (saber_visible_out_pipe[XY_DELAY-1]) begin
+            block_visible_out = 1'b1; //simulate a block being visible
+            r_out = 4'b1011;
+            g_out = 4'b0100;
+            b_out = 4'b1011;
+        end else begin
+            block_visible_out = block_visible_out_pipe[XY_DELAY-1];
+            r_out = r_int[7:4];
+            g_out = g_int[7:4];
+            b_out = b_int[7:4];
         end
     end
 
     assign x_out = x_in_pipe[XY_DELAY-1];
     assign y_out = y_in_pipe[XY_DELAY-1];
-    assign block_visible_out = block_visible_out_pipe[XY_DELAY-1];
-    assign r_out = r_int[7:4];
-    assign g_out = g_int[7:4];
-    assign b_out = b_int[7:4];
     assign rgb_valid = r_int_valid;
 endmodule
 

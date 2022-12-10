@@ -7,9 +7,9 @@ module get_intersecting_block_tb;
 
     logic [10:0] x_in;
     logic [9:0] y_in;
-    logic [11:0] [11:0] block_x_in;
-    logic [11:0] [11:0] block_y_in;
-    logic [11:0] [13:0] block_z_in;
+    logic [11:0] block_x_in;
+    logic [11:0] block_y_in;
+    logic [13:0] block_z_in;
     logic valid_in;
 
     logic [31:0] ray_out_x, ray_out_y, ray_out_z;
@@ -18,7 +18,9 @@ module get_intersecting_block_tb;
     logic [9:0] y_out;
 
     logic res_valid;
-    logic [3:0] best_block;
+    logic ray_block_intersect_out;
+
+    logic [3:0] index_in, index_out;
 
     /*
     input wire clk_in,
@@ -41,6 +43,8 @@ module get_intersecting_block_tb;
     
     */
 
+    logic block_visible;
+
     get_intersecting_block mod(
         .clk_in(clk),
         .rst_in(rst),
@@ -51,14 +55,20 @@ module get_intersecting_block_tb;
         .block_x_notfloat_in(block_x_in),
         .block_y_notfloat_in(block_y_in),
         .block_z_notfloat_in(block_z_in),
+        .block_visible_in(block_visible),
+        .head_x_float(32'b01000100111000010000000000000001), //1800
+        .head_y_float(32'b01000100111000010000000000000001), //1800
+        .head_z_float(32'b11000011100101100000000000000011), //-300
+        .block_index_in(index_in),
 
         .ray_out_x(ray_out_x),
         .ray_out_y(ray_out_y),
         .ray_out_z(ray_out_z),
         .x_out(x_out),
         .y_out(y_out),
-        .best_block(best_block),
+        .ray_block_intersect_out(ray_block_intersect_out),
         .best_t(best_t),
+        .block_index_out(index_out),
         .valid_out(res_valid)
     );
 
@@ -81,13 +91,6 @@ module get_intersecting_block_tb;
         // block_y_in[1] = 32'b01000100111000010000000000000000; //1800
         // block_z_in[1] = 32'b01000100010010000000000000000000; //800
 
-        block_x_in[0] = 1800;
-        block_y_in[0] = 1800;
-        block_z_in[0] = 700;
-        block_x_in[1] = 2000;
-        block_y_in[1] = 2000;
-        block_z_in[1] = 800;
-
         clk = 0;
         rst = 0;
         #10;
@@ -97,16 +100,32 @@ module get_intersecting_block_tb;
         #100;
 
         valid_in = 1;
+        block_x_in = 1800;
+        block_y_in = 1800;
+        block_z_in = 900;
         x_in = 0;
         y_in = 0;
+        block_visible = 1;
+        index_in = 0;
         #10;
         $display("SETTING X/Y AT i=-1");
+        block_x_in = 1800;
+        block_y_in = 1800;
+        block_z_in = 700;
         x_in = 256;
         y_in = 200;
-
-        // #10;
-        // x_in = 350;
-        // y_in = 200;
+        block_visible = 1;
+        index_in = 1;
+        #10;
+        block_x_in = 1800;
+        block_y_in = 1800;
+        block_z_in = 800;
+        x_in = 0;
+        y_in = 0;
+        block_visible = 1;
+        index_in = 2;
+        #10;
+        valid_in = 0;
         #10;
 
         for(int i = 0; i < 2000; i = i + 1) begin
@@ -120,12 +139,13 @@ module get_intersecting_block_tb;
             end else begin
                 x_in += 1;
             end
-            $display("%d: X, Y (%d, %d)", i, x_in, y_in);
+            // $display("%d: X, Y (%d, %d)", i, x_in, y_in);
 
             if(res_valid) begin
-                $display("OUTPUT %d: INTSERCT-BLOCK IS %d", i, best_block);
+                $display("OUTPUT %d: INTSERCT-BLOCK IS %d", i, ray_block_intersect_out);
                 $display("OUTPUT XY: (%d, %d)", x_out, y_out);
                 $display("OUTPUT RAY: (%b %b %b)", ray_out_x, ray_out_y, ray_out_z);
+                $display("OUTPUT best_T, index: %b %d", best_t, index_out);
             end
             #10;
         end
