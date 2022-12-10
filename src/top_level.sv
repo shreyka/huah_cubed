@@ -146,7 +146,7 @@ module top_level(
     .hand_y_left_bottom(hand_y_left_bottom + 1800),
     .hand_z_left_bottom(13'b0),
     .hand_x_left_top(hand_x_left_bottom + 1800),
-    .hand_y_left_top(hand_x_left_bottom + 1800),
+    .hand_y_left_top(hand_y_left_bottom + 1800),
     .hand_z_left_top(13'b0),
     .head_x(sw[0] ? 1801 : hand_x_left_top),
     .head_y(sw[0] ? 1801 : hand_y_left_top),

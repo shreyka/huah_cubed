@@ -32,6 +32,11 @@ module top_level_camera_serial(
   logic sys_rst; //global system reset
   assign sys_rst = btnc; //just done to make sys_rst more obvious
 
+  logic [11:0] left_hand_x_bottom_from_camera_2; 
+  logic [11:0] left_hand_y_bottom_from_camera_2; 
+  logic [11:0] left_hand_x_top_from_camera_2; 
+  logic [11:0] left_hand_y_top_from_camera_2; 
+
   // logic CAMERA_1; 
   // logic CAMERA_2;
   // assign CAMERA_1 = sw[0];
@@ -142,11 +147,6 @@ module top_level_camera_serial(
     end 
 
   end
-
-  logic [11:0] left_hand_x_bottom_from_camera_2; 
-  logic [11:0] left_hand_y_bottom_from_camera_2; 
-  logic [11:0] left_hand_x_top_from_camera_2; 
-  logic [11:0] left_hand_y_top_from_camera_2; 
 
   assign hand_z_left_bottom = left_hand_x_bottom_from_camera_2;
   assign hand_z_left_top = left_hand_x_top_from_camera_2;

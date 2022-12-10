@@ -31,6 +31,14 @@ module camera_top_level(
   );
 
 
+  //Crosshair value hot when hcount,vcount== (x_com, y_com)
+  logic crosshair;
+  logic crosshair_cr;
+
+    // output of scale module
+  logic [15:0] full_pixel;//mirrored and scaled 565 pixel
+
+
   // //system reset switch linking
   // logic sys_rst; //global system reset
   // assign sys_rst = btnc; //just done to make sys_rst more obvious
@@ -143,9 +151,6 @@ module camera_top_level(
   logic [16:0] pixel_addr_out; //
   logic [15:0] frame_buff; //output of scale module
 
-  // output of scale module
-  logic [15:0] full_pixel;//mirrored and scaled 565 pixel
-
   //output of rgb to ycrcb conversion:
   logic [9:0] y, cr, cb; //ycrcb conversion of full pixel
 
@@ -168,10 +173,6 @@ module camera_top_level(
   //output of image sprite
   //Output of sprite that should be centered on Center of Mass (x_com, y_com):
   logic [11:0] com_sprite_pixel;
-
-  //Crosshair value hot when hcount,vcount== (x_com, y_com)
-  logic crosshair;
-  logic crosshair_cr;
 
   //vga_mux output:
   // logic [11:0] mux_pixel; //final 12 bit information from vga multiplexer

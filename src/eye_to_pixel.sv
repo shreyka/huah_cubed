@@ -139,7 +139,7 @@ module eye_to_pixel(
     floating_point_sint32_to_float exminusw_to_float(
         .aclk(clk_in),
         .aresetn(~rst_in),
-        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(head_x_float - WIDTH_HALF),
         .m_axis_result_tvalid(),
         .m_axis_result_tdata(ex_minus_w_data)
@@ -150,7 +150,7 @@ module eye_to_pixel(
     floating_point_sint32_to_float eyminusw_to_float(
         .aclk(clk_in),
         .aresetn(~rst_in),
-        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tvalid(1'b1),
         .s_axis_a_tdata(head_y_float - HEIGHT_HALF),
         .m_axis_result_tvalid(),
         .m_axis_result_tdata(ey_minus_h_data)

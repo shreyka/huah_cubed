@@ -62,6 +62,9 @@ module three_dim_block_selector(
     // slice logic
     logic block_has_been_sliced;
 
+    // current block state
+    logic [3:0] current_block_index;
+
     // logic to check if a block has been sliced
     always_comb begin
         block_has_been_sliced = 0;
@@ -71,9 +74,6 @@ module three_dim_block_selector(
             end
         end
     end
-
-    // current block state
-    logic [3:0] current_block_index;
 
     logic res_valid;
     logic [31:0] ray_out_x_int, ray_out_y_int, ray_out_z_int;
