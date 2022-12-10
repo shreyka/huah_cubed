@@ -22,6 +22,10 @@ module does_ray_block_intersect(
     input wire is_saber,
     input wire valid_in,
 
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
+
     output logic intersects_data_out,
     output logic [31:0] t_out,
     output logic valid_out
@@ -42,9 +46,9 @@ module does_ray_block_intersect(
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
-    assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
-    assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
-    assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
+    assign e_x_data = head_x_float;//32'b01000100111000010000000000000001; //1800.0001
+    assign e_y_data = head_y_float;//32'b01000100111000010000000000000001; //1800.0001
+    assign e_z_data = head_z_float;//32'b11000011100101100000000000000011; //-300.0001
 
     ////////////////////////////////////////////////////
     // REQUIRED VARIABLES

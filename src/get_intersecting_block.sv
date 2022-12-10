@@ -21,6 +21,10 @@ module get_intersecting_block(
     input wire [13:0] block_z_notfloat_in,
     input wire block_visible_in,
 
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
+
     input wire valid_in,
 
     output logic [10:0] x_out,
@@ -126,6 +130,10 @@ module get_intersecting_block(
         .x_in(x_in_pipe[XY_DELAY_0-1]),
         .y_in(y_in_pipe[XY_DELAY_0-1]),
         .valid_in(block_x_in_valid),
+
+        .head_x_float(head_x_float),
+        .head_y_float(head_y_float),
+        .head_z_float(head_z_float),
 
         .dir_x(ray_x),
         .dir_y(ray_y),
@@ -236,6 +244,10 @@ module get_intersecting_block(
         .block_pos_z(block_z_pipe[BLOCK_DELAY-1]),
         .is_saber(block_index_pipe[BLOCK_DELAY-1+6] == 12 ? 1'b1 : 1'b0), //the +6 was empirically tested and verified, not sure why it is needed
         .valid_in(ray_valid),
+
+        .head_x_float(head_x_float),
+        .head_y_float(head_y_float),
+        .head_z_float(head_z_float),
 
         .intersects_data_out(ray_block_intersect),
         .t_out(t),

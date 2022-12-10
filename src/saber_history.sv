@@ -19,25 +19,13 @@ module saber_history(
     input wire [11:0] hand_x_left_top,
     input wire [11:0] hand_y_left_top,
     input wire [13:0] hand_z_left_top,
-    input wire [11:0] hand_x_right_bottom,
-    input wire [11:0] hand_y_right_bottom,
-    input wire [13:0] hand_z_right_bottom,
-    input wire [11:0] hand_x_right_top,
-    input wire [11:0] hand_y_right_top,
-    input wire [13:0] hand_z_right_top,
 
     output logic [11:0] prev_hand_x_left_bottom,
     output logic [11:0] prev_hand_y_left_bottom,
     output logic [13:0] prev_hand_z_left_bottom,
     output logic [11:0] prev_hand_x_left_top,
     output logic [11:0] prev_hand_y_left_top,
-    output logic [13:0] prev_hand_z_left_top,
-    output logic [11:0] prev_hand_x_right_bottom,
-    output logic [11:0] prev_hand_y_right_bottom,
-    output logic [13:0] prev_hand_z_right_bottom,
-    output logic [11:0] prev_hand_x_right_top,
-    output logic [11:0] prev_hand_y_right_top,
-    output logic [13:0] prev_hand_z_right_top
+    output logic [13:0] prev_hand_z_left_top
     );
 
     logic [11:0] stored_hand_x_left_bottom;
@@ -46,12 +34,6 @@ module saber_history(
     logic [11:0] stored_hand_x_left_top;
     logic [11:0] stored_hand_y_left_top;
     logic [13:0] stored_hand_z_left_top;
-    logic [11:0] stored_hand_x_right_bottom;
-    logic [11:0] stored_hand_y_right_bottom;
-    logic [13:0] stored_hand_z_right_bottom;
-    logic [11:0] stored_hand_x_right_top;
-    logic [11:0] stored_hand_y_right_top;
-    logic [13:0] stored_hand_z_right_top;
 
     logic [3:0] time_counter;
     logic [17:0] last_time;
@@ -79,28 +61,13 @@ module saber_history(
                     prev_hand_y_left_top <= stored_hand_y_left_top;
                     prev_hand_z_left_top <= stored_hand_z_left_top;
 
-                    prev_hand_x_right_bottom <= stored_hand_x_right_bottom;
-                    prev_hand_y_right_bottom <= stored_hand_y_right_bottom;
-                    prev_hand_z_right_bottom <= 
-                    stored_hand_z_right_bottom;
-                    prev_hand_x_right_top <= stored_hand_x_right_top;
-                    prev_hand_y_right_top <= stored_hand_y_right_top;
-                    prev_hand_z_right_top <= stored_hand_z_right_top;
-
                     // store the current position
                     stored_hand_x_left_bottom <= hand_x_left_bottom;
                     stored_hand_y_left_bottom <= hand_y_left_bottom;
                     stored_hand_z_left_bottom <= hand_z_left_bottom;
                     stored_hand_x_left_top <= hand_x_left_top;
                     stored_hand_y_left_top <= hand_y_left_top;
-                    stored_hand_z_right_top <= hand_z_right_top;
-
-                    stored_hand_x_right_bottom <= hand_x_right_bottom;
-                    stored_hand_y_right_bottom <= hand_y_right_bottom;
-                    stored_hand_z_right_bottom <= hand_z_right_bottom;
-                    stored_hand_x_right_top <= hand_x_right_top;
-                    stored_hand_y_right_top <= hand_y_right_top;
-                    stored_hand_z_right_top <= hand_z_right_top;
+                    stored_hand_z_left_top <= hand_z_left_top;
                 end
             end
         end

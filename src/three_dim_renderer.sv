@@ -31,16 +31,6 @@ module three_dim_renderer(
     input wire [9:0] [11:0] broken_blocks_width,
     input wire [9:0] [11:0] broken_blocks_height,
 
-    input wire [11:0] hand_x_right_bottom,
-    input wire [11:0] hand_y_right_bottom,
-    input wire [13:0] hand_z_right_bottom,
-    input wire [11:0] hand_x_right_top,
-    input wire [11:0] hand_y_right_top,
-    input wire [13:0] hand_z_right_top,
-    input wire [11:0] head_x,
-    input wire [11:0] head_y,
-    input wire [13:0] head_z,
-
     output logic [3:0] r_out,
     output logic [3:0] g_out,
     output logic [3:0] b_out

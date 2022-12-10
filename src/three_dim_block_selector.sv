@@ -35,6 +35,10 @@ module three_dim_block_selector(
     input wire [11:0] hand_y_left_top,
     input wire [13:0] hand_z_left_top,
 
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
+
     output logic [17:0] curr_time_out,
     output logic [10:0] x_out,
     output logic [9:0] y_out,
@@ -98,6 +102,10 @@ module three_dim_block_selector(
         .block_y_notfloat_in(current_block_index == 12 ? hand_y_left_top : block_y_in[current_block_index]),
         .block_z_notfloat_in(current_block_index == 12 ? hand_z_left_top : block_z_in[current_block_index]),
         .block_visible_in   (current_block_index == 12 ? 1'b1 : (block_visible_in[current_block_index] && !block_has_been_sliced)),
+
+        .head_x_float(head_x_float),
+        .head_y_float(head_y_float),
+        .head_z_float(head_z_float),
 
         .ray_out_x(ray_out_x_int),
         .ray_out_y(ray_out_y_int),

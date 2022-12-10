@@ -11,11 +11,19 @@ module top_level(
 
   input wire [15:0] sw,
 
+  input wire [7:0] ja, //lower 8 bits of data from camera
+  input wire [2:0] jb, //upper three bits from camera (return clock, vsync, hsync)
+  input wire [7:0] jc,
+  output logic jbclk,  //signal we provide to camera
+  output logic jblock, //signal for resetting camera
+
   //TEMP for score printer
   output logic [15:0] led,
 
   output logic [3:0] vga_r, vga_g, vga_b,
-  output logic vga_hs, vga_vs
+  output logic vga_hs, vga_vs,
+  output logic [7:0] an,
+  output logic caa,cab,cac,cad,cae,caf,cag
   );
 
   ////////////////////////////////////////////////////
@@ -58,12 +66,6 @@ module top_level(
   logic [11:0] hand_x_left_top;
   logic [11:0] hand_y_left_top;
   logic [13:0] hand_z_left_top;
-  logic [11:0] hand_x_right_bottom;
-  logic [11:0] hand_y_right_bottom;
-  logic [13:0] hand_z_right_bottom;
-  logic [11:0] hand_x_right_top;
-  logic [11:0] hand_y_right_top;
-  logic [13:0] hand_z_right_top;
   logic [11:0] head_x;
   logic [11:0] head_y;
   logic [13:0] head_z;
@@ -89,14 +91,41 @@ module top_level(
   //
 
   // temporary module to test hand movement
-  hand_controller hand_controller(
-    .clk_in(clk_65mhz),
-    .rst_in(btnc),
-    .left_button(btnl),
-    .right_button(btnr),
-    .up_button(btnu),
-    .down_button(btnd),
+  // hand_controller hand_controller(
+  //   .clk_in(clk_65mhz),
+  //   .rst_in(btnc),
+  //   .left_button(btnl),
+  //   .right_button(btnr),
+  //   .up_button(btnu),
+  //   .down_button(btnd),
 
+  //   .hand_x_left_bottom(hand_x_left_bottom),
+  //   .hand_y_left_bottom(hand_y_left_bottom),
+  //   .hand_z_left_bottom(hand_z_left_bottom),
+  //   .hand_x_left_top(hand_x_left_top),
+  //   .hand_y_left_top(hand_y_left_top),
+  //   .hand_z_left_top(hand_z_left_top)
+  // );
+
+  top_level_camera_serial top_level_camera_serial(
+    .clk_65mhz(clk_65mhz), //clock @ 100 mhz
+    .sw(sw), //switches
+    .btnc(btnc), //btnc (used for reset)
+    .ja(ja), //lower 8 bits of data from camera
+    .jb(jb), //upper three bits from camera (return clock(), vsync(), hsync)
+    .jc(jc),
+
+    .jbclk(jbclk),  //signal we provide to camera
+    .jblock(jblock), //signal for resetting camera
+    .led(), //just here for the funs
+    .an(an),
+    .caa(caa),
+    .cab(cab),
+    .cac(cac),
+    .cad(cad),
+    .cae(cae),
+    .caf(caf),
+    .cag(cag),
     .hand_x_left_bottom(hand_x_left_bottom),
     .hand_y_left_bottom(hand_y_left_bottom),
     .hand_z_left_bottom(hand_z_left_bottom),
@@ -113,21 +142,15 @@ module top_level(
     .y_in(vcount),
 
     // retrieve from camera data
-    .hand_x_left_bottom(hand_x_left_bottom),
-    .hand_y_left_bottom(hand_y_left_bottom),
-    .hand_z_left_bottom(hand_z_left_bottom),
-    .hand_x_left_top(hand_x_left_top),
-    .hand_y_left_top(hand_y_left_top),
-    .hand_z_left_top(hand_z_left_top),
-    .hand_x_right_bottom(hand_x_right_bottom),
-    .hand_y_right_bottom(hand_y_right_bottom),
-    .hand_z_right_bottom(hand_z_right_bottom),
-    .hand_x_right_top(hand_x_right_top),
-    .hand_y_right_top(hand_y_right_top),
-    .hand_z_right_top(hand_z_right_top),
-    .head_x(head_x),
-    .head_y(head_y),
-    .head_z(head_z),
+    .hand_x_left_bottom(hand_x_left_bottom + 1800),
+    .hand_y_left_bottom(hand_y_left_bottom + 1800),
+    .hand_z_left_bottom(13'b0),
+    .hand_x_left_top(hand_x_left_bottom + 1800),
+    .hand_y_left_top(hand_x_left_bottom + 1800),
+    .hand_z_left_top(13'b0),
+    .head_x(sw[0] ? 1801 : hand_x_left_top),
+    .head_y(sw[0] ? 1801 : hand_y_left_top),
+    .head_z(-300),
 
     // outputs
     .r_out(r_out),

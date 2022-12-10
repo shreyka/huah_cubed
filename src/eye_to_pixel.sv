@@ -18,6 +18,10 @@ module eye_to_pixel(
     input wire [9:0] y_in,
     input wire valid_in,
 
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
+
     output wire [31:0] dir_x,
     output wire [31:0] dir_y,
     output wire [31:0] dir_z,
@@ -132,32 +136,32 @@ module eye_to_pixel(
     );
 
     // constant
-    // floating_point_sint32_to_float exminusw_to_float(
-    //     .aclk(clk_in),
-    //     .aresetn(~rst_in),
-    //     .s_axis_a_tvalid(valid_in),
-    //     .s_axis_a_tdata(exminusw),
-    //     .m_axis_result_tvalid(),
-    //     .m_axis_result_tdata(ex_minus_w_data)
-    // );
-    assign ex_minus_w_data = 32'b01000100110000010000000000000000;
+    floating_point_sint32_to_float exminusw_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tdata(head_x_float - WIDTH_HALF),
+        .m_axis_result_tvalid(),
+        .m_axis_result_tdata(ex_minus_w_data)
+    );
+    // assign ex_minus_w_data = 32'b01000100110000010000000000000000;
 
     // constant
-    // floating_point_sint32_to_float eyminusw_to_float(
-    //     .aclk(clk_in),
-    //     .aresetn(~rst_in),
-    //     .s_axis_a_tvalid(valid_in),
-    //     .s_axis_a_tdata(eyminush),
-    //     .m_axis_result_tvalid(),
-    //     .m_axis_result_tdata(ey_minus_h_data)
-    // );
-    assign ey_minus_h_data = 32'b01000100110010010000000000000000;
+    floating_point_sint32_to_float eyminusw_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(valid_in),
+        .s_axis_a_tdata(head_y_float - HEIGHT_HALF),
+        .m_axis_result_tvalid(),
+        .m_axis_result_tdata(ey_minus_h_data)
+    );
+    // assign ey_minus_h_data = 32'b01000100110010010000000000000000;
 
     assign float_100_data = 32'b01000010110010000000000000000000; //100
 
-    assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
-    assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
-    assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
+    assign e_x_data = head_x_float;//32'b01000100111000010000000000000001; //1800.0001
+    assign e_y_data = head_y_float;//32'b01000100111000010000000000000001; //1800.0001
+    assign e_z_data = head_z_float;//32'b11000011100101100000000000000011; //-300.0001
 
     //SECTION 2: OPERATIONS
 
