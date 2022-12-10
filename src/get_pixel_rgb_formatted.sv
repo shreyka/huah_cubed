@@ -354,9 +354,9 @@ module get_pixel_rgb_formatted(
     always_comb begin
         if (saber_visible_out_pipe[XY_DELAY-1]) begin
             block_visible_out = 1'b1; //simulate a block being visible
-            r_out = 4'b1111;
-            g_out = 4'b1111;
-            b_out = 4'b1111;
+            r_out = 4'b1011;
+            g_out = 4'b0100;
+            b_out = 4'b1011;
         end else begin
             block_visible_out = block_visible_out_pipe[XY_DELAY-1];
             r_out = r_int[7:4];

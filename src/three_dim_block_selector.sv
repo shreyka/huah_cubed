@@ -175,13 +175,16 @@ module three_dim_block_selector(
                 current_block_index <= 0;
                 x_in_begin <= x_in;
                 y_in_begin <= y_in;
+                valid_out <= 0;
                 valid_in <= 1;
+            end else begin
+                valid_out <= 0;
             end
 
             //passthrough
             curr_time_out <= curr_time_in;
-            x_out <= x_in_begin;
-            y_out <= y_in_begin;
+            x_out <= current_block_index == 12 ? x_out_inter : x_in_begin;
+            y_out <= current_block_index == 12 ? y_out_inter : y_in_begin;
         end
     end    
 

@@ -378,3 +378,141 @@ dismissDialog("Open Implemented Design"); // bA
 // TclEventType: DG_GRAPH_STALE
 // TclEventType: FILE_SET_CHANGE
 // HMemoryUtils.trashcanNow. Engine heap size: 3,556 MB. GUI used memory: 183 MB. Current time: 12/10/22, 2:11:40 AM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,571 MB. GUI used memory: 183 MB. Current time: 12/10/22, 2:12:15 AM EST
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,599 MB. GUI used memory: 183 MB. Current time: 12/10/22, 2:17:25 AM EST
+// Elapsed time: 624 seconds
+expandTree(PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE, "[Root, Check Timing]", 5); // a
+selectTree(PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE, "[Root, Check Timing, no_input_delay]", 10, false); // a
+selectTree(PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE, "[Root, Check Timing, no_output_delay]", 11, false); // a
+expandTree(PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE, "[Root, Intra-Clock Paths]", 18); // a
+selectTree(PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE, "[Root, Clock Summary]", 3, false); // a
+selectTree(PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE, "[Root, Design Timing Summary]", 2, false); // a
+selectTree(PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE, "[Root, General Information]", 0, false); // a
+selectTab((HResource) null, (HResource) null, "Power", 6); // aL
+// HMemoryUtils.trashcanNow. Engine heap size: 3,600 MB. GUI used memory: 192 MB. Current time: 12/10/22, 2:19:52 AM EST
+// Device view-level: 0.0
+selectTab((HResource) null, (HResource) null, "DRC", 5); // aL
+// PAPropertyPanels.initPanels (i_no_versal_es1_workaround.DSP (DSP48E1)) elapsed time: 0.4s
+// Elapsed time: 26 seconds
+selectTab((HResource) null, (HResource) null, "Design Runs", 4); // aL
+selectTab((HResource) null, (HResource) null, "Reports", 3); // aL
+selectTab((HResource) null, (HResource) null, "Log", 2); // aL
+selectTab((HResource) null, (HResource) null, "Messages", 1); // aL
+selectTab((HResource) null, (HResource) null, "Tcl Console", 0); // aL
+// Elapsed time: 13 seconds
+selectTab((HResource) null, (HResource) null, "Reports", 3); // aL
+selectTab((HResource) null, (HResource) null, "Design Runs", 4); // aL
+// Device view-level: 0.1
+selectTab((HResource) null, (HResource) null, "Timing", 7); // aL
+selectGraphicalView(PAResourceOtoP.PAViews_DEVICE, 2602, 17443); // E
+// Device view-level: 0.1
+// HMemoryUtils.trashcanNow. Engine heap size: 3,607 MB. GUI used memory: 211 MB. Current time: 12/10/22, 2:21:03 AM EST
+selectGraphicalView(PAResourceOtoP.PAViews_DEVICE, 3126, 205703); // E
+// Device view-level: 1.0
+selectGraphicalView(PAResourceOtoP.PAViews_DEVICE, 21152, 269593); // E
+// Device view-level: 1.6
+// TclEventType: FILE_SET_CHANGE
+// Elapsed time: 194 seconds
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Generate Bitstream]", 31, false); // n
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+closeView(PAResourceOtoP.PAViews_PAR_REPORT, "PAR Report"); // c
+closeView(PAResourceOtoP.PAViews_PAR_REPORT, "PAR Report"); // c
+closeView(PAResourceOtoP.PAViews_PAR_REPORT, "PAR Report"); // c
+closeView(PAResourceOtoP.PAViews_PAR_REPORT, "PAR Report"); // c
+closeView(PAResourceOtoP.PAViews_PAR_REPORT, "PAR Report"); // c
+closeView(PAResourceOtoP.PAViews_PAR_REPORT, "PAR Report"); // c
+closeView(PAResourceOtoP.PAViews_PAR_REPORT, "PAR Report"); // c
+// Tcl Message: reset_run synth_1 
+closeView(PAResourceOtoP.PAViews_PAR_REPORT, "PAR Report"); // c
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// Tcl Message: INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp 
+// TclEventType: FILE_SET_CHANGE
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a
+dismissDialog("Launch Runs"); // cZ
+// TclEventType: RUN_LAUNCH
+// TclEventType: DESIGN_STALE
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_MODIFY
+// Tcl Message: launch_runs impl_1 -to_step write_bitstream -jobs 8 
+// Tcl Message: INFO: [Vivado 12-4149] The synthesis checkpoint for IP '/media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/sources_1/ip/floating_point_sub/floating_point_sub.xci' is already up-to-date 
+// Tcl Message: [Sat Dec 10 02:24:23 2022] Launched synth_1... Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log 
+// TclEventType: RUN_MODIFY
+// Tcl Message: [Sat Dec 10 02:24:24 2022] Launched impl_1... Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log 
+dismissDialog("Generate Bitstream"); // bA
+// TclEventType: RUN_STATUS_CHANGE
+// Elapsed time: 207 seconds
+selectButton(PAResourceTtoZ.TaskBanner_CLOSE, (String) null); // j
+closeTask("Implementation", "Implemented Design", "DesignTask.RESULTS_ANALYSIS");
+// TclEventType: DESIGN_CLOSE
+// HMemoryUtils.trashcanNow. Engine heap size: 3,539 MB. GUI used memory: 146 MB. Current time: 12/10/22, 2:27:53 AM EST
+// TclEventType: TIMING_RESULTS_UNLOAD
+// Engine heap size: 3,539 MB. GUI used memory: 147 MB. Current time: 12/10/22, 2:27:53 AM EST
+// WARNING: HEventQueue.dispatchEvent() is taking  1078 ms.
+// TclEventType: CURR_DESIGN_SET
+// Tcl Message: close_design 
+// TclEventType: DESIGN_CLOSE
+dismissDialog("Close"); // bA
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed time: 1151 seconds
+dismissDialog("Bitstream Generation Completed"); // ag
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// TclEventType: FILE_SET_CHANGE
+// Elapsed time: 313 seconds
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Generate Bitstream]", 18, false); // n
+// Run Command: PAResourceCommand.PACommandNames_RUN_BITGEN
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_RESET
+// TclEventType: RUN_MODIFY
+// Tcl Message: reset_run synth_1 
+// Tcl Message: INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp 
+selectButton(RDIResource.BaseDialog_OK, "OK"); // a
+dismissDialog("Launch Runs"); // cZ
+// TclEventType: RUN_LAUNCH
+// TclEventType: RUN_MODIFY
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_MODIFY
+// Tcl Message: launch_runs impl_1 -to_step write_bitstream -jobs 8 
+// Tcl Message: INFO: [Vivado 12-4149] The synthesis checkpoint for IP '/media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/sources_1/ip/floating_point_sub/floating_point_sub.xci' is already up-to-date 
+// Tcl Message: [Sat Dec 10 02:52:22 2022] Launched synth_1... Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log 
+// TclEventType: RUN_MODIFY
+// Tcl Message: [Sat Dec 10 02:52:22 2022] Launched impl_1... Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log 
+dismissDialog("Generate Bitstream"); // bA
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_STEP_COMPLETED
+// HMemoryUtils.trashcanNow. Engine heap size: 3,480 MB. GUI used memory: 116 MB. Current time: 12/10/22, 2:57:55 AM EST
+// TclEventType: RUN_STEP_COMPLETED
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE

@@ -1,0 +1,159 @@
+/*
+
+Xilinx Vivado v2022.1 (64-bit) [Major: 2022, Minor: 1]
+SW Build: 3526262 on Mon Apr 18 15:47:01 MDT 2022
+IP Build: 3524634 on Mon Apr 18 20:55:01 MDT 2022
+
+Process ID (PID): 701370
+License: Customer
+Mode: GUI Mode
+
+Current time: 	Sat Dec 10 02:14:03 EST 2022
+Time zone: 	Eastern Standard Time (America/New_York)
+
+OS: Linux
+OS Version: 6.0.9-surface
+OS Architecture: amd64
+Available processors (cores): 8
+
+Display: 0
+Screen size: 3000x2000
+Screen resolution (DPI): 200
+Available screens: 1
+Default font: family=Dialog,name=Dialog,style=plain,size=24
+Scale size: 48
+
+Java version: 	11.0.11 64-bit
+Java home: 	/media/koops/VIVADO/Vivado/2022.1/tps/lnx64/jre11.0.11_9
+Java executable: 	/media/koops/VIVADO/Vivado/2022.1/tps/lnx64/jre11.0.11_9/bin/java
+Java arguments: 	[-Dsun.java2d.pmoffscreen=false, -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2, -Dsun.java2d.xrender=false, -Djdk.gtk.version=2, -Dsun.java2d.uiScale.enabled=false, -Xverify:none, -Dswing.aatext=true, -XX:-UsePerfData, -Djdk.map.althashing.threshold=512, -XX:StringTableSize=4072, --add-opens=java.desktop/com.sun.awt=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.desktop/sun.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/java.awt.event=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.base/java.nio=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.table=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.desktop/sun.awt.shell=ALL-UNNAMED, --add-exports=java.base/sun.security.action=ALL-UNNAMED, --add-exports=java.desktop/sun.font=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, -XX:NewSize=60m, -XX:MaxNewSize=60m, -Xms256m, -Xmx3072m, -Xss5m, -Xrs]
+Java initial memory (-Xms): 	256 MB
+Java maximum memory (-Xmx):	 3 GB
+
+
+User name: 	koops
+User home directory: /home/koops
+User working directory: /media/koops/VIVADO/huah_cubed
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /media/koops/VIVADO/Vivado
+HDI_APPROOT: /media/koops/VIVADO/Vivado/2022.1
+RDI_DATADIR: /media/koops/VIVADO/Vivado/2022.1/data
+RDI_BINDIR: /media/koops/VIVADO/Vivado/2022.1/bin
+
+Vivado preferences file: /home/koops/.Xilinx/Vivado/2022.1/vivado.xml
+Vivado preferences directory: /home/koops/.Xilinx/Vivado/2022.1/
+Vivado layouts directory: /home/koops/.Xilinx/Vivado/2022.1/data/layouts
+PlanAhead jar file: 	/media/koops/VIVADO/Vivado/2022.1/lib/classes/planAhead.jar
+Vivado log file: 	/media/koops/VIVADO/huah_cubed/vivado.log
+Vivado journal file: 	/media/koops/VIVADO/huah_cubed/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-701370-koops
+
+Xilinx Environment Variables
+----------------------------
+XILINX: /media/koops/VIVADO/Vivado/2022.1/ids_lite/ISE
+XILINX_DSP: /media/koops/VIVADO/Vivado/2022.1/ids_lite/ISE
+XILINX_HLS: /media/koops/VIVADO/Vitis_HLS/2022.1
+XILINX_PLANAHEAD: /media/koops/VIVADO/Vivado/2022.1
+XILINX_VITIS: 
+XILINX_VIVADO: /media/koops/VIVADO/Vivado/2022.1
+XILINX_VIVADO_HLS: /media/koops/VIVADO/Vivado/2022.1
+
+
+GUI allocated memory:	370 MB
+GUI max memory:		3,072 MB
+Engine allocated memory: 1,996 MB
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+selectList(PAResourceQtoS.SyntheticaGettingStartedView_RECENT_PROJECTS, "/media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr", 1); // r
+// Opening Vivado Project: /media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr. Version: Vivado v2022.1 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: FLOW_ADDED
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: PROJECT_NEW
+// HMemoryUtils.trashcanNow. Engine heap size: 1,908 MB. GUI used memory: 78 MB. Current time: 12/10/22, 2:14:04 AM EST
+// Tcl Message: open_project /media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/media/koops/VIVADO/Vivado/2022.1/data/ip'. 
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 116 MB (+119662kb) [00:00:12]
+// [Engine Memory]: 1,950 MB (+1893665kb) [00:00:12]
+// [Engine Memory]: 2,048 MB (+26kb) [00:00:14]
+// [GUI Memory]: 139 MB (+17000kb) [00:00:14]
+// WARNING: HEventQueue.dispatchEvent() is taking  3851 ms.
+// [GUI Memory]: 148 MB (+2504kb) [00:00:15]
+// Tcl Message: open_project: Time (s): cpu = 00:00:22 ; elapsed = 00:00:06 . Memory (MB): peak = 7751.883 ; gain = 143.230 ; free physical = 1766 ; free virtual = 8260 
+// Project name: float_testing_vivado; location: /media/koops/VIVADO/float_ip/float_testing_vivado; part: xc7a100tcsg324-1
+dismissDialog("Open Project"); // bA
+// [Engine Memory]: 2,155 MB (+4630kb) [00:00:18]
+// Tcl Message: update_compile_order -fileset sources_1 
+// Elapsed time: 62 seconds
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources]", 13); // D
+// [GUI Memory]: 157 MB (+1373kb) [00:01:20]
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, float_test]", 14); // D
+// PAPropertyPanels.initPanels (get_pixel_rgb_formatted_tb.sv) elapsed time: 0.2s
+// Elapsed time: 147 seconds
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, float_test, get_pixel_rgb_formatted_tb (get_pixel_rgb_formatted_tb.sv)]", 24, true); // D - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, float_test, get_pixel_rgb_formatted_tb (get_pixel_rgb_formatted_tb.sv)]", 24, true, false, false, false, true, false); // D - Popup Trigger - Node
+selectMenu(PAResourceCommand.PACommandNames_AUTO_UPDATE_HIER, "Hierarchy Update"); // ao
+selectMenu(PAResourceQtoS.SrcMenu_IP_HIERARCHY, "IP Hierarchy"); // ao
+selectMenuItem(PAResourceCommand.PACommandNames_SET_AS_TOP, "Set as Top"); // ar
+// Run Command: PAResourceCommand.PACommandNames_SET_AS_TOP
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// Tcl Message: set_property top get_pixel_rgb_formatted_tb [get_filesets float_test] 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_OPTIONS_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// Tcl Message: set_property top_lib xil_defaultlib [get_filesets float_test] 
+// TclEventType: DG_GRAPH_STALE
+dismissDialog("Set as Top"); // bA
+// TclEventType: FILE_SET_CHANGE
+// Tcl Message: update_compile_order -fileset float_test 
+// [GUI Memory]: 167 MB (+2216kb) [00:03:59]
+// HMemoryUtils.trashcanNow. Engine heap size: 2,220 MB. GUI used memory: 99 MB. Current time: 12/10/22, 2:17:54 AM EST
+// HMemoryUtils.trashcanNow. Engine heap size: 2,214 MB. GUI used memory: 99 MB. Current time: 12/10/22, 2:47:54 AM EST

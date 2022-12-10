@@ -135,15 +135,7 @@ module three_dim_renderer(
                     if(block_visible) begin
                         input_pixel_write <= {r_in_formatted, g_in_formatted, b_in_formatted};
                     end else begin
-                        if(x_in_block >= 0 && x_in_block <= 30) begin
-                        input_pixel_write <= 12'h100;
-                        end else if(x_in_block >= 31 && x_in_block <= 60) begin
-                        input_pixel_write <= 12'h010;
-                        end else if(x_in_block >= 61 && x_in_block <= 90) begin
-                        input_pixel_write <= 12'h010;
-                        end else begin
                         input_pixel_write <= 12'h000;
-                        end
                     end
                 end else begin
                     input_write_enable <= 0;
