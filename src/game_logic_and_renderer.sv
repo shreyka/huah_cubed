@@ -33,6 +33,12 @@ module game_logic_and_renderer(
     input wire [11:0] hand_x_left_top,
     input wire [11:0] hand_y_left_top,
     input wire [13:0] hand_z_left_top,
+    input wire [11:0] hand_x_right_bottom,
+    input wire [11:0] hand_y_right_bottom,
+    input wire [13:0] hand_z_right_bottom,
+    input wire [11:0] hand_x_right_top,
+    input wire [11:0] hand_y_right_top,
+    input wire [13:0] hand_z_right_top,
     input wire [11:0] head_x,
     input wire [11:0] head_y,
     input wire [13:0] head_z,
@@ -51,9 +57,6 @@ module game_logic_and_renderer(
     //
     // SECTION: GAME LOGIC AND RENDERER
     //
-
-    // HEAD TO FLOAT
-    logic [31:0] head_x_float, head_y_float, head_z_float;
 
     // INPUTS TO GAME_STATE
     logic block_position_ready;
@@ -123,6 +126,12 @@ module game_logic_and_renderer(
     logic [11:0] prev_hand_x_left_top;
     logic [11:0] prev_hand_y_left_top;
     logic [13:0] prev_hand_z_left_top;
+    logic [11:0] prev_hand_x_right_bottom;
+    logic [11:0] prev_hand_y_right_bottom;
+    logic [13:0] prev_hand_z_right_bottom;
+    logic [11:0] prev_hand_x_right_top;
+    logic [11:0] prev_hand_y_right_top;
+    logic [13:0] prev_hand_z_right_top;
     
     // OUTPUTS FROM STATE PROCESSOR
     logic block_sliced;
@@ -154,34 +163,6 @@ module game_logic_and_renderer(
     //
     // SECTION: GAME STATE AND RENDERER
     //
-
-    // DISCONNECTED LAYER: HEAD TO FLOAT
-    floating_point_sint32_to_float head_x_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata({20'b0, head_x}),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(head_x_float)
-    );
-
-    floating_point_sint32_to_float head_y_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata({20'b0, head_y}),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(head_y_float)
-    );
-
-    floating_point_sint32_to_float head_z_to_float(
-        .aclk(clk_in),
-        .aresetn(~rst_in),
-        .s_axis_a_tvalid(1'b1),
-        .s_axis_a_tdata({18'b0, head_z}),
-        .m_axis_result_tvalid(),
-        .m_axis_result_tdata(head_z_float)
-    );
 
     /*
     Game state controls most of the logic
@@ -346,13 +327,25 @@ module game_logic_and_renderer(
         .hand_x_left_top(hand_x_left_top),
         .hand_y_left_top(hand_y_left_top),
         .hand_z_left_top(hand_z_left_top),
+        .hand_x_right_bottom(hand_x_right_bottom),
+        .hand_y_right_bottom(hand_y_right_bottom),
+        .hand_z_right_bottom(hand_z_right_bottom),
+        .hand_x_right_top(hand_x_right_top),
+        .hand_y_right_top(hand_y_right_top),
+        .hand_z_right_top(hand_z_right_top),
 
         .prev_hand_x_left_bottom(prev_hand_x_left_bottom),
         .prev_hand_y_left_bottom(prev_hand_y_left_bottom),
         .prev_hand_z_left_bottom(prev_hand_z_left_bottom),
         .prev_hand_x_left_top(prev_hand_x_left_top),
         .prev_hand_y_left_top(prev_hand_y_left_top),
-        .prev_hand_z_left_top(prev_hand_z_left_top)
+        .prev_hand_z_left_top(prev_hand_z_left_top),
+        .prev_hand_x_right_bottom(prev_hand_x_right_bottom),
+        .prev_hand_y_right_bottom(prev_hand_y_right_bottom),
+        .prev_hand_z_right_bottom(prev_hand_z_right_bottom),
+        .prev_hand_x_right_top(prev_hand_x_right_top),
+        .prev_hand_y_right_top(prev_hand_y_right_top),
+        .prev_hand_z_right_top(prev_hand_z_right_top)
     );
 
     state_processor state_processor(
@@ -373,12 +366,24 @@ module game_logic_and_renderer(
         .prev_hand_x_left_top(prev_hand_x_left_top),
         .prev_hand_y_left_top(prev_hand_y_left_top),
         .prev_hand_z_left_top(prev_hand_z_left_top),
+        .prev_hand_x_right_bottom(prev_hand_x_right_bottom),
+        .prev_hand_y_right_bottom(prev_hand_y_right_bottom),
+        .prev_hand_z_right_bottom(prev_hand_z_right_bottom),
+        .prev_hand_x_right_top(prev_hand_x_right_top),
+        .prev_hand_y_right_top(prev_hand_y_right_top),
+        .prev_hand_z_right_top(prev_hand_z_right_top),
         .hand_x_left_bottom(hand_x_left_bottom),
         .hand_y_left_bottom(hand_y_left_bottom),
         .hand_z_left_bottom(hand_z_left_bottom),
         .hand_x_left_top(hand_x_left_top),
         .hand_y_left_top(hand_y_left_top),
         .hand_z_left_top(hand_z_left_top),
+        .hand_x_right_bottom(hand_x_right_bottom),
+        .hand_y_right_bottom(hand_y_right_bottom),
+        .hand_z_right_bottom(hand_z_right_bottom),
+        .hand_x_right_top(hand_x_right_top),
+        .hand_y_right_top(hand_y_right_top),
+        .hand_z_right_top(hand_z_right_top),
         .head_x(head_x),
         .head_y(head_y),
         .head_z(head_z),
@@ -440,10 +445,6 @@ module game_logic_and_renderer(
         .ray_y(ray_out_y_selector),
         .ray_z(ray_out_z_selector),
 
-        .head_x_float(head_x_float),
-        .head_y_float(head_y_float),
-        .head_z_float(head_z_float),
-
         .t_in(t_out_selector),
 
         .x_out(x_out_rgb_formatted),
@@ -479,6 +480,15 @@ module game_logic_and_renderer(
         .broken_blocks_color(broken_blocks_color),
         .broken_blocks_width(broken_blocks_width),
         .broken_blocks_height(broken_blocks_height),
+        .hand_x_right_bottom(hand_x_right_bottom),
+        .hand_y_right_bottom(hand_y_right_bottom),
+        .hand_z_right_bottom(hand_z_right_bottom),
+        .hand_x_right_top(hand_x_right_top),
+        .hand_y_right_top(hand_y_right_top),
+        .hand_z_right_top(hand_z_right_top),
+        .head_x(head_x),
+        .head_y(head_y),
+        .head_z(head_z),
 
         .r_out(r_out),
         .g_out(g_out),

@@ -29,6 +29,12 @@ module state_processor(
     input wire [11:0] prev_hand_x_left_top,
     input wire [11:0] prev_hand_y_left_top,
     input wire [13:0] prev_hand_z_left_top,
+    input wire [11:0] prev_hand_x_right_bottom,
+    input wire [11:0] prev_hand_y_right_bottom,
+    input wire [13:0] prev_hand_z_right_bottom,
+    input wire [11:0] prev_hand_x_right_top,
+    input wire [11:0] prev_hand_y_right_top,
+    input wire [13:0] prev_hand_z_right_top,
 
     input wire [11:0] hand_x_left_bottom,
     input wire [11:0] hand_y_left_bottom,
@@ -36,6 +42,12 @@ module state_processor(
     input wire [11:0] hand_x_left_top,
     input wire [11:0] hand_y_left_top,
     input wire [13:0] hand_z_left_top,
+    input wire [11:0] hand_x_right_bottom,
+    input wire [11:0] hand_y_right_bottom,
+    input wire [13:0] hand_z_right_bottom,
+    input wire [11:0] hand_x_right_top,
+    input wire [11:0] hand_y_right_top,
+    input wire [13:0] hand_z_right_top,
 
     input wire [11:0] head_x,
     input wire [11:0] head_y,
@@ -108,12 +120,14 @@ module state_processor(
     endfunction
 
     logic [2:0] left_hand_direction;
+    logic [2:0] right_hand_direction;
 
     // always_comb begin
     //     $display("DIRECTION IS (0=UP, 1=RIGHT, 2=DOWN, 3=LEFT, 4=ANY) %d", left_hand_direction);
     // end
 
     assign left_hand_direction = get_saber_direction(prev_hand_x_left_bottom, prev_hand_y_left_bottom, prev_hand_z_left_bottom, prev_hand_x_left_top, prev_hand_y_left_top, prev_hand_z_left_top, hand_x_left_bottom, hand_y_left_bottom, hand_z_left_bottom, hand_x_left_top, hand_y_left_top, hand_z_left_top);
+    assign right_hand_direction = get_saber_direction(prev_hand_x_right_bottom, prev_hand_y_right_bottom, prev_hand_z_right_bottom, prev_hand_x_right_top, prev_hand_y_right_top, prev_hand_z_right_top, hand_x_right_bottom, hand_y_right_bottom, hand_z_right_bottom, hand_x_right_top, hand_y_right_top, hand_z_right_top);
 
     always_comb begin
         if(left_hand_direction != ANY) begin

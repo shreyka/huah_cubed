@@ -2,30 +2,21 @@
 # Vivado v2022.1 (64-bit)
 # SW Build 3526262 on Mon Apr 18 15:47:01 MDT 2022
 # IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
-# Start of session at: Sat Dec 10 13:50:56 2022
-# Process ID: 84876
+# Start of session at: Sat Dec 10 02:13:49 2022
+# Process ID: 701370
 # Current directory: /media/koops/VIVADO/huah_cubed
 # Command line: vivado
 # Log file: /media/koops/VIVADO/huah_cubed/vivado.log
 # Journal file: /media/koops/VIVADO/huah_cubed/vivado.jou
-# Running On: koops, OS: Linux, CPU Frequency: 1900.542 MHz, CPU Physical cores: 4, Host memory: 16698 MB
+# Running On: koops, OS: Linux, CPU Frequency: 1900.967 MHz, CPU Physical cores: 4, Host memory: 16698 MB
 #-----------------------------------------------------------
 start_gui
-open_project /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.xpr
+open_project /media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr
 update_compile_order -fileset sources_1
-update_compile_order -fileset sources_1
-reset_run synth_1
-launch_runs synth_1 -jobs 8
-wait_on_run synth_1
-update_compile_order -fileset sources_1
-add_files {/media/koops/VIVADO/huah_cubed/src_monica/center_of_mass.sv /media/koops/VIVADO/huah_cubed/src_monica/scale.sv /media/koops/VIVADO/huah_cubed/src_monica/threshold_multi.sv /media/koops/VIVADO/huah_cubed/src_monica/rgb_to_ycrcb.sv /media/koops/VIVADO/huah_cubed/src_monica/xilinx_true_dual_port_read_first_2_clock_ram.v /media/koops/VIVADO/huah_cubed/src_monica/serial_top_level.sv /media/koops/VIVADO/huah_cubed/src_monica/divider.sv /media/koops/VIVADO/huah_cubed/src_monica/rotate.sv /media/koops/VIVADO/huah_cubed/src_monica/top_level_camera_serial.sv /media/koops/VIVADO/huah_cubed/src_monica/camera.sv /media/koops/VIVADO/huah_cubed/src_monica/seven.sv /media/koops/VIVADO/huah_cubed/src_monica/camera_top_level.sv /media/koops/VIVADO/huah_cubed/src_monica/mirror.sv /media/koops/VIVADO/huah_cubed/src_monica/threshold.sv /media/koops/VIVADO/huah_cubed/src_monica/serial.sv}
-update_compile_order -fileset sources_1
-reset_run synth_1
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-wait_on_run impl_1
-reset_run synth_1
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-wait_on_run impl_1
-reset_run synth_1
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-wait_on_run impl_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top get_pixel_rgb_formatted_tb [get_filesets float_test]
+set_property top_lib xil_defaultlib [get_filesets float_test]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset float_test

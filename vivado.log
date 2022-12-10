@@ -2,13 +2,13 @@
 # Vivado v2022.1 (64-bit)
 # SW Build 3526262 on Mon Apr 18 15:47:01 MDT 2022
 # IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
-# Start of session at: Sat Dec 10 13:50:56 2022
-# Process ID: 84876
+# Start of session at: Sat Dec 10 02:13:49 2022
+# Process ID: 701370
 # Current directory: /media/koops/VIVADO/huah_cubed
 # Command line: vivado
 # Log file: /media/koops/VIVADO/huah_cubed/vivado.log
 # Journal file: /media/koops/VIVADO/huah_cubed/vivado.jou
-# Running On: koops, OS: Linux, CPU Frequency: 1900.542 MHz, CPU Physical cores: 4, Host memory: 16698 MB
+# Running On: koops, OS: Linux, CPU Frequency: 1900.967 MHz, CPU Physical cores: 4, Host memory: 16698 MB
 #-----------------------------------------------------------
 start_gui
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:kc705:part0:1.6 available at /media/koops/VIVADO/Vivado/2022.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/kc705/1.6/board.xml as part xc7k325tffg900-2 specified in board_part file is either invalid or not available
@@ -50,44 +50,14 @@ WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu216:part0:2.0 availab
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu216ld:part0:2.0 available at /media/koops/VIVADO/Vivado/2022.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu216ld/production/2.0/board.xml as part xczu59dr-ffvf1760-2-i specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670:part0:2.0 available at /media/koops/VIVADO/Vivado/2022.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670/2.0/board.xml as part xczu67dr-fsve1156-2-i specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670ld:part0:1.0 available at /media/koops/VIVADO/Vivado/2022.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670ld/1.0/board.xml as part xczu57dr-fsve1156-2-i specified in board_part file is either invalid or not available
-open_project /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.xpr
+open_project /media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr
 Scanning sources...
 Finished scanning sources
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/media/koops/VIVADO/Vivado/2022.1/data/ip'.
-open_project: Time (s): cpu = 00:00:24 ; elapsed = 00:00:06 . Memory (MB): peak = 7729.465 ; gain = 130.219 ; free physical = 1499 ; free virtual = 10976
+open_project: Time (s): cpu = 00:00:22 ; elapsed = 00:00:06 . Memory (MB): peak = 7751.883 ; gain = 143.230 ; free physical = 1766 ; free virtual = 8260
 update_compile_order -fileset sources_1
-update_compile_order -fileset sources_1
-reset_run synth_1
-INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp
-launch_runs synth_1 -jobs 8
-INFO: [Vivado 12-4149] The synthesis checkpoint for IP '/media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/sources_1/ip/floating_point_sub/floating_point_sub.xci' is already up-to-date
-[Sat Dec 10 13:52:25 2022] Launched synth_1...
-Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
-update_compile_order -fileset sources_1
-add_files {/media/koops/VIVADO/huah_cubed/src_monica/center_of_mass.sv /media/koops/VIVADO/huah_cubed/src_monica/scale.sv /media/koops/VIVADO/huah_cubed/src_monica/threshold_multi.sv /media/koops/VIVADO/huah_cubed/src_monica/rgb_to_ycrcb.sv /media/koops/VIVADO/huah_cubed/src_monica/xilinx_true_dual_port_read_first_2_clock_ram.v /media/koops/VIVADO/huah_cubed/src_monica/serial_top_level.sv /media/koops/VIVADO/huah_cubed/src_monica/divider.sv /media/koops/VIVADO/huah_cubed/src_monica/rotate.sv /media/koops/VIVADO/huah_cubed/src_monica/top_level_camera_serial.sv /media/koops/VIVADO/huah_cubed/src_monica/camera.sv /media/koops/VIVADO/huah_cubed/src_monica/seven.sv /media/koops/VIVADO/huah_cubed/src_monica/camera_top_level.sv /media/koops/VIVADO/huah_cubed/src_monica/mirror.sv /media/koops/VIVADO/huah_cubed/src_monica/threshold.sv /media/koops/VIVADO/huah_cubed/src_monica/serial.sv}
-update_compile_order -fileset sources_1
-reset_run synth_1
-INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-INFO: [Vivado 12-4149] The synthesis checkpoint for IP '/media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/sources_1/ip/floating_point_sub/floating_point_sub.xci' is already up-to-date
-[Sat Dec 10 14:26:00 2022] Launched synth_1...
-Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
-[Sat Dec 10 14:26:01 2022] Launched impl_1...
-Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log
-reset_run synth_1
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-INFO: [Vivado 12-4149] The synthesis checkpoint for IP '/media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/sources_1/ip/floating_point_sub/floating_point_sub.xci' is already up-to-date
-[Sat Dec 10 14:28:04 2022] Launched synth_1...
-Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
-[Sat Dec 10 14:28:05 2022] Launched impl_1...
-Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log
-reset_run synth_1
-INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp
-launch_runs impl_1 -to_step write_bitstream -jobs 8
-INFO: [Vivado 12-4149] The synthesis checkpoint for IP '/media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/sources_1/ip/floating_point_sub/floating_point_sub.xci' is already up-to-date
-[Sat Dec 10 14:51:23 2022] Launched synth_1...
-Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
-[Sat Dec 10 14:51:23 2022] Launched impl_1...
-Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log
+set_property top get_pixel_rgb_formatted_tb [get_filesets float_test]
+set_property top_lib xil_defaultlib [get_filesets float_test]
+update_compile_order -fileset float_test

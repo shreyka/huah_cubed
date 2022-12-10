@@ -27,10 +27,6 @@ module get_pixel_rgb_formatted(
     input wire [9:0] y_in,
     input wire valid_in,
 
-    input wire [31:0] head_x_float,
-    input wire [31:0] head_y_float,
-    input wire [31:0] head_z_float,
-
     input wire [31:0] t_in,
 
     output logic [10:0] x_out,
@@ -184,10 +180,6 @@ module get_pixel_rgb_formatted(
         .block_color(block_color),
         .block_dir(block_dir),
         .valid_in(block_float_x_valid),
-
-        .head_x_float(head_x_float),
-        .head_y_float(head_y_float),
-        .head_z_float(head_z_float),
 
         .ray_x(ray_x_pipe[RAY_DELAY-1]),
         .ray_y(ray_y_pipe[RAY_DELAY-1]),
