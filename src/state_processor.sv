@@ -116,7 +116,7 @@ module state_processor(
         input [11:0] top_y;
         input [13:0] top_z;
 
-        return block_x >= top_x - 128 && block_x <= top_x + 128 && block_y >= top_y - 128 && block_y <= top_y + 128;
+        return block_x >= top_x - 100 && block_x <= top_x + 100 && block_y >= top_y - 100 && block_y <= top_y + 100;
     endfunction
 
     logic [2:0] left_hand_direction;
@@ -147,7 +147,7 @@ module state_processor(
             //TODO: same for right hand
             //we only can slice once per timestep so that the
             // broken state change can propagate correctly
-            if(block_visible && last_sliced_block_ID != block_ID && last_sliced_time != curr_time && left_hand_direction == block_direction && block_z <= 750 && saber_overlaps(prev_hand_x_left_top, prev_hand_y_left_top, prev_hand_z_left_top)) begin
+            if(block_visible && last_sliced_block_ID != block_ID && last_sliced_time != curr_time && left_hand_direction == block_direction && block_z <= 600 && saber_overlaps(prev_hand_x_left_top, prev_hand_y_left_top, prev_hand_z_left_top)) begin
                 last_sliced_time <= curr_time;
                 block_x_out <= block_x;
                 block_y_out <= block_y; 

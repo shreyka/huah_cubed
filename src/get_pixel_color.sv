@@ -1154,9 +1154,9 @@ module get_pixel_color_should_draw_arrow(
             should_render_arrow_valid <= in_region_a_valid;
 
             case (block_dir_pipe[BLOCK_DIR_DELAY-1])
-                UP: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_d);
-                RIGHT: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~x_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_d);
-                DOWN: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~y_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_c);
+                DOWN: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && y_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_d);
+                LEFT: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~x_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_d);
+                UP: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && ~y_ray_block_less_than && is_in_udlr_bounds && (~in_region_a && ~in_region_c);
                 default: should_render_arrow <= scaled_sub_comp_pipe[SCALED_SUB_COMP_DELAY-1] && x_ray_block_less_than && is_in_udlr_bounds && (~in_region_b && ~in_region_c);
             endcase
         end

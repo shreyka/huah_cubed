@@ -58,6 +58,16 @@ module three_dim_block_selector(
     // slice logic
     logic block_has_been_sliced;
 
+    // logic to check if a block has been sliced
+    always_comb begin
+        block_has_been_sliced = 0;
+        for(int j = 0; j < 12; j = j + 1) begin
+            if(sliced_blocks[j] == block_ID_in[current_block_index]) begin
+                block_has_been_sliced = 1;
+            end
+        end
+    end
+
     // current block state
     logic [3:0] current_block_index;
 
@@ -87,7 +97,7 @@ module three_dim_block_selector(
         .block_x_notfloat_in(current_block_index == 12 ? hand_x_left_top : block_x_in[current_block_index]),
         .block_y_notfloat_in(current_block_index == 12 ? hand_y_left_top : block_y_in[current_block_index]),
         .block_z_notfloat_in(current_block_index == 12 ? hand_z_left_top : block_z_in[current_block_index]),
-        .block_visible_in   (current_block_index == 12 ? 1'b1 : block_visible_in[current_block_index]),
+        .block_visible_in   (current_block_index == 12 ? 1'b1 : (block_visible_in[current_block_index] && !block_has_been_sliced)),
 
         .ray_out_x(ray_out_x_int),
         .ray_out_y(ray_out_y_int),
@@ -105,16 +115,6 @@ module three_dim_block_selector(
     assign ray_out_z = best_ray_z;
     assign t_out = best_t;
 
-    // logic to check if a block has been sliced
-    always_comb begin
-        block_has_been_sliced = 0;
-        for(int j = 0; j < 12; j = j + 1) begin
-            if(sliced_blocks[j] == block_ID_in) begin
-                block_has_been_sliced = 1;
-            end
-        end
-    end
-
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
             current_block_index <= 0;
@@ -129,7 +129,7 @@ module three_dim_block_selector(
                     if(best_block_index == 12) begin
                         best_block_index <= best_block_index;
                     // other blocks
-                    end else if(block_index_out < best_block_index && !block_has_been_sliced) begin
+                    end else if(block_index_out < best_block_index) begin
                         best_block_index <= block_index_out;
                         best_ray_x <= ray_out_x_int;
                         best_ray_y <= ray_out_y_int;

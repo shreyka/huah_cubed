@@ -38,7 +38,7 @@ module does_ray_block_intersect(
 
     logic [31:0] saber_size, saber_length;
     assign saber_size = 32'b01000000101000000000000000000000; //5
-    assign saber_length = 32'b01000010100101100000000000000000; //75
+    assign saber_length = 32'b01000011000101100000000000000000; //150
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
@@ -97,7 +97,7 @@ module does_ray_block_intersect(
         .v1_z(block_pos_z),
         .v2_x(is_saber ? saber_size : block_size),
         .v2_y(is_saber ? saber_size : block_size),
-        .v2_z(is_saber ? saber_length : block_size),
+        .v2_z(is_saber ? 32'b0 : block_size),
         .v_valid(valid_in),
 
         .res_data_x(block_min_x),

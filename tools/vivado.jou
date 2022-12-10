@@ -2,53 +2,20 @@
 # Vivado v2022.1 (64-bit)
 # SW Build 3526262 on Mon Apr 18 15:47:01 MDT 2022
 # IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
-# Start of session at: Wed Dec  7 01:00:40 2022
-# Process ID: 642676
+# Start of session at: Sat Dec 10 01:42:13 2022
+# Process ID: 673809
 # Current directory: /media/koops/VIVADO/huah_cubed/tools
 # Command line: vivado
 # Log file: /media/koops/VIVADO/huah_cubed/tools/vivado.log
 # Journal file: /media/koops/VIVADO/huah_cubed/tools/vivado.jou
-# Running On: koops, OS: Linux, CPU Frequency: 1899.996 MHz, CPU Physical cores: 4, Host memory: 16698 MB
+# Running On: koops, OS: Linux, CPU Frequency: 2100.000 MHz, CPU Physical cores: 4, Host memory: 16698 MB
 #-----------------------------------------------------------
 start_gui
-open_project /media/koops/VIVADO/float_ip/float_testing_vivado/float_testing_vivado.xpr
+open_project /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.xpr
 update_compile_order -fileset sources_1
-# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
-set_property source_mgmt_mode None [current_project]
-set_property top eye_to_pixel_tb [get_filesets float_test]
-set_property top_lib xil_defaultlib [get_filesets float_test]
-# Re-enabling previously disabled source management mode.
-set_property source_mgmt_mode All [current_project]
-update_compile_order -fileset float_test
-launch_simulation -simset [get_filesets float_test ]
-source eye_to_pixel_tb.tcl
-relaunch_sim
-relaunch_sim
-close_sim
-# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
-set_property source_mgmt_mode None [current_project]
-set_property top does_ray_block_intersect_tb [get_filesets float_test]
-set_property top_lib xil_defaultlib [get_filesets float_test]
-# Re-enabling previously disabled source management mode.
-set_property source_mgmt_mode All [current_project]
-update_compile_order -fileset float_test
-launch_simulation -simset [get_filesets float_test ]
-launch_simulation -simset [get_filesets float_test ]
-source does_ray_block_intersect_tb.tcl
-close_sim
-set_property SOURCE_SET sources_1 [get_filesets float_test]
-add_files -fileset float_test -norecurse /media/koops/VIVADO/huah_cubed_3drender/sim/get_pixel_color_tb.sv
-update_compile_order -fileset float_test
-# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
-set_property source_mgmt_mode None [current_project]
-set_property top get_pixel_color_tb [get_filesets float_test]
-set_property top_lib xil_defaultlib [get_filesets float_test]
-# Re-enabling previously disabled source management mode.
-set_property source_mgmt_mode All [current_project]
-update_compile_order -fileset float_test
-launch_simulation -simset [get_filesets float_test ]
-launch_simulation -simset [get_filesets float_test ]
-source get_pixel_color_tb.tcl
-relaunch_sim
-relaunch_sim
-close_sim
+export_ip_user_files -of_objects  [get_files /media/koops/VIVADO/huah_cubed/src/does_saber_intersect.sv] -no_script -reset -force -quiet
+remove_files  /media/koops/VIVADO/huah_cubed/src/does_saber_intersect.sv
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+open_run impl_1
