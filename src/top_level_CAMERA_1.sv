@@ -46,19 +46,39 @@ module top_level(
   logic [11:0] hand_y_left_top; // goes from 0 to 1df (hex), or 0 to 479 (dec)
   logic [13:0] hand_z_left_top; // same as x
   
-   ila_0 test(.clk(clk_65mhz), 
-              .probe0(jc[0]), 
-              .probe1(hand_z_left_bottom), 
-              .probe2(hand_z_left_top),
-              .probe3(hand_x_left_top), 
-              .probe4(hand_y_left_top)); 
+  //  ila_0 test(.clk(clk_65mhz), 
+  //             .probe0(jc[0]), 
+  //             .probe1(hand_z_left_bottom), 
+  //             .probe2(hand_z_left_top),
+  //             .probe3(hand_x_left_top), 
+  //             .probe4(hand_y_left_top)); 
 
   logic transmit; 
+
+  //Generate VGA timing signals:
+
+  logic [10:0] hcount;    // pixel on current line
+  logic [9:0] vcount;     // line number
+  logic hsync, vsync, blank; //control signals for vga
+
+  vga vga_gen(
+    .pixel_clk_in(clk_65mhz),
+    .hcount_out(hcount),
+    .vcount_out(vcount),
+    .hsync_out(hsync),
+    .vsync_out(vsync),
+    .blank_out(blank));
 
   camera_top_level cam_uut(
     .clk_65mhz(clk_65mhz), //clock @ 100 mhz
     .sw(sw), //switches
     .sys_rst(sys_rst), //btnc (used for reset)
+
+    .hcount(hcount),
+    .vcount(vcount),
+    .hsync(hsync),
+    .vsync(vsync),
+    .blank(blank),
 
     .ja(ja), //lower 8 bits of data from camera
     .jb(jb), //upper three bits from camera (return clock, vsync, hsync)

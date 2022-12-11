@@ -6,6 +6,12 @@ module camera_top_level(
   input wire [15:0] sw, //switches
   input wire sys_rst, //btnc (used for reset)
 
+  input wire [10:0] hcount,    // pixel number on current line
+  input wire [9:0]  vcount,    // line number
+  input wire vsync,
+  input wire hsync,
+  input wire blank,
+
   input wire [7:0] ja, //lower 8 bits of data from camera
   input wire [2:0] jb, //upper three bits from camera (return clock, vsync, hsync)
   output logic jbclk,  //signal we provide to camera
@@ -40,9 +46,6 @@ module camera_top_level(
   // logic clk_65mhz; //65 MHz clock line
 
   //vga module generation signals:
-  logic [10:0] hcount;    // pixel on current line
-  logic [9:0] vcount;     // line number
-  logic hsync, vsync, blank; //control signals for vga
   logic hsync_t, vsync_t, blank_t; //control signals out of transform
   
   //vary the packed width based on signal
@@ -181,15 +184,6 @@ module camera_top_level(
   // clk_wiz_lab3 clk_gen(
   //   .clk_in1(clk_100mhz),
   //   .clk_out1(clk_65mhz)); //after frame buffer everything on clk_65mhz
-
-  //Generate VGA timing signals:
-  vga vga_gen(
-    .pixel_clk_in(clk_65mhz),
-    .hcount_out(hcount),
-    .vcount_out(vcount),
-    .hsync_out(hsync),
-    .vsync_out(vsync),
-    .blank_out(blank));
 
 
   //Clock domain crossing to synchronize the camera's clock
