@@ -73,7 +73,7 @@ module top_level(
   logic [3:0] b_out;
 
   logic [11:0] score;
-  assign led = score;
+  // assign led = score;
 
   ////////////////////////////////////////////////////
   // MODULES
@@ -83,21 +83,47 @@ module top_level(
   //
 
   // temporary module to test hand movement
-  hand_controller hand_controller(
+  // hand_controller hand_controller(
+  //   .clk_in(clk_65mhz),
+  //   .rst_in(btnc),
+  //   .left_button(btnl),
+  //   .right_button(btnr),
+  //   .up_button(btnu),
+  //   .down_button(btnd),
+  //   .enable_head(sw[0]),
+
+  //   .hand_x_left_bottom(hand_x_left_bottom),
+  //   .hand_y_left_bottom(hand_y_left_bottom),
+  //   .hand_z_left_bottom(hand_z_left_bottom),
+  //   .hand_x_left_top(hand_x_left_top),
+  //   .hand_y_left_top(hand_y_left_top),
+  //   .hand_z_left_top(hand_z_left_top)
+  // );
+
+  camera_interface camera_interface(
     .clk_in(clk_65mhz),
     .rst_in(btnc),
-    .left_button(btnl),
-    .right_button(btnr),
-    .up_button(btnu),
-    .down_button(btnd),
-    .enable_head(sw[0]),
+    
+    .sw(sw),
 
+    .ja(ja), //lower 8 bits of data from camera
+    .jb(jb), //upper three bits from camera (return clock(), vsync(), hsync)
+    .jbclk(jbclk),  //signal we provide to camera
+    .jblock(jblock),
+
+    .hcount(hcount),    // pixel on current line
+    .vcount(vcount),     // line number
+    .hsync(hsync),
+    .vsync(vsync),
+    .blank(blank),
+
+    .led(led),
     .hand_x_left_bottom(hand_x_left_bottom),
     .hand_y_left_bottom(hand_y_left_bottom),
-    .hand_z_left_bottom(hand_z_left_bottom),
+    .hand_z_left_bottom(),
     .hand_x_left_top(hand_x_left_top),
     .hand_y_left_top(hand_y_left_top),
-    .hand_z_left_top(hand_z_left_top)
+    .hand_z_left_top()
   );
 
   assign head_x = hand_x_left_bottom; //1800

@@ -57,7 +57,7 @@ module hand_controller(
         return new_coord(pos, delta, MAX_Z);
     endfunction
 
-    logic [22:0] curr_time_counter;
+    // logic [22:0] curr_time_counter;
 
     logic enable_button;
 
@@ -70,50 +70,49 @@ module hand_controller(
             hand_y_left_top <= 1800;
             hand_z_left_top <= 0;
 
-            curr_time_counter <= 0;
+            // curr_time_counter <= 0;
         end else begin
-            if(curr_time_counter == 1625000) begin //25 ms
-                curr_time_counter <= 0;
-            end else begin
-                curr_time_counter <= curr_time_counter + 1;
-            end
+            // if(curr_time_counter == 1625000) begin //25 ms
+            //     curr_time_counter <= 0;
+            // end else begin
+            //     curr_time_counter <= curr_time_counter + 1;
+            // end
 
             // if(curr_time_counter == 0) begin
-                if(enable_button) begin
-                    enable_button <= 0;
-                    if(left_button) begin
-                        if (enable_head) begin
-                            hand_x_left_bottom <= new_coord_x(hand_x_left_bottom, -HAND_MOVE_SPEED);
-                        end else begin
-                            hand_x_left_top <= new_coord_x(hand_x_left_top, -HAND_MOVE_SPEED);
-                        end
-
-                    end else if(right_button) begin
-                        if (enable_head) begin
-                            hand_x_left_bottom <= new_coord_x(hand_x_left_bottom, HAND_MOVE_SPEED);
-                        end else begin
-                            hand_x_left_top <= new_coord_x(hand_x_left_top, HAND_MOVE_SPEED);
-                        end
+            if(enable_button) begin
+                enable_button <= 0;
+                if(left_button) begin
+                    if (enable_head) begin
+                        hand_x_left_bottom <= new_coord_x(hand_x_left_bottom, -HAND_MOVE_SPEED);
+                    end else begin
+                        hand_x_left_top <= new_coord_x(hand_x_left_top, -HAND_MOVE_SPEED);
                     end
-
-                    if(up_button) begin
-                        if (enable_head) begin
-                            hand_y_left_bottom <= new_coord_y(hand_y_left_bottom, -HAND_MOVE_SPEED);
-                        end else begin
-                            hand_y_left_top <= new_coord_y(hand_y_left_top, -HAND_MOVE_SPEED);
-                        end
-                    end else if(down_button) begin
-                        if (enable_head) begin
-                            hand_y_left_bottom <= new_coord_y(hand_y_left_bottom, HAND_MOVE_SPEED);
-                        end else begin
-                            hand_y_left_top <= new_coord_y(hand_y_left_top, HAND_MOVE_SPEED);
-                        end
-                    end
-                end else begin
-                    if(!left_button && !right_button && !up_button && !down_button) begin
-                        enable_button <= 1;
+                end else if(right_button) begin
+                    if (enable_head) begin
+                        hand_x_left_bottom <= new_coord_x(hand_x_left_bottom, HAND_MOVE_SPEED);
+                    end else begin
+                        hand_x_left_top <= new_coord_x(hand_x_left_top, HAND_MOVE_SPEED);
                     end
                 end
+                
+                if(up_button) begin
+                    if (enable_head) begin
+                        hand_y_left_bottom <= new_coord_y(hand_y_left_bottom, -HAND_MOVE_SPEED);
+                    end else begin
+                        hand_y_left_top <= new_coord_y(hand_y_left_top, -HAND_MOVE_SPEED);
+                    end
+                end else if(down_button) begin
+                    if (enable_head) begin
+                        hand_y_left_bottom <= new_coord_y(hand_y_left_bottom, HAND_MOVE_SPEED);
+                    end else begin
+                        hand_y_left_top <= new_coord_y(hand_y_left_top, HAND_MOVE_SPEED);
+                    end
+                end
+            end else begin
+                if(!left_button && !right_button && !up_button && !down_button) begin
+                    enable_button <= 1;
+                end
+            end
             // end
         end
     end
