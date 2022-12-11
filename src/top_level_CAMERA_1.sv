@@ -76,10 +76,10 @@ module top_level(
 
     .hand_x_left_bottom(hand_x_left_bottom),
     .hand_y_left_bottom(hand_y_left_bottom),
-    .hand_z_left_bottom(hand_z_left_bottom),
+    .hand_z_left_bottom(),
     .hand_x_left_top(hand_x_left_top),
     .hand_y_left_top(hand_y_left_top),
-    .hand_z_left_top(hand_z_left_top),
+    .hand_z_left_top(),
 
     // outputs we can just ignore in final game
     // .led(led), //just here for the funs
