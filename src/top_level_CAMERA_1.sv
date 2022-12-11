@@ -30,11 +30,19 @@ module top_level(
   logic sys_rst; //global system reset
   assign sys_rst = btnc; //just done to make sys_rst more obvious
 
-  logic CAMERA_1; 
-  logic CAMERA_2;
-  assign CAMERA_1 = sw[0];
-  assign CAMERA_2 = ~sw[0]; 
+  // logic CAMERA_1; 
+  // logic CAMERA_2;
+  // assign CAMERA_1 = sw[0];
+  // assign CAMERA_2 = ~sw[0]; 
   
+  //Generate 65 MHz:
+  logic clk_65mhz; //65 MHz clock line
+  logic clk_25mhz; //testing 25 MHz clock line too
+  clk_wiz_1 clk_gen(
+  .clk_in1(clk_100mhz),
+  .clk_out1(clk_25mhz),
+  .clk_out2(clk_65mhz)); //after frame buffer everything on clk_65mhz
+
 
   logic [11:0] hand_x_left_bottom;
   logic [11:0] hand_y_left_bottom;
@@ -43,16 +51,18 @@ module top_level(
   logic [11:0] hand_y_left_top;
   logic [13:0] hand_z_left_top;
   
-   ila_0 test(.clk(clk_65mhz), 
-              .probe0(RxD_data_ready), 
-              .probe1(jc[0]), 
-              .probe2(CAMERA_1), 
-              .probe3(RxD_data), 
-              .probe4(left_hand_x_bottom_from_camera_2), 
-              .probe5(left_hand_y_bottom_from_camera_2),
-              .probe6(left_hand_x_top_from_camera_2), 
-              .probe7(left_hand_y_top_from_camera_2),
-              .probe8(serial_buffer)); 
+  //  ila_0 test(.clk(clk_65mhz), 
+  //             .probe0(RxD_data_ready), 
+  //             .probe1(jc[0]), 
+  //             .probe2(CAMERA_1), 
+  //             .probe3(RxD_data), 
+  //             .probe4(left_hand_x_bottom_from_camera_2), 
+  //             .probe5(left_hand_y_bottom_from_camera_2),
+  //             .probe6(left_hand_x_top_from_camera_2), 
+  //             .probe7(left_hand_y_top_from_camera_2),
+  //             .probe8(serial_buffer)); 
+
+  logic transmit; 
 
   camera_top_level cam_uut(
     .clk_65mhz(clk_65mhz), //clock @ 100 mhz
@@ -82,100 +92,106 @@ module top_level(
 
   );
 
-  // IF CAMERA 1, need to receive y and z from camera 2
-  // IF CAMERA 2, need to transmit y and z to camera 1
-  
-  //Generate 65 MHz:
-  logic clk_65mhz; //65 MHz clock line
-  logic clk_25mhz; //testing 25 MHz clock line too
-  clk_wiz_1 clk_gen(
-  .clk_in1(clk_100mhz),
-  .clk_out1(clk_25mhz),
-  .clk_out2(clk_65mhz)); //after frame buffer everything on clk_65mhz
 
-  logic TxD_busy, TxD, RxD_data_ready, transmit;
-  logic [7:0] RxD_data;
-
-  logic uart_txd_in;
-  assign uart_txd_in = jc[0];
-
-  logic baud;
-  logic [15:0] counter;
-
-  receiver r1 (.clk(clk_65mhz),
-              .RxD(uart_txd_in),
-              .rst(sys_rst),
-              .RxD_data_ready(RxD_data_ready),
-              .RxD_data(RxD_data),
-              .baud(baud),
-              .counter(counter));
-
-  // logic [47:0] serial_buffer; 
-  logic [71:0] serial_buffer; 
-
-
-  always_ff @(posedge clk_65mhz) begin
-    if (sys_rst) begin
-      led <= 0;
-      serial_buffer <= 0;
-    end else begin 
-      led[0] <= RxD_data_ready;
-      led[2] <= uart_txd_in;
-      led[10:3] <= RxD_data;
-
-      if (RxD_data_ready) begin
-        serial_buffer[7:0] <= RxD_data;
-        serial_buffer[15:8] <= serial_buffer[7:0];
-        serial_buffer[23:16] <= serial_buffer[15:8];
-        serial_buffer[31:24] <= serial_buffer[23:16];
-        serial_buffer[39:32] <= serial_buffer[31:24];
-        serial_buffer[47:40] <= serial_buffer[39:32];
-        serial_buffer[55:48] <= serial_buffer[47:40];
-        serial_buffer[63:56] <= serial_buffer[55:48];
-        serial_buffer[71:64] <= serial_buffer[63:56];
-
-
-        if(serial_buffer[71:48] == 24'hFFFFFF) begin 
-          left_hand_x_bottom_from_camera_2[11:4] <= serial_buffer[23:16];
-          left_hand_x_bottom_from_camera_2[3:0] <= serial_buffer[7:4];
-          left_hand_y_bottom_from_camera_2[11:8] <= serial_buffer[3:0];
-          left_hand_y_bottom_from_camera_2[7:0] <= serial_buffer[15:8];
-
-          left_hand_x_top_from_camera_2[11:4] <= serial_buffer[47:40];
-          left_hand_x_top_from_camera_2[3:0] <= serial_buffer[31:28];
-          left_hand_y_top_from_camera_2[11:8] <= serial_buffer[27:24];
-          left_hand_y_top_from_camera_2[7:0] <= serial_buffer[31:24];
-        end 
-
-
-        // if(serial_buffer[47:24] == 24'hFFFFFF) begin 
-        //   left_hand_x_bottom_from_camera_2[11:4] <= serial_buffer[23:16];
-        //   left_hand_x_bottom_from_camera_2[3:0] <= serial_buffer[7:4];
-        //   left_hand_y_bottom_from_camera_2[11:8] <= serial_buffer[3:0];
-        //   left_hand_y_bottom_from_camera_2[7:0] <= serial_buffer[15:8];
-        // end 
-      end
-        
-
-      
-    end 
-
-  end
-
-  logic [11:0] left_hand_x_bottom_from_camera_2; 
-  logic [11:0] left_hand_y_bottom_from_camera_2; 
-  logic [11:0] left_hand_x_top_from_camera_2; 
-  logic [11:0] left_hand_y_top_from_camera_2; 
-
+  receiver_camera_1 receiver_camera_1_uut(
+    .clk_65mhz(clk_65mhz),
+    .sys_rst(sys_rst), 
+    .jc(jc),
+    .led(led),
+    .hand_z_left_top(hand_z_left_top),
+    .hand_z_left_bottom(hand_z_left_bottom)
+  );
 
   seven_segment_controller ssc_uut(
         .clk_in(clk_65mhz),
         .rst_in(sys_rst),
-        .val_in({left_hand_x_bottom_from_camera_2, 2'h00, left_hand_y_bottom_from_camera_2}),
+        // .val_in({left_hand_x_bottom_from_camera_2, 8'h00, left_hand_y_bottom_from_camera_2}),
+        .val_in({hand_x_left_bottom, 8'h00, hand_y_left_bottom}),
         // .val_in(uart_txd_in), // this shows 1
         // .val_in(receive),  // the data is never received. RxD_data_ready does not go high
         .cat_out({cag, caf, cae, cad, cac, cab, caa}),
         .an_out(an));
+
+  // IF CAMERA 1, need to receive y and z from camera 2
+  // IF CAMERA 2, need to transmit y and z to camera 1
+  
+  
+  // logic TxD_busy, TxD, RxD_data_ready, transmit;
+  // logic [7:0] RxD_data;
+
+  // logic uart_txd_in;
+  // assign uart_txd_in = jc[0];
+
+  // logic baud;
+  // logic [15:0] counter;
+
+  // receiver r1 (.clk(clk_65mhz),
+  //             .RxD(uart_txd_in),
+  //             .rst(sys_rst),
+  //             .RxD_data_ready(RxD_data_ready),
+  //             .RxD_data(RxD_data),
+  //             .baud(baud),
+  //             .counter(counter));
+
+  // // logic [47:0] serial_buffer; 
+  // logic [71:0] serial_buffer; 
+
+
+  // always_ff @(posedge clk_65mhz) begin
+  //   if (sys_rst) begin
+  //     led <= 0;
+  //     serial_buffer <= 0;
+  //   end else begin 
+  //     led[0] <= RxD_data_ready;
+  //     led[2] <= uart_txd_in;
+  //     led[10:3] <= RxD_data;
+
+  //     if (RxD_data_ready) begin
+  //       serial_buffer[7:0] <= RxD_data;
+  //       serial_buffer[15:8] <= serial_buffer[7:0];
+  //       serial_buffer[23:16] <= serial_buffer[15:8];
+  //       serial_buffer[31:24] <= serial_buffer[23:16];
+  //       serial_buffer[39:32] <= serial_buffer[31:24];
+  //       serial_buffer[47:40] <= serial_buffer[39:32];
+  //       serial_buffer[55:48] <= serial_buffer[47:40];
+  //       serial_buffer[63:56] <= serial_buffer[55:48];
+  //       serial_buffer[71:64] <= serial_buffer[63:56];
+
+
+  //       if(serial_buffer[71:48] == 24'hFFFFFF) begin 
+  //         left_hand_x_bottom_from_camera_2[11:4] <= serial_buffer[23:16];
+  //         left_hand_x_bottom_from_camera_2[3:0] <= serial_buffer[7:4];
+  //         left_hand_y_bottom_from_camera_2[11:8] <= serial_buffer[3:0];
+  //         left_hand_y_bottom_from_camera_2[7:0] <= serial_buffer[15:8];
+
+  //         left_hand_x_top_from_camera_2[11:4] <= serial_buffer[47:40];
+  //         left_hand_x_top_from_camera_2[3:0] <= serial_buffer[31:28];
+  //         left_hand_y_top_from_camera_2[11:8] <= serial_buffer[27:24];
+  //         left_hand_y_top_from_camera_2[7:0] <= serial_buffer[31:24];
+  //       end 
+
+
+  //       // if(serial_buffer[47:24] == 24'hFFFFFF) begin 
+  //       //   left_hand_x_bottom_from_camera_2[11:4] <= serial_buffer[23:16];
+  //       //   left_hand_x_bottom_from_camera_2[3:0] <= serial_buffer[7:4];
+  //       //   left_hand_y_bottom_from_camera_2[11:8] <= serial_buffer[3:0];
+  //       //   left_hand_y_bottom_from_camera_2[7:0] <= serial_buffer[15:8];
+  //       // end 
+  //     end
+        
+
+      
+  //   end 
+
+  // end
+
+  // logic [11:0] left_hand_x_bottom_from_camera_2; 
+  // logic [11:0] left_hand_y_bottom_from_camera_2; 
+  // logic [11:0] left_hand_x_top_from_camera_2; 
+  // logic [11:0] left_hand_y_top_from_camera_2; 
+
+
+  
 
  // need to transmit x, y coordinate, 10 bits, 11 bits [10:0] [9:0]
 //   transmitter t1 (.clk(clk_65mhz), 
