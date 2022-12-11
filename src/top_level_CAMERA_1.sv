@@ -29,11 +29,6 @@ module top_level(
   //system reset switch linking
   logic sys_rst; //global system reset
   assign sys_rst = btnc; //just done to make sys_rst more obvious
-
-  // logic CAMERA_1; 
-  // logic CAMERA_2;
-  // assign CAMERA_1 = sw[0];
-  // assign CAMERA_2 = ~sw[0]; 
   
   //Generate 65 MHz:
   logic clk_65mhz; //65 MHz clock line
@@ -44,12 +39,12 @@ module top_level(
   .clk_out2(clk_65mhz)); //after frame buffer everything on clk_65mhz
 
 
-  logic [11:0] hand_x_left_bottom;
-  logic [11:0] hand_y_left_bottom;
-  logic [13:0] hand_z_left_bottom;
-  logic [11:0] hand_x_left_top;
-  logic [11:0] hand_y_left_top;
-  logic [13:0] hand_z_left_top;
+  logic [11:0] hand_x_left_bottom; // goes from 0 to 274 (hex), or 0 to 638 (dec)
+  logic [11:0] hand_y_left_bottom; // goes from 0 to 1df (hex), or 0 to 479 (dec)
+  logic [13:0] hand_z_left_bottom; // same as x
+  logic [11:0] hand_x_left_top; // goes from 0 to 274 (hex), or 0 to 638 (dec)
+  logic [11:0] hand_y_left_top; // goes from 0 to 1df (hex), or 0 to 479 (dec)
+  logic [13:0] hand_z_left_top; // same as x
   
   //  ila_0 test(.clk(clk_65mhz), 
   //             .probe0(RxD_data_ready), 
