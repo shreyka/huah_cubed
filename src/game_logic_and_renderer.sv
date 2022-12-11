@@ -33,12 +33,6 @@ module game_logic_and_renderer(
     input wire [11:0] hand_x_left_top,
     input wire [11:0] hand_y_left_top,
     input wire [13:0] hand_z_left_top,
-    input wire [11:0] hand_x_right_bottom,
-    input wire [11:0] hand_y_right_bottom,
-    input wire [13:0] hand_z_right_bottom,
-    input wire [11:0] hand_x_right_top,
-    input wire [11:0] hand_y_right_top,
-    input wire [13:0] hand_z_right_top,
     input wire [11:0] head_x,
     input wire [11:0] head_y,
     input wire signed [13:0] head_z,
@@ -129,12 +123,6 @@ module game_logic_and_renderer(
     logic [11:0] prev_hand_x_left_top;
     logic [11:0] prev_hand_y_left_top;
     logic [13:0] prev_hand_z_left_top;
-    logic [11:0] prev_hand_x_right_bottom;
-    logic [11:0] prev_hand_y_right_bottom;
-    logic [13:0] prev_hand_z_right_bottom;
-    logic [11:0] prev_hand_x_right_top;
-    logic [11:0] prev_hand_y_right_top;
-    logic [13:0] prev_hand_z_right_top;
     
     // OUTPUTS FROM STATE PROCESSOR
     logic block_sliced;
@@ -367,25 +355,13 @@ module game_logic_and_renderer(
         .hand_x_left_top(hand_x_left_top),
         .hand_y_left_top(hand_y_left_top),
         .hand_z_left_top(hand_z_left_top),
-        .hand_x_right_bottom(hand_x_right_bottom),
-        .hand_y_right_bottom(hand_y_right_bottom),
-        .hand_z_right_bottom(hand_z_right_bottom),
-        .hand_x_right_top(hand_x_right_top),
-        .hand_y_right_top(hand_y_right_top),
-        .hand_z_right_top(hand_z_right_top),
 
         .prev_hand_x_left_bottom(prev_hand_x_left_bottom),
         .prev_hand_y_left_bottom(prev_hand_y_left_bottom),
         .prev_hand_z_left_bottom(prev_hand_z_left_bottom),
         .prev_hand_x_left_top(prev_hand_x_left_top),
         .prev_hand_y_left_top(prev_hand_y_left_top),
-        .prev_hand_z_left_top(prev_hand_z_left_top),
-        .prev_hand_x_right_bottom(prev_hand_x_right_bottom),
-        .prev_hand_y_right_bottom(prev_hand_y_right_bottom),
-        .prev_hand_z_right_bottom(prev_hand_z_right_bottom),
-        .prev_hand_x_right_top(prev_hand_x_right_top),
-        .prev_hand_y_right_top(prev_hand_y_right_top),
-        .prev_hand_z_right_top(prev_hand_z_right_top)
+        .prev_hand_z_left_top(prev_hand_z_left_top)
     );
 
     state_processor state_processor(
@@ -406,24 +382,12 @@ module game_logic_and_renderer(
         .prev_hand_x_left_top(prev_hand_x_left_top),
         .prev_hand_y_left_top(prev_hand_y_left_top),
         .prev_hand_z_left_top(prev_hand_z_left_top),
-        .prev_hand_x_right_bottom(prev_hand_x_right_bottom),
-        .prev_hand_y_right_bottom(prev_hand_y_right_bottom),
-        .prev_hand_z_right_bottom(prev_hand_z_right_bottom),
-        .prev_hand_x_right_top(prev_hand_x_right_top),
-        .prev_hand_y_right_top(prev_hand_y_right_top),
-        .prev_hand_z_right_top(prev_hand_z_right_top),
         .hand_x_left_bottom(hand_x_left_bottom),
         .hand_y_left_bottom(hand_y_left_bottom),
         .hand_z_left_bottom(hand_z_left_bottom),
         .hand_x_left_top(hand_x_left_top),
         .hand_y_left_top(hand_y_left_top),
         .hand_z_left_top(hand_z_left_top),
-        .hand_x_right_bottom(hand_x_right_bottom),
-        .hand_y_right_bottom(hand_y_right_bottom),
-        .hand_z_right_bottom(hand_z_right_bottom),
-        .hand_x_right_top(hand_x_right_top),
-        .hand_y_right_top(hand_y_right_top),
-        .hand_z_right_top(hand_z_right_top),
         .head_x(head_x),
         .head_y(head_y),
         .head_z(head_z),
@@ -523,12 +487,6 @@ module game_logic_and_renderer(
         .broken_blocks_color(broken_blocks_color),
         .broken_blocks_width(broken_blocks_width),
         .broken_blocks_height(broken_blocks_height),
-        .hand_x_right_bottom(hand_x_right_bottom),
-        .hand_y_right_bottom(hand_y_right_bottom),
-        .hand_z_right_bottom(hand_z_right_bottom),
-        .hand_x_right_top(hand_x_right_top),
-        .hand_y_right_top(hand_y_right_top),
-        .hand_z_right_top(hand_z_right_top),
         .head_x(head_x),
         .head_y(head_y),
         .head_z(head_z),

@@ -58,12 +58,6 @@ module top_level(
   logic [11:0] hand_x_left_top;
   logic [11:0] hand_y_left_top;
   logic [13:0] hand_z_left_top;
-  logic [11:0] hand_x_right_bottom;
-  logic [11:0] hand_y_right_bottom;
-  logic [13:0] hand_z_right_bottom;
-  logic [11:0] hand_x_right_top;
-  logic [11:0] hand_y_right_top;
-  logic [13:0] hand_z_right_top;
   logic [11:0] head_x;
   logic [11:0] head_y;
   logic signed [13:0] head_z;
@@ -96,6 +90,7 @@ module top_level(
     .right_button(btnr),
     .up_button(btnu),
     .down_button(btnd),
+    .enable_head(sw[0]),
 
     .hand_x_left_bottom(hand_x_left_bottom),
     .hand_y_left_bottom(hand_y_left_bottom),
@@ -105,8 +100,8 @@ module top_level(
     .hand_z_left_top(hand_z_left_top)
   );
 
-  assign head_x = hand_x_left_top; //1800
-  assign head_y = hand_y_left_top; //1800
+  assign head_x = hand_x_left_bottom; //1800
+  assign head_y = hand_y_left_bottom; //1800
   assign head_z = -300;
 
   game_logic_and_renderer game_logic_and_renderer(
@@ -123,12 +118,6 @@ module top_level(
     .hand_x_left_top(hand_x_left_top),
     .hand_y_left_top(hand_y_left_top),
     .hand_z_left_top(hand_z_left_top),
-    .hand_x_right_bottom(hand_x_right_bottom),
-    .hand_y_right_bottom(hand_y_right_bottom),
-    .hand_z_right_bottom(hand_z_right_bottom),
-    .hand_x_right_top(hand_x_right_top),
-    .hand_y_right_top(hand_y_right_top),
-    .hand_z_right_top(hand_z_right_top),
     .head_x(head_x),
     .head_y(head_y),
     .head_z(head_z),

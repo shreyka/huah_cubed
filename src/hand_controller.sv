@@ -16,6 +16,8 @@ module hand_controller(
     input wire up_button,
     input wire down_button,
 
+    input wire enable_head,
+
     output logic [11:0] hand_x_left_bottom,
     output logic [11:0] hand_y_left_bottom,
     output logic [13:0] hand_z_left_bottom,
@@ -27,7 +29,7 @@ module hand_controller(
     localparam MAX_X = 3400;
     localparam MAX_Y = 3400;
     localparam MAX_Z = 500;
-    localparam HAND_MOVE_SPEED = 18;
+    localparam HAND_MOVE_SPEED = 16;
 
     function logic [13:0] new_coord;
         input [13:0] pos;
@@ -57,6 +59,8 @@ module hand_controller(
 
     logic [22:0] curr_time_counter;
 
+    logic enable_button;
+
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
             hand_x_left_bottom <= 1800;
@@ -74,23 +78,43 @@ module hand_controller(
                 curr_time_counter <= curr_time_counter + 1;
             end
 
-            if(curr_time_counter == 0) begin
-                if(left_button) begin
-                    hand_x_left_bottom <= new_coord_x(hand_x_left_bottom, -HAND_MOVE_SPEED);
-                    hand_x_left_top <= new_coord_x(hand_x_left_top, -HAND_MOVE_SPEED);
-                end else if(right_button) begin
-                    hand_x_left_bottom <= new_coord_x(hand_x_left_bottom, HAND_MOVE_SPEED);
-                    hand_x_left_top <= new_coord_x(hand_x_left_top, HAND_MOVE_SPEED);
-                end
+            // if(curr_time_counter == 0) begin
+                if(enable_button) begin
+                    enable_button <= 0;
+                    if(left_button) begin
+                        if (enable_head) begin
+                            hand_x_left_bottom <= new_coord_x(hand_x_left_bottom, -HAND_MOVE_SPEED);
+                        end else begin
+                            hand_x_left_top <= new_coord_x(hand_x_left_top, -HAND_MOVE_SPEED);
+                        end
 
-                if(up_button) begin
-                    hand_y_left_bottom <= new_coord_y(hand_y_left_bottom, -HAND_MOVE_SPEED);
-                    hand_y_left_top <= new_coord_y(hand_y_left_top, -HAND_MOVE_SPEED);
-                end else if(down_button) begin
-                    hand_y_left_bottom <= new_coord_y(hand_y_left_bottom, HAND_MOVE_SPEED);
-                    hand_y_left_top <= new_coord_y(hand_y_left_top, HAND_MOVE_SPEED);
+                    end else if(right_button) begin
+                        if (enable_head) begin
+                            hand_x_left_bottom <= new_coord_x(hand_x_left_bottom, HAND_MOVE_SPEED);
+                        end else begin
+                            hand_x_left_top <= new_coord_x(hand_x_left_top, HAND_MOVE_SPEED);
+                        end
+                    end
+
+                    if(up_button) begin
+                        if (enable_head) begin
+                            hand_y_left_bottom <= new_coord_y(hand_y_left_bottom, -HAND_MOVE_SPEED);
+                        end else begin
+                            hand_y_left_top <= new_coord_y(hand_y_left_top, -HAND_MOVE_SPEED);
+                        end
+                    end else if(down_button) begin
+                        if (enable_head) begin
+                            hand_y_left_bottom <= new_coord_y(hand_y_left_bottom, HAND_MOVE_SPEED);
+                        end else begin
+                            hand_y_left_top <= new_coord_y(hand_y_left_top, HAND_MOVE_SPEED);
+                        end
+                    end
+                end else begin
+                    if(!left_button && !right_button && !up_button && !down_button) begin
+                        enable_button <= 1;
+                    end
                 end
-            end
+            // end
         end
     end
 

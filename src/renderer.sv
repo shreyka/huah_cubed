@@ -4,7 +4,7 @@
 /*
 
 Given data from one block and an XY position,
-render that block.
+render that block in 2D. THIS IS NOT USED ANYMORE!
 
 */
 module renderer(
