@@ -46,16 +46,12 @@ module top_level(
   logic [11:0] hand_y_left_top; // goes from 0 to 1df (hex), or 0 to 479 (dec)
   logic [13:0] hand_z_left_top; // same as x
   
-  //  ila_0 test(.clk(clk_65mhz), 
-  //             .probe0(RxD_data_ready), 
-  //             .probe1(jc[0]), 
-  //             .probe2(CAMERA_1), 
-  //             .probe3(RxD_data), 
-  //             .probe4(left_hand_x_bottom_from_camera_2), 
-  //             .probe5(left_hand_y_bottom_from_camera_2),
-  //             .probe6(left_hand_x_top_from_camera_2), 
-  //             .probe7(left_hand_y_top_from_camera_2),
-  //             .probe8(serial_buffer)); 
+   ila_0 test(.clk(clk_65mhz), 
+              .probe0(jc[0]), 
+              .probe1(hand_z_left_bottom), 
+              .probe2(hand_z_left_top),
+              .probe3(hand_x_left_top), 
+              .probe4(hand_y_left_top)); 
 
   logic transmit; 
 
@@ -81,8 +77,8 @@ module top_level(
 
     .vga_r(vga_r), .vga_g(vga_g), .vga_b(vga_b),
     .vga_hs(vga_hs), .vga_vs(vga_vs),
-    .an(an),
-    .caa(caa),.cab(cab),.cac(cac),.cad(cad),.cae(cae),.caf(caf),.cag(cag),
+    .an(),
+    .caa(),.cab(),.cac(),.cad(),.cae(),.caf(),.cag(),
     .transmit_xy_update(transmit)
 
   );
@@ -101,7 +97,7 @@ module top_level(
         .clk_in(clk_65mhz),
         .rst_in(sys_rst),
         // .val_in({left_hand_x_bottom_from_camera_2, 8'h00, left_hand_y_bottom_from_camera_2}),
-        .val_in({hand_x_left_bottom, 8'h00, hand_y_left_bottom}),
+        .val_in({hand_z_left_bottom, 8'h00, hand_z_left_top}),
         // .val_in(uart_txd_in), // this shows 1
         // .val_in(receive),  // the data is never received. RxD_data_ready does not go high
         .cat_out({cag, caf, cae, cad, cac, cab, caa}),
