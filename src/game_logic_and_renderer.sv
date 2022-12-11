@@ -41,7 +41,7 @@ module game_logic_and_renderer(
     input wire [13:0] hand_z_right_top,
     input wire [11:0] head_x,
     input wire [11:0] head_y,
-    input wire [13:0] head_z,
+    input wire signed [13:0] head_z,
 
     output logic [3:0] r_out,
     output logic [3:0] g_out,
@@ -57,6 +57,9 @@ module game_logic_and_renderer(
     //
     // SECTION: GAME LOGIC AND RENDERER
     //
+
+    // HEAD LOGIC
+    logic [31:0] head_x_float, head_y_float, head_z_float;
 
     // INPUTS TO GAME_STATE
     logic block_position_ready;
@@ -163,6 +166,39 @@ module game_logic_and_renderer(
     //
     // SECTION: GAME STATE AND RENDERER
     //
+
+    // CONVERT HEAD POSITIONS TO FLOAT
+
+    floating_point_sint32_to_float head_x_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(1'b1),
+        .s_axis_a_tdata({20'b0, head_x}),
+        .m_axis_result_tvalid(),
+        .m_axis_result_tdata(head_x_float)
+    );
+
+    floating_point_sint32_to_float head_y_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(1'b1),
+        .s_axis_a_tdata({20'b0, head_y}),
+        .m_axis_result_tvalid(),
+        .m_axis_result_tdata(head_y_float)
+    );
+
+    logic signed [31:0] head_z_extended;
+
+    assign head_z_extended = $signed(head_z);
+
+    floating_point_sint32_to_float head_z_to_float(
+        .aclk(clk_in),
+        .aresetn(~rst_in),
+        .s_axis_a_tvalid(1'b1),
+        .s_axis_a_tdata(head_z_extended),
+        .m_axis_result_tvalid(),
+        .m_axis_result_tdata(head_z_float)
+    );
 
     /*
     Game state controls most of the logic
@@ -276,6 +312,10 @@ module game_logic_and_renderer(
         .block_direction_in(block_direction_blockpositions),
         .block_ID_in(block_ID_blockpositions),
         .block_visible_in(block_visible_blockpositions),
+        
+        .head_x_float(head_x_float),
+        .head_y_float(head_y_float),
+        .head_z_float(head_z_float),
 
         .hand_x_left_top(hand_x_left_top),
         .hand_y_left_top(hand_y_left_top),
@@ -440,6 +480,9 @@ module game_logic_and_renderer(
         .block_dir(block_direction_selector),
         .block_visible_in(block_visible_selector),
         .saber_visible_in(saber_visible_out_three_dim),
+        .head_x_float(head_x_float),
+        .head_y_float(head_y_float),
+        .head_z_float(head_z_float),
 
         .ray_x(ray_out_x_selector),
         .ray_y(ray_out_y_selector),

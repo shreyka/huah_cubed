@@ -17,6 +17,9 @@ module get_pixel_color(
     input wire [31:0] block_pos_z,
     input wire block_color,
     input wire [2:0] block_dir,
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
     input wire valid_in,
 
     input wire [31:0] ray_x,
@@ -43,9 +46,13 @@ module get_pixel_color(
 
     logic [31:0] e_x_data, e_y_data, e_z_data;
 
-    assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
-    assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
-    assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
+    assign e_x_data = head_x_float;
+    assign e_y_data = head_y_float;
+    assign e_z_data = head_z_float;
+
+    // assign e_x_data = 32'b01000100111000010000000000000001; //1800.0001
+    // assign e_y_data = 32'b01000100111000010000000000000001; //1800.0001
+    // assign e_z_data = 32'b11000011100101100000000000000011; //-300.0001
 
     logic [31:0] lights_pos_x [2:0];
     logic [31:0] lights_pos_y [2:0];
@@ -217,6 +224,9 @@ module get_pixel_color(
         .scaled_ray_x(scaled_ray_x),
         .scaled_ray_y(scaled_ray_y),
         .scaled_ray_z(scaled_ray_z),
+        .head_x_float(head_x_float),
+        .head_y_float(head_y_float),
+        .head_z_float(head_z_float),
         .valid_in(scaled_ray_valid),
 
         .should_render_arrow(should_render_arrow),
@@ -670,6 +680,9 @@ module get_pixel_color_should_draw_arrow(
     input wire [31:0] scaled_ray_x,
     input wire [31:0] scaled_ray_y,
     input wire [31:0] scaled_ray_z,
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
     input wire valid_in,
 
     output logic should_render_arrow,
@@ -820,9 +833,9 @@ module get_pixel_color_should_draw_arrow(
         .v1_x(block_pos_x_pipe[BLOCK_POS_DELAY-1]),
         .v1_y(block_pos_y_pipe[BLOCK_POS_DELAY-1]),
         .v1_z(block_pos_z_pipe[BLOCK_POS_DELAY-1]),
-        .v2_x(32'b01000100111000010000000000000000), //1800
-        .v2_y(32'b01000100111000010000000000000000), //1800
-        .v2_z(32'b0),
+        .v2_x(head_x_float),
+        .v2_y(head_y_float),
+        .v2_z(head_z_float),
         .v_valid(scaled_sub_comp_valid),
 
         .res_data_x(block_pos_normalized_x),

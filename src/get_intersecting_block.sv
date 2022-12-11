@@ -20,6 +20,9 @@ module get_intersecting_block(
     input wire [11:0] block_y_notfloat_in,
     input wire [13:0] block_z_notfloat_in,
     input wire block_visible_in,
+    input wire [31:0] head_x_float,
+    input wire [31:0] head_y_float,
+    input wire [31:0] head_z_float,
 
     input wire valid_in,
 
@@ -98,7 +101,7 @@ module get_intersecting_block(
     // stage 0
 
     // pipeline x_in, y_in
-    localparam XY_DELAY = 182;
+    localparam XY_DELAY = 182 + 5; //verified
     localparam XY_DELAY_0 = 6;
     logic [10:0] x_in_pipe [XY_DELAY-1:0];
     logic [9:0] y_in_pipe [XY_DELAY-1:0];
@@ -119,12 +122,15 @@ module get_intersecting_block(
         end
     end
 
-    eye_to_pixel eye_to_pixel( //117
+    eye_to_pixel eye_to_pixel( //117 + 5
         .clk_in(clk_in),
         .rst_in(rst_in),
 
         .x_in(x_in_pipe[XY_DELAY_0-1]),
         .y_in(y_in_pipe[XY_DELAY_0-1]),
+        .head_x_float(head_x_float),
+        .head_y_float(head_y_float),
+        .head_z_float(head_z_float),
         .valid_in(block_x_in_valid),
 
         .dir_x(ray_x),
@@ -166,7 +172,7 @@ module get_intersecting_block(
 
     // stage 1
 
-    localparam BLOCK_DELAY = 111 + 6;
+    localparam BLOCK_DELAY = 111 + 6 + 5; // verified
     logic [31:0] block_x_pipe [BLOCK_DELAY-1:0];
     logic [31:0] block_y_pipe [BLOCK_DELAY-1:0];
     logic [31:0] block_z_pipe [BLOCK_DELAY-1:0];
@@ -190,6 +196,14 @@ module get_intersecting_block(
         end
     end
 
+    // always_ff @(posedge clk_in) begin
+    //     if(ray_valid) begin
+    //         $display("X IS %b", block_x_pipe[BLOCK_DELAY-1]);
+    //     end else begin
+    //         $display("INVALID X IS %b", block_x_pipe[BLOCK_DELAY-1]);
+    //     end
+    // end
+
     // logic [31:0] i;
     // always_ff @(posedge clk_in) begin
     //     if(rst_in) begin
@@ -205,7 +219,7 @@ module get_intersecting_block(
     // end
 
     // this is for the output, but also used in does_ray_block_intersect
-    localparam BLOCK_VISIBLE_DELAY = 181;
+    localparam BLOCK_VISIBLE_DELAY = 181 + 5; // verified
     logic block_visible_pipe [BLOCK_VISIBLE_DELAY-1:0];
     logic [3:0] block_index_pipe [BLOCK_VISIBLE_DELAY-1:0];
     always_ff @(posedge clk_in) begin
@@ -224,6 +238,14 @@ module get_intersecting_block(
         end
     end
 
+    // always_ff @(posedge clk_in) begin
+    //     if(ray_valid) begin
+    //         $display("BLOCK_Z %b", block_z_pipe[BLOCK_DELAY-1]);
+    //         $display("ray_x %b", ray_x);
+    //         $display("block_index %d", block_index_pipe[BLOCK_DELAY-1+6]);
+    //     end
+    // end
+
     does_ray_block_intersect does_ray_block_intersect(
         .clk_in(clk_in),
         .rst_in(rst_in),
@@ -234,6 +256,9 @@ module get_intersecting_block(
         .block_pos_x(block_x_pipe[BLOCK_DELAY-1]),
         .block_pos_y(block_y_pipe[BLOCK_DELAY-1]),
         .block_pos_z(block_z_pipe[BLOCK_DELAY-1]),
+        .head_x_float(head_x_float),
+        .head_y_float(head_y_float),
+        .head_z_float(head_z_float),
         .is_saber(block_index_pipe[BLOCK_DELAY-1+6] == 12 ? 1'b1 : 1'b0), //the +6 was empirically tested and verified, not sure why it is needed
         .valid_in(ray_valid),
 

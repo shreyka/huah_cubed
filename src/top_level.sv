@@ -66,7 +66,7 @@ module top_level(
   logic [13:0] hand_z_right_top;
   logic [11:0] head_x;
   logic [11:0] head_y;
-  logic [13:0] head_z;
+  logic signed [13:0] head_z;
   
   ////////////////////////////////////////////////////
   // REQUIRED LOGIC/WIRES
@@ -104,6 +104,10 @@ module top_level(
     .hand_y_left_top(hand_y_left_top),
     .hand_z_left_top(hand_z_left_top)
   );
+
+  assign head_x = hand_x_left_top; //1800
+  assign head_y = hand_y_left_top; //1800
+  assign head_z = -300;
 
   game_logic_and_renderer game_logic_and_renderer(
     .clk_in(clk_65mhz),

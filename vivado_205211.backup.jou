@@ -1,0 +1,60 @@
+#-----------------------------------------------------------
+# Vivado v2022.1 (64-bit)
+# SW Build 3526262 on Mon Apr 18 15:47:01 MDT 2022
+# IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
+# Start of session at: Sat Dec 10 16:07:55 2022
+# Process ID: 205211
+# Current directory: /media/koops/VIVADO/huah_cubed
+# Command line: vivado
+# Log file: /media/koops/VIVADO/huah_cubed/vivado.log
+# Journal file: /media/koops/VIVADO/huah_cubed/vivado.jou
+# Running On: koops, OS: Linux, CPU Frequency: 4098.366 MHz, CPU Physical cores: 4, Host memory: 16698 MB
+#-----------------------------------------------------------
+start_gui
+create_project serial_vivado /media/koops/VIVADO/huah_cubed_camera_receives/serial_test/serial_vivado -part xc7a100tcsg324-1
+set_property board_part digilentinc.com:nexys4_ddr:part0:1.1 [current_project]
+add_files {/media/koops/VIVADO/huah_cubed_camera_receives/serial_test/src/serial_top_level.sv /media/koops/VIVADO/huah_cubed_camera_receives/serial_test/src/serial.sv}
+add_files -fileset constrs_1 -norecurse /media/koops/VIVADO/huah_cubed_camera_receives/serial_test/xdc/top_level.xdc
+update_compile_order -fileset sources_1
+add_files -norecurse /media/koops/VIVADO/huah_cubed_camera_receives/serial_test/src/clk_wiz_lab3.v
+update_compile_order -fileset sources_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+open_hw_manager
+connect_hw_server -allow_non_jtag
+open_hw_target
+set_property PROGRAM.FILE {/media/koops/VIVADO/huah_cubed_camera_receives/serial_test/serial_vivado/serial_vivado.runs/impl_1/serial_top_level.bit} [get_hw_devices xc7a100t_0]
+current_hw_device [get_hw_devices xc7a100t_0]
+refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7a100t_0] 0]
+set_property PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property PROGRAM.FILE {/media/koops/VIVADO/huah_cubed_camera_receives/serial_test/serial_vivado/serial_vivado.runs/impl_1/serial_top_level.bit} [get_hw_devices xc7a100t_0]
+program_hw_devices [get_hw_devices xc7a100t_0]
+refresh_hw_device [lindex [get_hw_devices xc7a100t_0] 0]
+set_property PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property PROGRAM.FILE {/media/koops/VIVADO/huah_cubed_camera_receives/serial_test/serial_vivado/serial_vivado.runs/impl_1/serial_top_level.bit} [get_hw_devices xc7a100t_0]
+program_hw_devices [get_hw_devices xc7a100t_0]
+refresh_hw_device [lindex [get_hw_devices xc7a100t_0] 0]
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+set_property PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property PROGRAM.FILE {/media/koops/VIVADO/huah_cubed_camera_receives/serial_test/serial_vivado/serial_vivado.runs/impl_1/serial_top_level.bit} [get_hw_devices xc7a100t_0]
+program_hw_devices [get_hw_devices xc7a100t_0]
+refresh_hw_device [lindex [get_hw_devices xc7a100t_0] 0]
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+set_property PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7a100t_0]
+set_property PROGRAM.FILE {/media/koops/VIVADO/huah_cubed_camera_receives/serial_test/serial_vivado/serial_vivado.runs/impl_1/serial_top_level.bit} [get_hw_devices xc7a100t_0]
+program_hw_devices [get_hw_devices xc7a100t_0]
+refresh_hw_device [lindex [get_hw_devices xc7a100t_0] 0]
+reset_run synth_1
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
