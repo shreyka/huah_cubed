@@ -2,13 +2,13 @@
 # Vivado v2022.1 (64-bit)
 # SW Build 3526262 on Mon Apr 18 15:47:01 MDT 2022
 # IP Build 3524634 on Mon Apr 18 20:55:01 MDT 2022
-# Start of session at: Mon Dec 12 12:07:17 2022
-# Process ID: 551076
+# Start of session at: Sat Dec 10 01:42:13 2022
+# Process ID: 673809
 # Current directory: /media/koops/VIVADO/huah_cubed/tools
 # Command line: vivado
 # Log file: /media/koops/VIVADO/huah_cubed/tools/vivado.log
 # Journal file: /media/koops/VIVADO/huah_cubed/tools/vivado.jou
-# Running On: koops, OS: Linux, CPU Frequency: 4051.816 MHz, CPU Physical cores: 4, Host memory: 16698 MB
+# Running On: koops, OS: Linux, CPU Frequency: 2100.000 MHz, CPU Physical cores: 4, Host memory: 16698 MB
 #-----------------------------------------------------------
 start_gui
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:kc705:part0:1.6 available at /media/koops/VIVADO/Vivado/2022.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/kc705/1.6/board.xml as part xc7k325tffg900-2 specified in board_part file is either invalid or not available
@@ -51,18 +51,62 @@ WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu216ld:part0:2.0 avail
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670:part0:2.0 available at /media/koops/VIVADO/Vivado/2022.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670/2.0/board.xml as part xczu67dr-fsve1156-2-i specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670ld:part0:1.0 available at /media/koops/VIVADO/Vivado/2022.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670ld/1.0/board.xml as part xczu57dr-fsve1156-2-i specified in board_part file is either invalid or not available
 open_project /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.xpr
+CRITICAL WARNING: [Project 1-19] Could not find the file '/media/koops/VIVADO/huah_cubed/src/does_saber_intersect.sv'.
 Scanning sources...
 Finished scanning sources
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1704] No user IP repositories specified
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/media/koops/VIVADO/Vivado/2022.1/data/ip'.
-open_project: Time (s): cpu = 00:00:25 ; elapsed = 00:00:07 . Memory (MB): peak = 7738.750 ; gain = 130.219 ; free physical = 1447 ; free virtual = 11795
+open_project: Time (s): cpu = 00:00:27 ; elapsed = 00:00:07 . Memory (MB): peak = 7703.023 ; gain = 130.219 ; free physical = 6296 ; free virtual = 12186
 update_compile_order -fileset sources_1
+export_ip_user_files -of_objects  [get_files /media/koops/VIVADO/huah_cubed/src/does_saber_intersect.sv] -no_script -reset -force -quiet
+remove_files  /media/koops/VIVADO/huah_cubed/src/does_saber_intersect.sv
 reset_run synth_1
 INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp
 launch_runs impl_1 -to_step write_bitstream -jobs 8
 INFO: [Vivado 12-4149] The synthesis checkpoint for IP '/media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/sources_1/ip/floating_point_sub/floating_point_sub.xci' is already up-to-date
-[Mon Dec 12 12:10:12 2022] Launched synth_1...
+[Sat Dec 10 01:53:03 2022] Launched synth_1...
 Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
-[Mon Dec 12 12:10:12 2022] Launched impl_1...
+[Sat Dec 10 01:53:03 2022] Launched impl_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log
+open_run impl_1
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+Netlist sorting complete. Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 7864.262 ; gain = 0.000 ; free physical = 4432 ; free virtual = 10743
+INFO: [Netlist 29-17] Analyzing 8120 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2022.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Timing 38-478] Restoring timing data from binary archive.
+INFO: [Timing 38-479] Binary timing data restore complete.
+INFO: [Project 1-856] Restoring constraints from binary archive.
+INFO: [Project 1-853] Binary constraint restore complete.
+Reading XDEF placement.
+Reading placer database...
+Reading XDEF routing.
+Read XDEF Files: Time (s): cpu = 00:00:05 ; elapsed = 00:00:04 . Memory (MB): peak = 8704.668 ; gain = 122.961 ; free physical = 3492 ; free virtual = 9803
+Restored from archive | CPU: 4.680000 secs | Memory: 120.569092 MB |
+Finished XDEF File Restore: Time (s): cpu = 00:00:05 ; elapsed = 00:00:04 . Memory (MB): peak = 8704.668 ; gain = 122.961 ; free physical = 3492 ; free virtual = 9803
+Netlist sorting complete. Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.03 . Memory (MB): peak = 8704.668 ; gain = 0.000 ; free physical = 3431 ; free virtual = 9825
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 353 instances were transformed.
+  SRLC32E => SRL16E: 353 instances
+
+open_run: Time (s): cpu = 00:01:01 ; elapsed = 00:00:50 . Memory (MB): peak = 8812.309 ; gain = 948.047 ; free physical = 3293 ; free virtual = 9680
+open_report: Time (s): cpu = 00:00:43 ; elapsed = 00:00:14 . Memory (MB): peak = 9009.449 ; gain = 185.250 ; free physical = 3013 ; free virtual = 9351
+reset_run synth_1
+INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+INFO: [Vivado 12-4149] The synthesis checkpoint for IP '/media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/sources_1/ip/floating_point_sub/floating_point_sub.xci' is already up-to-date
+[Sat Dec 10 02:24:23 2022] Launched synth_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
+[Sat Dec 10 02:24:24 2022] Launched impl_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log
+close_design
+reset_run synth_1
+INFO: [Project 1-1161] Replacing file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/utils_1/imports/synth_1/top_level.dcp with file /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/top_level.dcp
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+INFO: [Vivado 12-4149] The synthesis checkpoint for IP '/media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.srcs/sources_1/ip/floating_point_sub/floating_point_sub.xci' is already up-to-date
+[Sat Dec 10 02:52:22 2022] Launched synth_1...
+Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/synth_1/runme.log
+[Sat Dec 10 02:52:22 2022] Launched impl_1...
 Run output will be captured here: /media/koops/VIVADO/huah_cubed_ip/huah_cubed_ip/huah_cubed_ip.runs/impl_1/runme.log

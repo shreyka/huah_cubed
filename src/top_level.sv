@@ -11,6 +11,11 @@ module top_level(
 
   input wire [15:0] sw,
 
+  input wire [7:0] ja, //lower 8 bits of data from camera
+  input wire [2:0] jb, //upper three bits from camera (return clock, vsync, hsync)
+  output logic jbclk,  //signal we provide to camera
+  output logic jblock,
+
   //TEMP for score printer
   output logic [15:0] led,
 
@@ -73,7 +78,7 @@ module top_level(
   logic [3:0] b_out;
 
   logic [11:0] score;
-  // assign led = score;
+  assign led = score;
 
   ////////////////////////////////////////////////////
   // MODULES
@@ -117,7 +122,7 @@ module top_level(
     .vsync(vsync),
     .blank(blank),
 
-    .led(led),
+    .led(),
     .hand_x_left_bottom(hand_x_left_bottom),
     .hand_y_left_bottom(hand_y_left_bottom),
     .hand_z_left_bottom(),

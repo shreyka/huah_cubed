@@ -39,22 +39,32 @@ module camera_interface(
     logic caa,cab,cac,cad,cae,caf,cag;
     logic transmit;
 
-    logic [11:0] ori_head_x;
-    logic [11:0] ori_head_y;
+    logic [13:0] ori_head_x;
+    logic [13:0] ori_head_y;
     logic [11:0] camera_x_bottom, camera_y_bottom;
     logic [11:0] camera_x_top, camera_y_top;
 
     logic [19:0] curr_time_counter;
+    logic [6:0] track_ori_count;
 
     // get ori head
     always_ff @(posedge clk_in) begin
         if(rst_in) begin
+            ori_head_x <= 0;
+            ori_head_y <= 0;
             curr_time_counter <= 0;
+            track_ori_count <= 10; //100 ms
         end else begin
             if(curr_time_counter == 650000) begin
-                ori_head_x <= camera_x_bottom;
-                ori_head_y <= camera_y_bottom;
-            end else begin
+                if(track_ori_count == 0) begin
+                    ori_head_x <= camera_x_bottom;
+                    ori_head_y <= camera_y_bottom;
+                    curr_time_counter <= curr_time_counter + 1;
+                end else begin
+                    track_ori_count <= track_ori_count - 1;
+                    curr_time_counter <= 0;
+                end
+            end else if(curr_time_counter < 650000) begin
                 curr_time_counter <= curr_time_counter + 1;
             end
         end
@@ -96,21 +106,42 @@ module camera_interface(
     // bottom is head
     // top is hand
     always_comb begin
-        if (sw[1]) begin // use ori hand
-            hand_x_left_top = (ori_head_x - camera_x_top) + 1800;
-            hand_y_left_top = (ori_head_x - camera_y_top) + 1800;
+        if (sw[1]) begin // use HAND
+            hand_x_left_top = (1800 + camera_x_top) - ori_head_x;
+            hand_y_left_top = (1800 + camera_y_top) - ori_head_y;
         end else begin
             hand_x_left_top = camera_x_top + 1800;
             hand_y_left_top = camera_y_top + 1800;
         end
         
-        if (sw[2]) begin // use ori head
-            hand_x_left_bottom = (ori_head_x - camera_x_bottom) + 1800;
-            hand_y_left_bottom = (ori_head_x - camera_y_bottom) + 1800;
+        if (sw[2]) begin // use HEAD
+            hand_x_left_bottom = (1800 + camera_x_bottom) - ori_head_x;
+            hand_y_left_bottom = (1800 + camera_y_bottom) - ori_head_y;
         end else begin
             hand_x_left_bottom = camera_x_bottom + 1800;
             hand_y_left_bottom = camera_y_bottom + 1800;
         end
+
+        // avoid divide by infinity
+
+        // if (hand_x_left_top == 1800) begin
+        //     hand_x_left_top = hand_x_left_top + 1; 
+        // end
+
+        // if (hand_y_left_top == 1800) begin
+        //     hand_y_left_top = hand_y_left_top + 1; 
+        // end
+
+        // if (hand_x_left_bottom == 1800) begin
+        //     hand_x_left_bottom = hand_x_left_bottom + 1; 
+        // end
+
+        // if (hand_y_left_bottom == 1800) begin
+        //     hand_y_left_bottom = hand_y_left_bottom + 1; 
+        // end
+
+        // make the head a bit higher than the hand so that they don't overlap
+        hand_y_left_bottom = hand_y_left_bottom - 75; 
     end
 
     assign led[15:12] = camera_x_top;

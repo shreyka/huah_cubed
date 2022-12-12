@@ -5,8 +5,8 @@
 //  not needed during writes or the last read value is desired to be retained,
 //  it is suggested to use a no change RAM as it is more power efficient.
 //  If a reset or enable is not necessary, it may be tied off or removed from the code.
-`timescale 1ns / 1ps
-`default_nettype none
+`default_nettype wire
+
 module xilinx_true_dual_port_read_first_2_clock_ram #(
   parameter RAM_WIDTH = 18,                       // Specify RAM data width
   parameter RAM_DEPTH = 1024,                     // Specify RAM depth (number of entries)
@@ -145,4 +145,4 @@ endmodule
     .doutb(doutb)    // Port B RAM output data, width determined from RAM_WIDTH
   );
 */
-`default_nettype wire
+`default_nettype none
