@@ -18,8 +18,8 @@ module receiver_camera_1(
   logic uart_txd_in;
   assign uart_txd_in = jc[0];
 
-  logic baud;
-  logic [15:0] counter;
+  // logic baud;
+  // logic [15:0] counter;
 
 
   // ila_0 test(.clk(clk_65mhz), 
@@ -37,9 +37,9 @@ module receiver_camera_1(
               .RxD(uart_txd_in),
               .rst(sys_rst),
               .RxD_data_ready(RxD_data_ready),
-              .RxD_data(RxD_data),
-              .baud(baud),
-              .counter(counter));
+              .RxD_data(RxD_data));
+              // .baud(baud),
+              // .counter(counter));
 
   // logic [47:0] serial_buffer; 
   logic [71:0] serial_buffer; 

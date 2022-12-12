@@ -95,9 +95,9 @@ module receiver(
     input wire RxD,
     input wire rst,
     output logic RxD_data_ready,
-    output logic [7:0] RxD_data,
-    output logic baud,
-    output logic[15:0] counter
+    output logic [7:0] RxD_data
+    // output logic baud,
+    // output logic[15:0] counter
     );
 
     logic [3:0] state;
