@@ -127,7 +127,6 @@ module camera_interface(
         if (hand_x_left_top == 1800) begin
             hand_x_left_top = hand_x_left_top + 1; 
         end
-
         if (hand_x_left_bottom == 1800) begin
             hand_x_left_bottom = hand_x_left_bottom + 1; 
         end

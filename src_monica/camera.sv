@@ -59,6 +59,8 @@ module camera(
           else pixel_out[15:8] <= pixel_in;
         end
       end
+      default: begin
+      end
     endcase
   end
 endmodule

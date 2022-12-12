@@ -21,7 +21,7 @@ module top_level(
 
   output logic [3:0] vga_r, vga_g, vga_b,
   output logic vga_hs, vga_vs,
-  output logic [7:0] jd
+  output logic jd1
   );
 
   ////////////////////////////////////////////////////
@@ -188,7 +188,7 @@ module top_level(
       .rst(btnc),
       .valid_in(block_sliced),
       .start_music(notbtnc),
-      .jd(jd)
+      .jd1(jd1)
   );
   
   ////////////////////////////////////////////////////
