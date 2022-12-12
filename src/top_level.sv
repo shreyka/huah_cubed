@@ -20,7 +20,8 @@ module top_level(
   output logic [15:0] led,
 
   output logic [3:0] vga_r, vga_g, vga_b,
-  output logic vga_hs, vga_vs
+  output logic vga_hs, vga_vs,
+  output logic [7:0] jd
   );
 
   ////////////////////////////////////////////////////
@@ -73,6 +74,7 @@ module top_level(
   // SECTION: GAME LOGIC AND RENDERER
   //
 
+  logic block_sliced;
   logic [3:0] r_out;
   logic [3:0] g_out;
   logic [3:0] b_out;
@@ -131,6 +133,7 @@ module top_level(
     .hand_z_left_top()
   );
 
+  // set the head
   assign head_x = hand_x_left_bottom; //1800
   assign head_y = hand_y_left_bottom; //1800
   assign head_z = -300;
@@ -153,6 +156,8 @@ module top_level(
     .head_y(head_y),
     .head_z(head_z),
 
+    .block_sliced(block_sliced),
+
     // outputs
     .r_out(r_out),
     .g_out(g_out),  
@@ -161,9 +166,31 @@ module top_level(
     .score_out(score)
   );
 
-  //TEMP
-  
+  // start the music when the reset button is depressed
+  logic notbtnc;
+  logic has_sent_start_bit;
+  always_ff @(posedge clk_65mhz) begin
+    if(btnc) begin
+      notbtnc <= 0;
+      has_sent_start_bit <= 0;
+    end else begin
+      if(~has_sent_start_bit) begin
+        has_sent_start_bit <= 1;
+        notbtnc <= 1;
+      end else begin
+        notbtnc <= 0;
+      end
+    end
+  end
 
+  music_interface music_interface(
+      .clk_65mhz(clk_65mhz),
+      .rst(btnc),
+      .valid_in(block_sliced),
+      .start_music(notbtnc),
+      .jd(jd)
+  );
+  
   ////////////////////////////////////////////////////
   // OUTPUT TO PIXELS
   //

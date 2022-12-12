@@ -124,24 +124,13 @@ module camera_interface(
 
         // avoid divide by infinity
 
-        // if (hand_x_left_top == 1800) begin
-        //     hand_x_left_top = hand_x_left_top + 1; 
-        // end
+        if (hand_x_left_top == 1800) begin
+            hand_x_left_top = hand_x_left_top + 1; 
+        end
 
-        // if (hand_y_left_top == 1800) begin
-        //     hand_y_left_top = hand_y_left_top + 1; 
-        // end
-
-        // if (hand_x_left_bottom == 1800) begin
-        //     hand_x_left_bottom = hand_x_left_bottom + 1; 
-        // end
-
-        // if (hand_y_left_bottom == 1800) begin
-        //     hand_y_left_bottom = hand_y_left_bottom + 1; 
-        // end
-
-        // make the head a bit higher than the hand so that they don't overlap
-        hand_y_left_bottom = hand_y_left_bottom - 75; 
+        if (hand_x_left_bottom == 1800) begin
+            hand_x_left_bottom = hand_x_left_bottom + 1; 
+        end
     end
 
     assign led[15:12] = camera_x_top;

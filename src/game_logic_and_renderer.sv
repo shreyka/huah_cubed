@@ -37,6 +37,8 @@ module game_logic_and_renderer(
     input wire [11:0] head_y,
     input wire signed [13:0] head_z,
 
+    output logic block_sliced,
+
     output logic [3:0] r_out,
     output logic [3:0] g_out,
     output logic [3:0] b_out,
@@ -125,7 +127,6 @@ module game_logic_and_renderer(
     logic [13:0] prev_hand_z_left_top;
     
     // OUTPUTS FROM STATE PROCESSOR
-    logic block_sliced;
     logic [11:0] block_x_state_processor;
     logic [11:0] block_y_state_processor;
     logic [13:0] block_z_state_processor;

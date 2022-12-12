@@ -6,13 +6,14 @@ module baudGen(
     input wire rst,
     output logic baudBit
     );
-    // 65 MHz
+    //25 MHz
+    // localparam ACC_SIZE = 15;
+    // localparam INCREMENT = 151;
+
+    //65 MHz
     localparam ACC_SIZE = 14;
     localparam INCREMENT = 29;
-    
-    // 25MHz
-    // localparam ACC_SIZE = 13;
-    // localparam INCREMENT = 19;
+
     logic [ACC_SIZE:0] acc = 0; //15 bits total
 
 
@@ -22,14 +23,12 @@ module baudGen(
         if (rst)begin
             acc <= 0;
         end else begin
-            acc <= acc[ACC_SIZE-1:0] + INCREMENT;
-        end 
+            acc <= acc[ACC_SIZE-1:0] + INCREMENT; 
+        end
     end
 
     
 endmodule
-
-
 
 module transmitter(
     input  wire clk,
@@ -81,8 +80,13 @@ module transmitter(
                 end
                 2: begin
                     if (baud)begin
-                        TxD <= 1;          //stop bit
-                        state <= 0; 
+                        TxD <= 1;
+                        state <= state + 1; 
+                    end
+                end 
+                3: begin
+                    if (baud)begin
+                        state <= 0;
                     end
                 end
             endcase
@@ -95,9 +99,7 @@ module receiver(
     input wire RxD,
     input wire rst,
     output logic RxD_data_ready,
-    output logic [7:0] RxD_data,
-    output logic baud,
-    output logic[15:0] counter
+    output logic [7:0] RxD_data
     );
 
     logic [3:0] state;
